@@ -1,0 +1,34 @@
+# OCR-enabled Dockerfile for Docker/Render paid plans
+FROM python:3.11-slim
+
+# Install system dependencies for OCR
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tesseract-ocr \
+    poppler-utils \
+    libglib2.0-0 \
+    libgl1 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy OCR-enabled requirements
+COPY requirements-ocr-enabled.txt .
+RUN pip install --no-cache-dir -r requirements-ocr-enabled.txt
+
+# Copy application code
+COPY ocr_service_optimized.py ./ocr_service.py
+COPY parse_sds.py .
+COPY sds_parser_new/ ./sds_parser_new/
+
+# Set environment for OCR mode
+ENV OCR_MODE=full
+ENV PYTHONUNBUFFERED=1
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5001/health || exit 1
+
+# Optimized for memory: 1 worker, 2 threads, preload disabled
+EXPOSE 5001
+CMD ["gunicorn", "ocr_service:app", "--workers=1", "--threads=2", "--timeout=120", "--preload=false", "-b", "0.0.0.0:5001"]
