@@ -133,7 +133,7 @@ def preprocess_array(img: np.ndarray) -> np.ndarray:
     return cv2.cvtColor(enhanced, cv2.COLOR_GRAY2BGR)
 
 # -----------------------------------------------------------------------------
-# Initialize OCR model with memory-optimized settings
+# Initialize OCR model 
 # -----------------------------------------------------------------------------
 try:
     # Use lighter models to reduce memory usage
@@ -141,20 +141,9 @@ try:
         lang="en",
         det_model_dir=None,
         rec_model_dir=None,
-        use_angle_cls=False,  # Disable angle classification to save memory
-        det_db_thresh=0.3,    # Lower threshold for faster detection
-        det_db_box_thresh=0.5,
-        det_db_unclip_ratio=1.6,
-        use_gpu=False,        # Force CPU mode to avoid GPU memory issues
-        enable_mkldnn=False,  # Disable Intel optimization to save memory
-        cpu_threads=1,        # Limit CPU threads
-        det_max_side_len=960, # Reduce max image size
-        rec_batch_num=1,      # Process one image at a time
-        drop_score=0.3        # Drop low-confidence results early
+        use_angle_cls=True,
     )
-    logger.info("PaddleOCR initialized successfully with memory-optimized settings")
 except Exception as e:
-    logger.error(f"Failed to initialize PaddleOCR: {e}")
     raise RuntimeError(f"Failed to initialize PaddleOCR: {e}")
 
 # -----------------------------------------------------------------------------
