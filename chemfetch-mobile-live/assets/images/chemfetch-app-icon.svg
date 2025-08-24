@@ -1,0 +1,61 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#56CCF2;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4AA8F0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2F80ED;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="tubeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="100%" stop-color="#f0f0f0" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="liquidGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4CAF50" stop-opacity="1" />
+      <stop offset="100%" stop-color="#2E7D32" stop-opacity="1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="4" dy="8" stdDeviation="12" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#iconGradient)"/>
+
+  <!-- Test Tube Container -->
+  <g transform="translate(256,256)">
+    <!-- Main tube body - much taller -->
+    <rect x="-35" y="-140" width="70" height="210" rx="35" ry="35" fill="url(#tubeGradient)" stroke="#dddddd" stroke-width="2"/>
+
+    <!-- Tube opening/rim -->
+    <rect x="-40" y="-145" width="80" height="12" rx="6" ry="6" fill="url(#tubeGradient)" stroke="#dddddd" stroke-width="2"/>
+
+    <!-- Chemical liquid - proper rounded bottom, positioned lower -->
+    <ellipse cx="0" cy="45" rx="30" ry="20" fill="url(#liquidGradient)"/>
+    <rect x="-30" y="25" width="60" height="20" fill="url(#liquidGradient)"/>
+
+    <!-- Liquid surface (meniscus) -->
+    <ellipse cx="0" cy="25" rx="30" ry="3" fill="#66BB6A"/>
+
+    <!-- Bubbles in liquid -->
+    <circle cx="-12" cy="38" r="3" fill="#ffffff" fill-opacity="0.7"/>
+    <circle cx="8" cy="45" r="2" fill="#ffffff" fill-opacity="0.8"/>
+    <circle cx="2" cy="52" r="2.5" fill="#ffffff" fill-opacity="0.6"/>
+    <circle cx="-8" cy="48" r="1.5" fill="#ffffff" fill-opacity="0.9"/>
+
+    <!-- Measurement marks - ON the tube -->
+    <g stroke="#000000" stroke-opacity="0.4" stroke-width="2">
+      <line x1="25" y1="-100" x2="32" y2="-100"/>
+      <line x1="25" y1="-60" x2="32" y2="-60"/>
+      <line x1="25" y1="-20" x2="32" y2="-20"/>
+      <line x1="25" y1="20" x2="32" y2="20"/>
+      <line x1="25" y1="60" x2="32" y2="60"/>
+    </g>
+
+    <!-- Highlight on tube -->
+    <rect x="-25" y="-130" width="15" height="180" rx="7" ry="7" fill="#ffffff" fill-opacity="0.2"/>
+  </g>
+
+  <!-- App Name -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">ChemFetch</text>
+  <text x="256" y="455" font-family="Arial, sans-serif" font-size="28" font-weight="300" fill="#ffffff" fill-opacity="0.9" text-anchor="middle">Mobile</text>
+</svg>

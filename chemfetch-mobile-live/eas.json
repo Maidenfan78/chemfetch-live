@@ -1,0 +1,37 @@
+{
+  "cli": {
+    "version": ">= 12.4.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "dev",
+      "env": {
+        "EXPO_PUBLIC_BACKEND_API_URL": "http://192.168.68.52:3001"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview",
+      "android": { "buildType": "apk" }
+    },
+    "production": {
+      "distribution": "store",
+      "autoIncrement": true,
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_BACKEND_API_URL": "http://192.168.68.52:3001"
+      }
+    }
+  },
+
+  "submit": {
+    "production": {
+      "android": {
+        "track": "production",
+        "serviceAccountKeyPath": "./google-service-account.json"
+      }
+    }
+  }
+}

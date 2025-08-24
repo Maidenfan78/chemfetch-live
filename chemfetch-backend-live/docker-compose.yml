@@ -1,0 +1,17 @@
+version: '3'
+services:
+  backend:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - SB_URL=${SB_URL}
+      - SB_SERVICE_KEY=${SB_SERVICE_KEY}
+      - PORT=3000
+      - OCR_SERVICE_URL=http://ocr:5001
+    depends_on:
+      - ocr
+  ocr:
+    build: ./ocr_service
+    expose:
+      - '5001'

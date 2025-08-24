@@ -1,0 +1,22 @@
+Business Source License 1.1
+
+License Usage Limitation Date: 2029-07-29
+
+Licensor: ChemFetch
+
+Licensed Work: The ChemFetch Supabase schema, SQL migrations, RLS policies, and associated database types
+
+License Grant:
+
+Permission is hereby granted, on a limited basis, to use this Licensed Work exclusively within your own organization, for internal business purposes or as part of a ChemFetch-hosted SaaS service.
+
+You may not:
+- Publish, sublicense, or distribute this work
+- Use it in any competing SaaS product or public cloud service
+- Modify and redistribute it without express permission
+
+Change License:
+
+Effective 2029-07-29 (four years after this date), this Licensed Work will be automatically re-licensed under the MIT License.
+
+THE LICENSED WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.

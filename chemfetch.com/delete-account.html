@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delete Account - ChemFetch</title>
+    <meta
+      name="description"
+      content="Request account deletion for ChemFetch Mobile and Web Platform - Chemical Safety Management System"
+    />
+
+    <!-- CSS -->
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --primary-dark: #1d4ed8;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8fafc;
+        --border-color: #e5e7eb;
+        --accent-color: #06b6d4;
+        --warning-color: #dc2626;
+        --warning-bg: #fef2f2;
+        --success-color: #059669;
+        --success-bg: #f0fdf4;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.7;
+        color: var(--text-primary);
+        background: var(--bg-primary);
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header */
+      header {
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 0;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .back-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .back-link:hover {
+        color: var(--primary-color);
+      }
+
+      /* Main Content */
+      main {
+        padding: 40px 0;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+      }
+
+      .page-header .subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .content-section h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin: 2.5rem 0 1rem 0;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 0.5rem;
+      }
+
+      .content-section h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 2rem 0 1rem 0;
+      }
+
+      .content-section p {
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .content-section ul,
+      .content-section ol {
+        margin: 1rem 0 1rem 2rem;
+      }
+
+      .content-section li {
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      .content-section strong {
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+
+      /* Special sections */
+      .intro-section {
+        background: var(--bg-secondary);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .warning-section {
+        background: var(--warning-bg);
+        border: 1px solid #fecaca;
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        border-left: 4px solid var(--warning-color);
+      }
+
+      .warning-section h3 {
+        color: var(--warning-color);
+        margin-bottom: 1rem;
+      }
+
+      .step-section {
+        background: var(--success-bg);
+        border: 1px solid #bbf7d0;
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        border-left: 4px solid var(--success-color);
+      }
+
+      .step-section h3 {
+        color: var(--success-color);
+        margin-bottom: 1rem;
+      }
+
+      .contact-section {
+        background: var(--bg-secondary);
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        text-align: center;
+      }
+
+      .contact-section h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .timeline-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+      }
+
+      .timeline-section h2 {
+        color: white;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        margin-bottom: 1rem;
+      }
+
+      .timeline-section ul {
+        list-style-type: none;
+        margin-left: 0;
+      }
+
+      .timeline-section li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .timeline-section li:last-child {
+        border-bottom: none;
+      }
+
+      .timeline-section li::before {
+        content: "📅 ";
+        margin-right: 0.5rem;
+      }
+
+      /* Button styles */
+      .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        margin: 0.5rem 0;
+      }
+
+      .btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+      }
+
+      .btn-warning {
+        background: var(--warning-color);
+      }
+
+      .btn-warning:hover {
+        background: #b91c1c;
+      }
+
+      /* Data retention table */
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2rem 0;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .data-table th,
+      .data-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .data-table th {
+        background: var(--bg-secondary);
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .data-table tr:hover {
+        background: var(--bg-secondary);
+      }
+
+      /* Footer */
+      footer {
+        background: var(--text-primary);
+        color: white;
+        padding: 20px 0;
+        margin-top: 3rem;
+        text-align: center;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .page-header h1 {
+          font-size: 2rem;
+        }
+
+        .content-section h2 {
+          font-size: 1.5rem;
+        }
+
+        .container {
+          padding: 0 15px;
+        }
+
+        .data-table {
+          font-size: 0.9rem;
+        }
+
+        .data-table th,
+        .data-table td {
+          padding: 0.75rem;
+        }
+      }
+
+      /* Scroll behavior */
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <a href="/" class="logo">🧪 ChemFetch</a>
+          <a href="/" class="back-link">← Back to Home</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="container">
+        <div class="page-header">
+          <h1>Delete Account</h1>
+          <p class="subtitle">
+            Request permanent deletion of your ChemFetch account and associated
+            data
+          </p>
+        </div>
+
+        <div class="content-section">
+          <div class="intro-section">
+            <h2>Account Deletion Overview</h2>
+            <p>
+              We understand that you may no longer wish to use ChemFetch. This
+              page provides clear instructions on how to permanently delete your
+              account and explains what happens to your data during this
+              process.
+            </p>
+            <p>
+              <strong>Please note:</strong> Account deletion is permanent and
+              cannot be undone. Make sure to export any data you wish to keep
+              before proceeding.
+            </p>
+          </div>
+
+          <div class="warning-section">
+            <h3>⚠️ Important Warning</h3>
+            <p>
+              <strong>Account deletion is permanent and irreversible.</strong>
+              Once your account is deleted:
+            </p>
+            <ul>
+              <li>You will lose access to all your chemical inventory data</li>
+              <li>
+                Your scan history and saved products will be permanently deleted
+              </li>
+              <li>
+                Any team or company data associated with your account may be
+                affected
+              </li>
+              <li>You will not be able to recover your account or data</li>
+              <li>Your login credentials will be permanently removed</li>
+            </ul>
+          </div>
+
+          <h2 id="how-to-delete">How to Request Account Deletion</h2>
+
+          <div class="step-section">
+            <h3>📧 Email Request Method (Recommended)</h3>
+            <p>
+              To request account deletion, please send an email to our data
+              protection team with the following information:
+            </p>
+
+            <p>
+              <strong>Email Address:</strong>
+              <a
+                href="mailto:privacy@chemfetch.com"
+                style="color: var(--primary-color)"
+                >privacy@chemfetch.com</a
+              >
+            </p>
+            <p><strong>Subject Line:</strong> "Account Deletion Request"</p>
+
+            <div
+              style="
+                margin: 1.5rem 0;
+                padding: 1.5rem;
+                background: white;
+                border-radius: 6px;
+                border: 1px solid var(--border-color);
+              "
+            >
+              <strong>Required Information to Include:</strong>
+              <ul style="margin-top: 1rem">
+                <li>
+                  <strong>Account Email:</strong> The email address associated
+                  with your ChemFetch account
+                </li>
+                <li>
+                  <strong>Full Name:</strong> The name registered on your
+                  account
+                </li>
+                <li>
+                  <strong>Company:</strong> If you're using a company account,
+                  please specify
+                </li>
+                <li>
+                  <strong>Account Type:</strong> Individual or Team/Company
+                  account
+                </li>
+                <li>
+                  <strong>Reason:</strong> Optional - helps us improve our
+                  service
+                </li>
+              </ul>
+            </div>
+
+            <a
+              href="mailto:privacy@chemfetch.com?subject=Account%20Deletion%20Request"
+              class="btn"
+              >📧 Send Deletion Request Email</a
+            >
+          </div>
+          <h2 id="data-retention">What Data Will Be Deleted vs. Retained</h2>
+
+          <p>
+            When you delete your account, different types of data are handled
+            according to our data retention policy and legal requirements:
+          </p>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Data Type</th>
+                <th>Action</th>
+                <th>Timeline</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>Personal Information</strong><br /><small
+                    >Name, email, profile data</small
+                  >
+                </td>
+                <td>🗑️ Permanently Deleted</td>
+                <td>30 days</td>
+                <td>Completely removed from all systems</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Chemical Inventory</strong><br /><small
+                    >Your saved products, scans</small
+                  >
+                </td>
+                <td>🗑️ Permanently Deleted</td>
+                <td>30 days</td>
+                <td>All personal inventory data removed</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Scan History</strong><br /><small
+                    >Barcode scans, OCR results</small
+                  >
+                </td>
+                <td>🗑️ Permanently Deleted</td>
+                <td>30 days</td>
+                <td>Individual scan records removed</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Uploaded Images</strong><br /><small
+                    >Photos, document scans</small
+                  >
+                </td>
+                <td>🗑️ Permanently Deleted</td>
+                <td>Immediate</td>
+                <td>All personal images removed</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Usage Analytics</strong><br /><small
+                    >App performance, crashes</small
+                  >
+                </td>
+                <td>🔄 Anonymized</td>
+                <td>Immediate</td>
+                <td>
+                  Personal identifiers removed, aggregated data retained for
+                  service improvement
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Support Communications</strong><br /><small
+                    >Help desk tickets, emails</small
+                  >
+                </td>
+                <td>📋 Retained</td>
+                <td>7 years</td>
+                <td>Required for business records and legal compliance</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Billing Records</strong><br /><small
+                    >Invoices, payment history</small
+                  >
+                </td>
+                <td>📋 Retained</td>
+                <td>7 years</td>
+                <td>Required for accounting and tax compliance</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Security Logs</strong><br /><small
+                    >Login attempts, security events</small
+                  >
+                </td>
+                <td>📋 Retained</td>
+                <td>2 years</td>
+                <td>Required for security auditing and fraud prevention</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="timeline-section">
+            <h2>🕒 Expected Timeline for Account Deletion</h2>
+            <ul>
+              <li>
+                <strong>Immediate (0-24 hours):</strong> Account access
+                disabled, request confirmation sent
+              </li>
+              <li>
+                <strong>1-3 business days:</strong> Manual review and
+                verification of deletion request
+              </li>
+              <li>
+                <strong>3-7 business days:</strong> Personal data removal from
+                primary systems
+              </li>
+              <li>
+                <strong>7-30 days:</strong> Complete data purging from backups
+                and secondary systems
+              </li>
+              <li>
+                <strong>30 days:</strong> Final confirmation email sent (if
+                requested)
+              </li>
+            </ul>
+            <p style="margin-top: 1rem">
+              <strong>Total Timeline:</strong> Most deletions are completed
+              within 30 days, though some backup systems may take longer to
+              fully purge data.
+            </p>
+          </div>
+
+          <h2 id="before-deletion">Before You Delete Your Account</h2>
+
+          <div class="step-section">
+            <h3>📤 Export Your Data</h3>
+            <p>
+              Before requesting deletion, consider exporting your important
+              data:
+            </p>
+            <ul>
+              <li>
+                <strong>Chemical Inventory:</strong> Export your saved products
+                and inventory lists
+              </li>
+              <li>
+                <strong>Scan History:</strong> Download records of your barcode
+                scans and OCR results
+              </li>
+              <li>
+                <strong>Safety Data Sheets:</strong> Save any important SDS
+                documents you've accessed
+              </li>
+              <li>
+                <strong>Reports:</strong> Export any compliance reports or
+                safety documentation
+              </li>
+            </ul>
+            <p>
+              <strong>How to Export:</strong> Go to Settings → Data Export in
+              the ChemFetch Client Hub to download your data in CSV/PDF format.
+            </p>
+            <a
+              href="https://chem-fetch-client-hub.vercel.app/settings/export"
+              target="_blank"
+              class="btn"
+              >📊 Export My Data</a
+            >
+          </div>
+
+          <div class="contact-section">
+            <h2>📞 Contact Information</h2>
+            <p>For account deletion requests and related inquiries:</p>
+
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 2rem;
+                margin: 2rem 0;
+              "
+            >
+              <div>
+                <h4 style="color: var(--primary-color); margin-bottom: 0.5rem">
+                  Data Protection Team
+                </h4>
+                <p>
+                  <strong>Email:</strong>
+                  <a href="mailto:privacy@chemfetch.com"
+                    >privacy@chemfetch.com</a
+                  ><br />
+                  <strong>Subject:</strong> Account Deletion Request<br />
+                  <strong>Response Time:</strong> 1-2 business days
+                </p>
+              </div>
+
+              <div>
+                <h4 style="color: var(--primary-color); margin-bottom: 0.5rem">
+                  General Support
+                </h4>
+                <p>
+                  <strong>Email:</strong>
+                  <a href="mailto:support@chemfetch.com"
+                    >support@chemfetch.com</a
+                  ><br />
+                  <strong>Subject:</strong> Account Questions<br />
+                  <strong>Response Time:</strong> 1-3 business days
+                </p>
+              </div>
+            </div>
+
+            <p style="margin-top: 2rem">
+              <strong>Business Hours:</strong> Monday - Friday, 9:00 AM - 5:00
+              PM AEST<br />
+              <strong>Location:</strong> Australia (Melbourne timezone)
+            </p>
+          </div>
+
+          <div
+            style="
+              text-align: center;
+              margin: 3rem 0;
+              padding: 2rem;
+              background: var(--bg-secondary);
+              border-radius: 8px;
+            "
+          >
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem">
+              Ready to Delete Your Account?
+            </h3>
+            <p style="margin-bottom: 2rem">
+              If you're certain you want to permanently delete your ChemFetch
+              account, click the button below to start the process.
+            </p>
+
+            <a
+              href="mailto:privacy@chemfetch.com?subject=Account%20Deletion%20Request&body=Hello%20ChemFetch%20Team%2C%0A%0AI%20would%20like%20to%20request%20permanent%20deletion%20of%20my%20ChemFetch%20account.%0A%0AAccount%20Email%3A%20%5BYour%20registered%20email%20address%5D%0AAccount%20Name%3A%20%5BYour%20name%20on%20the%20account%5D%0ACompany%20%28if%20applicable%29%3A%20%5BYour%20company%20name%5D%0AReason%20for%20deletion%20%28optional%29%3A%20%5BOptional%20reason%5D%0A%0AI%20understand%20that%3A%0A-%20This%20action%20is%20permanent%20and%20cannot%20be%20undone%0A-%20All%20my%20data%20will%20be%20permanently%20deleted%20according%20to%20your%20data%20retention%20policy%0A-%20I%20will%20lose%20access%20to%20all%20ChemFetch%20services%0A%0APlease%20confirm%20receipt%20of%20this%20request%20and%20provide%20an%20estimated%20timeline%20for%20completion.%0A%0AThank%20you%2C%0A%5BYour%20name%5D"
+              class="btn btn-warning"
+              >🗑️ Request Account Deletion</a
+            >
+
+            <p
+              style="
+                margin-top: 1rem;
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+              "
+            >
+              <strong>Alternative:</strong>
+              <a
+                href="https://chem-fetch-client-hub.vercel.app/settings"
+                target="_blank"
+                style="color: var(--primary-color)"
+                >Visit Account Settings</a
+              >
+              to explore other options.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <p>
+          &copy; 2025 ChemFetch. All rights reserved. |
+          <a href="/" style="color: #06b6d4">Back to Home</a> |
+          <a href="/privacy-policy.html" style="color: #06b6d4"
+            >Privacy Policy</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <!-- Smooth scrolling and interactions -->
+    <script>
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+
+      // Add loading animation to buttons
+      document.querySelectorAll(".btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          if (this.getAttribute("href").startsWith("mailto:")) {
+            this.style.transform = "scale(0.95)";
+            setTimeout(() => {
+              this.style.transform = "scale(1)";
+            }, 150);
+          }
+        });
+      });
+
+      // Add fade-in animation on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+          }
+        });
+      }, observerOptions);
+
+      // Observe sections for animation
+      document.addEventListener("DOMContentLoaded", () => {
+        const animateElements = document.querySelectorAll(
+          ".intro-section, .warning-section, .step-section, .contact-section, .timeline-section"
+        );
+
+        animateElements.forEach((el) => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(20px)";
+          el.style.transition = "all 0.6s ease";
+          observer.observe(el);
+        });
+      });
+    </script>
+  </body>
+</html>

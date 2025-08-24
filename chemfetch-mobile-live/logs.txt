@@ -1,0 +1,34 @@
+PS C:\Users\Sav\ProgramingProjects\chemfetch-mobile-live> eas submit -p android
+
+√ What would you like to submit? » Select a build from EAS
+√ Which build would you like to submit? » - ID: ec067e89-91ad-4b71-a054-02884290cccf (26 minutes ago)
+File ./google-service-account.json doesn't exist.
+A Google Service Account JSON key is required to upload your app to Google Play Store.
+If you're not sure what this is or how to create one, learn more: https://expo.fyi/creating-google-service-account
+√ Path to Google Service Account file: ... wise-reporter-384513-5dacee429fa6.json
+
+Project ID:                     add1a4f4-ed11-463e-a137-423538bdcfe5
+Release track:                  INTERNAL
+Changes not sent for a review:  false
+Release status:                 COMPLETED
+Google Service Account Key:     
+    Key Source   :  local
+    Key Path     :  wise-reporter-384513-5dacee429fa6.json
+    Account Email:  chemfetch@wise-reporter-384513.iam.gserviceaccount.com
+Rollout:                        undefined
+Build:                          
+    Build ID    :  ec067e89-91ad-4b71-a054-02884290cccf
+    Build Date  :  23/08/2025, 9:25:28 am
+    App Version :  1.0.0
+    Version code:  2
+
+✔ Scheduled Android submission
+
+Submission details: https://expo.dev/accounts/maidenfan/projects/chemfetch-mobile/submissions/e7c86369-13f9-4435-bb5f-cd8268567624
+
+Waiting for submission to complete. You can press Ctrl+C to exit.
+✖ Something went wrong when submitting your app to Google Play Store.
+
+You haven't submitted this app to Google Play Store yet. The first submission of the app needs to be performed manually.
+Learn more: https://expo.fyi/first-android-submission
+PS C:\Users\Sav\ProgramingProjects\chemfetch-mobile-live> 
