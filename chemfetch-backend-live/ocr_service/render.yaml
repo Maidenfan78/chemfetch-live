@@ -2,7 +2,7 @@ services:
   - type: web
     name: chemfetch-backend
     env: node
-    buildCommand: npm install && npm run build 
+    buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -14,14 +14,6 @@ services:
       #   value: [ADD_IN_DASHBOARD]
       # - key: SB_SERVICE_KEY
       #   value: [ADD_IN_DASHBOARD]
-      # Google Search API credentials - ADD THESE MANUALLY IN RENDER DASHBOARD
-      # - key: GOOGLE_SEARCH_API_KEY
-      #   value: [ADD_IN_DASHBOARD]
-      # - key: GOOGLE_SEARCH_ENGINE_ID
-      #   value: [ADD_IN_DASHBOARD]
-      # Frontend URLs for CORS
-      - key: FRONTEND_URL
-        value: https://chemfetch.com,https://chemfetch-client-hub-live.vercel.app
       # OCR service URL (internal communication between services)
       - key: EXPO_PUBLIC_OCR_API_URL
         fromService:

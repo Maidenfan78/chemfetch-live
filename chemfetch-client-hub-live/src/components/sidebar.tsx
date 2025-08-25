@@ -3,7 +3,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, FileText, LogOut, Eye, Shield, Mail, ExternalLink } from 'lucide-react';
+import { Home, FileText, LogOut, Eye } from 'lucide-react';
 import { supabaseBrowser } from '@/lib/supabase-browser';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -43,7 +43,6 @@ export function Sidebar() {
       >
         <Icon size={20} />
         <span className="font-medium">{children}</span>
-        {external && <ExternalLink size={14} className="ml-auto opacity-50" />}
       </Component>
     );
   };
@@ -105,43 +104,6 @@ export function Sidebar() {
               <div className="font-bold text-lg">95%+</div>
               <div className="text-blue-100">OCR Accuracy</div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Support & Links Section */}
-      <div className="p-6 border-t border-chemfetch-border">
-        <div className="space-y-3">
-          <h3 className="text-xs font-semibold text-chemfetch-text-secondary uppercase tracking-wider">
-            Support
-          </h3>
-
-          {/* Contact Email */}
-          <a
-            href="mailto:info@chemfetch.com"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg text-chemfetch-text-secondary hover:text-chemfetch-primary hover:bg-chemfetch-bg-primary transition-all duration-200 text-sm"
-          >
-            <Mail size={16} />
-            <span>info@chemfetch.com</span>
-          </a>
-
-          {/* Privacy Policy */}
-          <a
-            href="https://chemfetch.com/privacy-policy.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg text-chemfetch-text-secondary hover:text-chemfetch-primary hover:bg-chemfetch-bg-primary transition-all duration-200 text-sm"
-          >
-            <Shield size={16} />
-            <span>Privacy Policy</span>
-            <ExternalLink size={12} className="ml-auto opacity-50" />
-          </a>
-
-          {/* Help Section */}
-          <div className="px-4 py-2">
-            <p className="text-xs text-chemfetch-text-secondary">
-              Having issues? Contact us for support and assistance.
-            </p>
           </div>
         </div>
       </div>

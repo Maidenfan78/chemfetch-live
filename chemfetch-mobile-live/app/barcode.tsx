@@ -260,6 +260,7 @@ export default function BarcodeScanner() {
       mobileLogger.info('BARCODE_SCAN', `Starting scan request for barcode: ${confirmed}`, {
         barcode: confirmed,
         userId,
+        backendUrl: BACKEND_API_URL,
       });
 
       fetch(`${BACKEND_API_URL}/scan`, {

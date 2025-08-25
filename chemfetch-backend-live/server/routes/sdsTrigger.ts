@@ -1,7 +1,7 @@
 import express from 'express';
-import { supabase } from '../utils/supabaseClient';
-import { triggerAutoSdsParsing, triggerBatchAutoSdsParsing } from '../utils/autoSdsParsing';
-import logger from '../utils/logger';
+import { supabase } from '../utils/supabaseClient.js';
+import { triggerAutoSdsParsing, triggerBatchAutoSdsParsing } from '../utils/autoSdsParsing.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 // server/utils/autoSdsParsing.ts
-import { createServiceRoleClient } from './supabaseClient';
-import logger from './logger';
+import { createServiceRoleClient } from './supabaseClient.js';
+import logger from './logger.js';
 import axios from 'axios';
 
 // Utility function to convert dates to ISO format for PostgreSQL

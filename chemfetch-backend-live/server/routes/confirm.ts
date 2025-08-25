@@ -1,10 +1,10 @@
 // server/routes/confirm.ts
 import express from 'express';
-import { supabase } from '../utils/supabaseClient';
-import { isValidCode, isValidName } from '../utils/validation';
-import logger from '../utils/logger';
-import { fetchSdsByName } from '../utils/scraper';
-import { triggerAutoSdsParsing } from '../utils/autoSdsParsing';
+import { supabase } from '../utils/supabaseClient.js';
+import { isValidCode, isValidName } from '../utils/validation.js';
+import logger from '../utils/logger.js';
+import { fetchSdsByName } from '../utils/scraper.js';
+import { triggerAutoSdsParsing } from '../utils/autoSdsParsing.js';
 
 const router = express.Router();
 

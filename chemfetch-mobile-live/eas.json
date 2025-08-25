@@ -8,7 +8,7 @@
       "distribution": "internal",
       "channel": "dev",
       "env": {
-        "EXPO_PUBLIC_BACKEND_API_URL": "http://192.168.68.52:3001"
+        "EXPO_PUBLIC_BACKEND_API_URL": "https://chemfetch-backend-render.onrender.com"
       }
     },
     "preview": {
@@ -21,7 +21,7 @@
       "autoIncrement": true,
       "channel": "production",
       "env": {
-        "EXPO_PUBLIC_BACKEND_API_URL": "http://192.168.68.52:3001"
+        "EXPO_PUBLIC_BACKEND_API_URL": "https://chemfetch-backend-render.onrender.com"
       }
     }
   },

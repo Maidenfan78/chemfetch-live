@@ -32,6 +32,8 @@ export const HOST_GUESS = guessHost();
 
 if (__DEV__) {
   console.info(`[ChemFetch] guessHost() resolved to: ${HOST_GUESS}`);
+  console.info(`[ChemFetch] BACKEND_API_URL resolved to: ${BACKEND_API_URL}`);
+  console.info(`[ChemFetch] ENV EXPO_PUBLIC_BACKEND_API_URL: ${process.env.EXPO_PUBLIC_BACKEND_API_URL}`);
 }
 
 // ----------------------  Public URLs  ------------------------------------

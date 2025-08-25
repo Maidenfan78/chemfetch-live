@@ -1,9 +1,9 @@
 import express from 'express';
-import { supabase } from '../utils/supabaseClient';
-import { searchWithManualData } from '../utils/scraper';
-import { isValidCode, isValidName, isValidSize } from '../utils/validation';
-import logger from '../utils/logger';
-import { triggerAutoSdsParsing } from '../utils/autoSdsParsing';
+import { supabase } from '../utils/supabaseClient.js';
+import { searchWithManualData } from '../utils/scraper.js';
+import { isValidCode, isValidName, isValidSize } from '../utils/validation.js';
+import logger from '../utils/logger.js';
+import { triggerAutoSdsParsing } from '../utils/autoSdsParsing.js';
 
 const router = express.Router();
 

@@ -1,16 +1,16 @@
 import express from 'express';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient.js';
 import {
   fetchBingLinks,
   scrapeProductInfo,
   fetchSdsByName,
   searchWithManualData,
-} from '../utils/scraper';
-import { isValidCode, isValidName, isValidSize } from '../utils/validation';
-import logger from '../utils/logger';
+} from '../utils/scraper.js';
+import { isValidCode, isValidName, isValidSize } from '../utils/validation.js';
+import logger from '../utils/logger.js';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { triggerAutoSdsParsing } from '../utils/autoSdsParsing';
+import { triggerAutoSdsParsing } from '../utils/autoSdsParsing.js';
 
 const router = express.Router();
 puppeteer.use(StealthPlugin());

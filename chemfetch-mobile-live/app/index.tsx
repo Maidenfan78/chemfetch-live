@@ -91,6 +91,13 @@ export default function HomeScreen() {
             {/* Secondary Actions */}
             <View className="border-t border-border-color pt-4">
               <ActionButton
+                style="bg-orange-500"
+                onPress={() => router.push('/network-test')}
+              >
+                🔧 Network Diagnostics
+              </ActionButton>
+
+              <ActionButton
                 style="bg-white border border-border-color"
                 textColor="text-text-primary"
                 onPress={async () => {

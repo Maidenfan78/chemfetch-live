@@ -1,8 +1,8 @@
 // server/routes/batchSds.ts
 import express from 'express';
-import { createServiceRoleClient } from '../utils/supabaseClient';
-import { triggerAutoSdsParsing, triggerBatchAutoSdsParsing } from '../utils/autoSdsParsing';
-import logger from '../utils/logger';
+import { createServiceRoleClient } from '../utils/supabaseClient.js';
+import { triggerAutoSdsParsing, triggerBatchAutoSdsParsing } from '../utils/autoSdsParsing.js';
+import logger from '../utils/logger.js';
 
 const router = express.Router();
 

@@ -3,8 +3,8 @@ import { Router } from 'express';
 import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import logger from '../utils/logger';
-import { createServiceRoleClient } from '../utils/supabaseClient';
+import logger from '../utils/logger.js';
+import { createServiceRoleClient } from '../utils/supabaseClient.js';
 
 // Get current file directory for ES modules without clashing with Node globals
 const currentFilename = fileURLToPath(import.meta.url);

@@ -1,6 +1,6 @@
 // server/routes/sdsByName.ts
 import express from 'express';
-import { fetchSdsByName } from '../utils/scraper'; // Make sure this path is correct
+import { fetchSdsByName } from '../utils/scraper.js'; // Make sure this path is correct
 
 const router = express.Router();
 

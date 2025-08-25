@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { setTimeout as delay } from 'timers/promises';
-import { TTLCache } from './cache';
+import { TTLCache } from './cache.js';
 
 puppeteer.use(StealthPlugin());
 

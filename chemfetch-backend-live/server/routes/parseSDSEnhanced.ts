@@ -1,7 +1,7 @@
 // server/routes/parseSDSEnhanced.ts
 import { Router } from 'express';
-import logger from '../utils/logger';
-import { createServiceRoleClient } from '../utils/supabaseClient';
+import logger from '../utils/logger.js';
+import { createServiceRoleClient } from '../utils/supabaseClient.js';
 
 const router = Router();
 
