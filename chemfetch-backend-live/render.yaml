@@ -9,7 +9,13 @@ services:
         value: production
       - key: PORT
         value: 10000
-      - key: OCR_SERVICE_URL
+      # Supabase credentials - ADD THESE MANUALLY IN RENDER DASHBOARD
+      # - key: SB_URL
+      #   value: [ADD_IN_DASHBOARD]
+      # - key: SB_SERVICE_KEY
+      #   value: [ADD_IN_DASHBOARD]
+      # OCR service URL (internal communication between services)
+      - key: EXPO_PUBLIC_OCR_API_URL
         fromService:
           name: chemfetch-ocr-lightweight
           type: pserv
@@ -18,12 +24,12 @@ services:
   - type: pserv
     name: chemfetch-ocr-lightweight
     env: python
-    pythonVersion: 3.11.9 # Pinned Python version for stability
-    # Enhanced build command for PyMuPDF compilation fix
+    pythonVersion: 3.11.9 # Your specified Python version for consistency
+    # Simplified build command - prefer binary but allow fallback
     buildCommand: |
       cd ocr_service && 
-      pip install --upgrade pip wheel setuptools &&
-      pip install --no-cache-dir --prefer-binary -r requirements.txt
+      pip install --upgrade pip &&
+      pip install --prefer-binary --no-cache-dir -r requirements.txt
     startCommand: cd ocr_service && gunicorn ocr_service:app --workers=1 --threads=2 --timeout=120 --preload=false -b 0.0.0.0:5001
     plan: free # Now fits within 512MB limit!
     envVars:
@@ -42,27 +48,3 @@ services:
         value: '1'
     # Removed disk mount - use temporary directories for Render Free compatibility
     healthCheckPath: /health
-    
-# Optional: Keep original OCR service as backup/paid tier
-# Uncomment if you want both lightweight and full OCR versions
-#
-#   - type: pserv
-#     name: chemfetch-ocr-full
-#     env: python
-#     pythonVersion: 3.11.9
-#     buildCommand: cd ocr_service && pip install -r requirements.txt
-#     startCommand: cd ocr_service && python ocr_service.py
-#     plan: starter  # Paid plan for full OCR capabilities
-#     envVars:
-#       - key: PORT
-#         value: 5002
-#       - key: OCR_MODE
-#         value: full
-#       - key: PYTHONUNBUFFERED
-#         value: "1"
-#       - key: DEBUG_IMAGES
-#         value: "0"
-#     disk:
-#       name: ocr-storage-full
-#       mountPath: /app/debug_images
-#       sizeGB: 1
