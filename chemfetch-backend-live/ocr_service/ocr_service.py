@@ -7,27 +7,6 @@ from typing import List, Dict, Any, Tuple, Optional, Union
 import requests
 import logging
 
-# Multiple PDF extraction options for better compatibility
-PDF_EXTRACTOR = None
-try:
-    import PyMuPDF as fitz
-    from pdfminer.high_level import extract_text
-    PDF_EXTRACTOR = "pymupdf"
-    logger = logging.getLogger(__name__)
-    logger.info("Using PyMuPDF for PDF text extraction")
-except ImportError:
-    try:
-        import pdfplumber
-        from pdfminer.high_level import extract_text
-        PDF_EXTRACTOR = "pdfplumber"
-        logger = logging.getLogger(__name__)
-        logger.info("Using pdfplumber for PDF text extraction (PyMuPDF not available)")
-    except ImportError:
-        from pdfminer.high_level import extract_text
-        PDF_EXTRACTOR = "pdfminer"
-        logger = logging.getLogger(__name__)
-        logger.info("Using pdfminer.six only for PDF text extraction")
-
 # Setup logging for Render - use stdout/stderr only
 # Render captures console output automatically
 logging.basicConfig(
@@ -38,6 +17,24 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
+# Multiple PDF extraction options for better compatibility
+PDF_EXTRACTOR = None
+try:
+    import PyMuPDF as fitz
+    from pdfminer.high_level import extract_text
+    PDF_EXTRACTOR = "pymupdf"
+    logger.info("Using PyMuPDF for PDF text extraction")
+except ImportError:
+    try:
+        import pdfplumber
+        from pdfminer.high_level import extract_text
+        PDF_EXTRACTOR = "pdfplumber"
+        logger.info("Using pdfplumber for PDF text extraction (PyMuPDF not available)")
+    except ImportError:
+        from pdfminer.high_level import extract_text
+        PDF_EXTRACTOR = "pdfminer"
+        logger.info("Using pdfminer.six only for PDF text extraction")
 
 import numpy as np
 from flask import Flask, request, jsonify
@@ -58,9 +55,6 @@ except ImportError as e:
         pass
     
     def convert_from_path(*args, **kwargs):
-        raise RuntimeError("OCR not available in lightweight mode")
-    
-    def pytesseract_image_to_string(*args, **kwargs):
         raise RuntimeError("OCR not available in lightweight mode")
 
 # -----------------------------------------------------------------------------
@@ -364,7 +358,7 @@ def verify_pdf_sds(url: str, product_name: str, keywords=None) -> Dict[str, Any]
                 is_valid_sds = True
             
             # Flag image-only PDFs that couldn't be processed
-            image_only_pdf = used_ocr and len(text.strip()) < 50 and not OCR_AVAILABLE
+            image_only_pdf = (len(text.strip()) < 50) and (not OCR_AVAILABLE or used_ocr)
             
             result = {
                 "verified": is_valid_sds,

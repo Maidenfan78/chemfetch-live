@@ -18,10 +18,10 @@ services:
   - type: pserv
     name: chemfetch-ocr-lightweight
     env: python
-    pythonVersion: 3.11.9
+    pythonVersion: 3.11.9 # Pinned Python version for stability
     # Use ultra-lightweight requirements for memory optimization
-    buildCommand: cd ocr_service && pip install -r requirements-ultra-lightweight.txt
-    startCommand: cd ocr_service && python ocr_service.py
+    buildCommand: cd ocr_service && pip install -r requirements.txt
+    startCommand: cd ocr_service && gunicorn ocr_service:app --workers=1 --threads=2 --timeout=120 --preload=false -b 0.0.0.0:5001
     plan: free # Now fits within 512MB limit!
     envVars:
       - key: PORT
@@ -40,6 +40,7 @@ services:
 #   - type: pserv
 #     name: chemfetch-ocr-full
 #     env: python
+#     pythonVersion: 3.11.9
 #     buildCommand: cd ocr_service && pip install -r requirements.txt
 #     startCommand: cd ocr_service && python ocr_service.py
 #     plan: starter  # Paid plan for full OCR capabilities

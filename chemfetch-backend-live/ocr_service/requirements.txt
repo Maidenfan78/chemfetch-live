@@ -5,6 +5,7 @@
 Flask==2.3.3
 flask-cors==4.0.0
 requests==2.31.0
+gunicorn==21.2.0  # Production WSGI server for Render
 
 # PDF text extraction - FIXED VERSION
 # Use specific PyMuPDF wheel that works on Render
@@ -13,7 +14,7 @@ pdfminer.six==20231228  # Reliable fallback PDF extraction
 
 # Text processing and parsing
 python-dateutil==2.8.2  # Date parsing for SDS documents
-regex  # Advanced regex support
+regex==2024.5.15  # Pinned to avoid surprise upgrades
 
 # Utilities (minimal)
 numpy==1.24.4  # Required by some PDF processing
