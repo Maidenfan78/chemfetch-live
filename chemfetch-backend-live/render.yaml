@@ -18,6 +18,7 @@ services:
   - type: pserv
     name: chemfetch-ocr-lightweight
     env: python
+    pythonVersion: 3.11.9
     # Use ultra-lightweight requirements for memory optimization
     buildCommand: cd ocr_service && pip install -r requirements-ultra-lightweight.txt
     startCommand: cd ocr_service && python ocr_service.py

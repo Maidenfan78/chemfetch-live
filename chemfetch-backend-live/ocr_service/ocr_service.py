@@ -4,9 +4,29 @@ from io import BytesIO
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any, Tuple, Optional, Union
-from pdfminer.high_level import extract_text
 import requests
 import logging
+
+# Multiple PDF extraction options for better compatibility
+PDF_EXTRACTOR = None
+try:
+    import PyMuPDF as fitz
+    from pdfminer.high_level import extract_text
+    PDF_EXTRACTOR = "pymupdf"
+    logger = logging.getLogger(__name__)
+    logger.info("Using PyMuPDF for PDF text extraction")
+except ImportError:
+    try:
+        import pdfplumber
+        from pdfminer.high_level import extract_text
+        PDF_EXTRACTOR = "pdfplumber"
+        logger = logging.getLogger(__name__)
+        logger.info("Using pdfplumber for PDF text extraction (PyMuPDF not available)")
+    except ImportError:
+        from pdfminer.high_level import extract_text
+        PDF_EXTRACTOR = "pdfminer"
+        logger = logging.getLogger(__name__)
+        logger.info("Using pdfminer.six only for PDF text extraction")
 
 # Setup logging for Render - use stdout/stderr only
 # Render captures console output automatically
@@ -116,40 +136,27 @@ def run_with_timeout(func, args=(), kwargs=None, timeout=120):
 # -----------------------------------------------------------------------------
 def extract_text_from_pdf_with_ocr(pdf_path: Path, max_pages: int = 10) -> Tuple[str, bool]:
     """
-    Extract text from PDF using OCR fallback for image-only pages.
+    Extract text from PDF using multiple extraction methods and OCR fallback.
     Returns (text, used_ocr)
     """
     if not OCR_AVAILABLE:
-        # Text-only fallback
-        try:
-            with open(pdf_path, 'rb') as f:
-                text = extract_text(f, maxpages=max_pages)
-                if len(text.strip()) < 50:  # Very little text found
-                    return text, True  # Flag as image_only_pdf for calling code
-                return text, False
-        except Exception as e:
-            logger.error(f"Text extraction failed: {e}")
-            return "", True
-
-    # Full OCR mode available
+        # Text-only fallback with multiple PDF library support
+        return extract_text_from_pdf_multiple_methods(pdf_path, max_pages)
+        
+    # Full OCR mode available - try text first, then OCR
+    text, image_only = extract_text_from_pdf_multiple_methods(pdf_path, max_pages)
+    
+    if not image_only:
+        return text, False  # Text extraction successful
+        
+    # Fallback to OCR for image-only PDFs
     try:
-        # Try text extraction first (much faster)
-        with open(pdf_path, 'rb') as f:
-            text = extract_text(f, maxpages=max_pages)
-        
-        # If we got reasonable text, return it
-        if len(text.strip()) >= 50:
-            logger.info(f"Extracted {len(text)} characters using text extraction")
-            return text, False
-        
-        # Fallback to OCR for image-only PDFs
         logger.info("Low text content, attempting OCR...")
         pages = convert_from_path(pdf_path, dpi=200, first_page=1, last_page=min(max_pages, 10))
         
         ocr_text = ""
         for i, page in enumerate(pages):
             try:
-                # Basic OCR without heavy preprocessing
                 page_text = pytesseract.image_to_string(page, config='--psm 1')
                 ocr_text += f"\n--- Page {i+1} ---\n{page_text}"
             except Exception as e:
@@ -160,8 +167,66 @@ def extract_text_from_pdf_with_ocr(pdf_path: Path, max_pages: int = 10) -> Tuple
         return ocr_text, True
         
     except Exception as e:
-        logger.error(f"PDF text/OCR extraction failed: {e}")
+        logger.error(f"OCR extraction failed: {e}")
+        return text, True  # Return original text even if OCR failed
+        
+
+def extract_text_from_pdf_multiple_methods(pdf_path: Path, max_pages: int = 10) -> Tuple[str, bool]:
+    """
+    Extract text from PDF using multiple methods for maximum compatibility.
+    Returns (text, is_image_only_pdf)
+    """
+    text = ""
+    
+    # Method 1: Try PyMuPDF (fastest and most reliable)
+    if PDF_EXTRACTOR == "pymupdf":
+        try:
+            import PyMuPDF as fitz
+            doc = fitz.open(pdf_path)
+            for page_num in range(min(len(doc), max_pages)):
+                page = doc[page_num]
+                text += page.get_text()
+            doc.close()
+            
+            if len(text.strip()) >= 50:
+                logger.info(f"Extracted {len(text)} characters using PyMuPDF")
+                return text, False
+        except Exception as e:
+            logger.warning(f"PyMuPDF extraction failed: {e}")
+    
+    # Method 2: Try pdfplumber (good for tables and complex layouts)
+    if PDF_EXTRACTOR == "pdfplumber" or (not text.strip() and 'pdfplumber' in globals()):
+        try:
+            import pdfplumber
+            with pdfplumber.open(pdf_path) as pdf:
+                for page_num in range(min(len(pdf.pages), max_pages)):
+                    page = pdf.pages[page_num]
+                    page_text = page.extract_text() or ""
+                    text += page_text
+            
+            if len(text.strip()) >= 50:
+                logger.info(f"Extracted {len(text)} characters using pdfplumber")
+                return text, False
+        except Exception as e:
+            logger.warning(f"pdfplumber extraction failed: {e}")
+    
+    # Method 3: Fallback to pdfminer.six (always available)
+    try:
+        with open(pdf_path, 'rb') as f:
+            text = extract_text(f, maxpages=max_pages)
+        
+        if len(text.strip()) >= 50:
+            logger.info(f"Extracted {len(text)} characters using pdfminer.six")
+            return text, False
+        else:
+            logger.info(f"Low text content detected ({len(text.strip())} chars) - likely image-only PDF")
+            return text, True  # Flag as image-only PDF
+            
+    except Exception as e:
+        logger.error(f"All PDF text extraction methods failed: {e}")
         return "", True
+
+
 
 # -----------------------------------------------------------------------------
 # Health check with OCR capability reporting
@@ -172,7 +237,8 @@ def health_check():
         "status": "healthy",
         "ocr_available": OCR_AVAILABLE,
         "ocr_mode": OCR_MODE,
-        "memory_mode": "lightweight" if not OCR_AVAILABLE else "full"
+        "memory_mode": "lightweight" if not OCR_AVAILABLE else "full",
+        "pdf_extractor": PDF_EXTRACTOR
     })
 
 @app.route("/gpu-check")

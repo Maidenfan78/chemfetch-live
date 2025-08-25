@@ -1,0 +1,21 @@
+# Render-compatible requirements - fallback option if PyMuPDF fails
+# This version uses pdfplumber instead of PyMuPDF
+
+# Core Flask and web services
+Flask==2.3.3
+flask-cors==4.0.0
+requests==2.31.0
+
+# PDF text extraction - pdfplumber fallback (more compatible)
+pdfplumber==0.10.3  # Pure Python PDF text extraction
+pdfminer.six==20231228  # Fallback PDF text extraction
+Pillow==9.5.0  # Required by pdfplumber
+
+# Text processing and parsing
+python-dateutil==2.8.2  # Date parsing for SDS documents
+regex  # Advanced regex support
+
+# Utilities (minimal)
+numpy==1.24.4  # Required by some PDF processing
+
+# TOTAL ESTIMATED MEMORY: ~100-150MB (vs 400-500MB with PaddleOCR)
