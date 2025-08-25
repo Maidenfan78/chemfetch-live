@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabaseBrowser } from '@/lib/supabase-browser';
 import Link from 'next/link';
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, HelpCircle } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -233,16 +233,40 @@ export default function LoginPage() {
               </p>
             </div>
 
-            {/* Link to main website */}
-            <div className="mt-6 pt-6 border-t border-chemfetch-border text-center">
-              <a
-                href="https://chemfetch.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-chemfetch-text-secondary hover:text-chemfetch-primary transition-colors"
-              >
-                Visit ChemFetch.com →
-              </a>
+            {/* Support Section */}
+            <div className="mt-6 pt-6 border-t border-chemfetch-border">
+              <div className="flex items-center gap-2 justify-center text-sm text-chemfetch-text-secondary mb-3">
+                <HelpCircle size={16} />
+                <span>Need help accessing your account?</span>
+              </div>
+              <div className="text-center space-y-2">
+                <p className="text-sm">
+                  <a
+                    href="mailto:info@chemfetch.com"
+                    className="text-chemfetch-primary hover:text-chemfetch-primary-dark transition-colors font-medium"
+                  >
+                    info@chemfetch.com
+                  </a>
+                </p>
+                <div className="flex justify-center gap-4 text-xs">
+                  <a
+                    href="https://chemfetch.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-chemfetch-text-secondary hover:text-chemfetch-primary transition-colors"
+                  >
+                    Visit ChemFetch.com
+                  </a>
+                  <a
+                    href="https://chemfetch.com/privacy-policy.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-chemfetch-text-secondary hover:text-chemfetch-primary transition-colors"
+                  >
+                    Privacy Policy
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
