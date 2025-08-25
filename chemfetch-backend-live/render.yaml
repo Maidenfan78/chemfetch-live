@@ -19,8 +19,11 @@ services:
     name: chemfetch-ocr-lightweight
     env: python
     pythonVersion: 3.11.9 # Pinned Python version for stability
-    # Use ultra-lightweight requirements for memory optimization
-    buildCommand: cd ocr_service && pip install -r requirements.txt
+    # Enhanced build command for PyMuPDF compilation fix
+    buildCommand: |
+      cd ocr_service && 
+      pip install --upgrade pip wheel setuptools &&
+      pip install --no-cache-dir --prefer-binary -r requirements.txt
     startCommand: cd ocr_service && gunicorn ocr_service:app --workers=1 --threads=2 --timeout=120 --preload=false -b 0.0.0.0:5001
     plan: free # Now fits within 512MB limit!
     envVars:
@@ -32,8 +35,14 @@ services:
         value: '1'
       - key: DEBUG_IMAGES
         value: '0'
+      # Build optimization environment variables
+      - key: PIP_NO_CACHE_DIR
+        value: '1'
+      - key: PIP_PREFER_BINARY
+        value: '1'
     # Removed disk mount - use temporary directories for Render Free compatibility
     healthCheckPath: /health
+    
 # Optional: Keep original OCR service as backup/paid tier
 # Uncomment if you want both lightweight and full OCR versions
 #
