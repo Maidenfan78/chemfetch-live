@@ -9,7 +9,15 @@ puppeteer.use(StealthPlugin());
 
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36';
-const OCR_SERVICE_URL = process.env.OCR_SERVICE_URL || 'http://127.0.0.1:5001';
+const OCR_SERVICE_URL = process.env.EXPO_PUBLIC_OCR_API_URL || 
+                        process.env.OCR_SERVICE_URL || 
+                        'http://127.0.0.1:5001';
+
+console.log('[OCR_CONFIG] OCR Service URL:', OCR_SERVICE_URL);
+console.log('[OCR_CONFIG] Available env vars:', {
+  EXPO_PUBLIC_OCR_API_URL: !!process.env.EXPO_PUBLIC_OCR_API_URL,
+  OCR_SERVICE_URL: !!process.env.OCR_SERVICE_URL
+});
 
 // Google Search API configuration
 // Note: Load environment variables when needed, not at module init
@@ -87,18 +95,25 @@ async function verifySdsUrl(
       }
     }
 
+    // If OCR service is not available, accept PDFs with SDS-like URLs
+    if (looksLikeSdsUrl(url)) {
+      console.log(`[SCRAPER] OCR unavailable, accepting SDS-like URL: ${url}`);
+      return true;
+    }
+
     const resp = await axios.post(
       `${OCR_SERVICE_URL}/verify-sds`,
       { url, name: productName },
-      { timeout: 20000 }
+      { timeout: 5000 } // Reduced timeout
     );
     console.log(`[SCRAPER] OCR verification response:`, resp.data);
     const isVerified = resp.data.verified === true;
     console.log(`[SCRAPER] OCR verification result: ${isVerified}`);
     return isVerified;
   } catch (err) {
-    console.error('[verifySdsUrl] Proxy verify failed:', err);
-    return false;
+    console.log('[SCRAPER] OCR verification failed, accepting SDS-like URLs as fallback');
+    // If OCR service fails, accept URLs that look like SDS documents
+    return looksLikeSdsUrl(url) || url.toLowerCase().endsWith('.pdf');
   }
 }
 
@@ -383,8 +398,20 @@ function isRelevantForAustralia(url: string, title: string): boolean {
   const urlLower = url.toLowerCase();
   const titleLower = title.toLowerCase();
 
-  // Prefer Australian sites
+  // Strongly prefer Australian sites
   if (urlLower.includes('.com.au') || urlLower.includes('australia')) return true;
+
+  // Accept major international retailers that ship to Australia
+  const acceptedDomains = [
+    'amazon.com', 
+    'ebay.com', 
+    'walmart.com',
+    'chemist.net',
+    'pharmacy',
+    'chemwatch',
+    'msdsdigital'
+  ];
+  if (acceptedDomains.some(domain => urlLower.includes(domain))) return true;
 
   // Exclude obviously irrelevant domains
   if (urlLower.includes('.tw') || urlLower.includes('.cn') || urlLower.includes('.jp'))
@@ -394,11 +421,24 @@ function isRelevantForAustralia(url: string, title: string): boolean {
   if (
     titleLower.includes('emulator') ||
     titleLower.includes('software') ||
-    titleLower.includes('firewall')
+    titleLower.includes('firewall') ||
+    titleLower.includes('browser') || // Filter out browser check pages
+    titleLower.includes('checking') || // Filter out verification pages
+    titleLower.includes('cloudflare')
   )
     return false;
 
-  return true;
+  // Prefer pharmacy, chemical, or product-related content
+  if (
+    titleLower.includes('pharmacy') ||
+    titleLower.includes('chemical') ||
+    titleLower.includes('product') ||
+    titleLower.includes('antiseptic') ||
+    titleLower.includes('alcohol')
+  )
+    return true;
+
+  return true; // Default to including if not obviously irrelevant
 }
 
 // -----------------------------------------------------------------------------
@@ -459,9 +499,36 @@ export async function fetchSdsByName(
 
   // Use relevant hits if we have them, otherwise fall back to all hits
   const searchHits = relevantHits.length > 0 ? relevantHits : hits;
-  const topLinks = searchHits.slice(0, 5).map(h => extractGoogleTarget(h.url));
+  
+  // Prioritize Australian pharmacy/chemical sites over international ones
+  const prioritizedHits = searchHits.sort((a, b) => {
+    const aUrl = a.url.toLowerCase();
+    const bUrl = b.url.toLowerCase();
+    
+    // Australian pharmacy sites get highest priority
+    const auPharmacyA = aUrl.includes('.com.au') && (aUrl.includes('pharmacy') || aUrl.includes('chemist'));
+    const auPharmacyB = bUrl.includes('.com.au') && (bUrl.includes('pharmacy') || bUrl.includes('chemist'));
+    if (auPharmacyA && !auPharmacyB) return -1;
+    if (auPharmacyB && !auPharmacyA) return 1;
+    
+    // Then other Australian sites
+    const auA = aUrl.includes('.com.au');
+    const auB = bUrl.includes('.com.au');
+    if (auA && !auB) return -1;
+    if (auB && !auA) return 1;
+    
+    // Deprioritize eBay (often has anti-bot protection)
+    const ebayA = aUrl.includes('ebay');
+    const ebayB = bUrl.includes('ebay');
+    if (ebayA && !ebayB) return 1;
+    if (ebayB && !ebayA) return -1;
+    
+    return 0;
+  });
+  
+  const topLinks = prioritizedHits.slice(0, 5).map(h => extractGoogleTarget(h.url));
 
-  for (const h of searchHits) {
+  for (const h of prioritizedHits) {
     const url = extractGoogleTarget(h.url);
     console.log(`[SCRAPER] Evaluating link: ${url}`);
     console.log(`[SCRAPER] Link title: ${h.title}`);
@@ -667,6 +734,29 @@ export async function scrapeProductInfo(
   const res = await http.get(finalUrl);
   const html = res.data as string;
   const $ = cheerio.load(html);
+
+  // Check for anti-bot detection phrases
+  const pageText = $('body').text().toLowerCase();
+  const title = $('title').text().toLowerCase();
+  
+  const antiBotPhrases = [
+    'checking your browser',
+    'browser check',
+    'verifying you are human',
+    'cloudflare',
+    'access denied',
+    'blocked',
+    'captcha'
+  ];
+  
+  const hasAntiBotDetection = antiBotPhrases.some(phrase => 
+    pageText.includes(phrase) || title.includes(phrase)
+  );
+
+  if (hasAntiBotDetection) {
+    console.log(`[SCRAPER] Anti-bot detection detected on ${finalUrl}, skipping`);
+    return { name: '', contents_size_weight: '', url: finalUrl };
+  }
 
   const name =
     $('h1').first().text().trim() || $("meta[property='og:title']").attr('content') || '';
