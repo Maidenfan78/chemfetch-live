@@ -65,6 +65,16 @@ export default function HomeScreen() {
             <View className="h-1 w-20 rounded-full bg-primary" />
           </View>
 
+          {/* Testing Phase Notice */}
+          <View className="mb-4 rounded-2xl border border-orange-300 bg-orange-50 p-4 shadow-sm">
+            <Text className="mb-1 text-center text-base font-semibold text-orange-800">
+              ⚠️ Testing Phase
+            </Text>
+            <Text className="text-center text-sm leading-5 text-orange-700">
+              This app is currently in development. Some features may be limited.
+            </Text>
+          </View>
+
           {/* Welcome Message */}
           <View className="mb-8 rounded-2xl border border-border-color bg-white p-6 shadow-sm">
             <Text className="mb-2 text-xl font-semibold text-text-primary">Welcome back!</Text>

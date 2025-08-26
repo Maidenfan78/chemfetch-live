@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChemFetch - Chemical Safety Management Platform</title>
+    <title>ChemFetch - Chemical Safety Management Platform (Testing Phase)</title>
     <meta name="description" content="Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification. Built for field workers and safety personnel.">
     
     <!-- Open Graph Meta Tags -->
@@ -368,6 +368,19 @@
             animation: fadeInUp 0.6s ease forwards;
         }
 
+        /* Testing Banner */
+        .testing-banner {
+            background: rgba(255, 193, 7, 0.9);
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+
         /* Scroll Behavior */
         html {
             scroll-behavior: smooth;
@@ -393,6 +406,9 @@
     <section class="hero">
         <div class="container">
             <h1 class="fade-in-up">Chemical Safety Management Platform</h1>
+            <div class="testing-banner fade-in-up">
+                ⚠️ Currently in Testing Phase - Some features may be limited
+            </div>
             <p class="fade-in-up">Professional barcode scanning, OCR text recognition, and Safety Data Sheet verification for field workers and safety personnel.</p>
             <div class="cta-buttons fade-in-up">
                 <a href="https://chem-fetch-client-hub.vercel.app" target="_blank" class="btn btn-primary">Access Client Hub</a>
