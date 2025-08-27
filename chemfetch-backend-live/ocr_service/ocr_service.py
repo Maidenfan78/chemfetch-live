@@ -554,4 +554,10 @@ if __name__ == '__main__':
     logger.info(f"OCR Available: {OCR_AVAILABLE}")
     logger.info(f"Memory Mode: {'lightweight' if not OCR_AVAILABLE else 'full'}")
     
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    # Only start Flask dev server if not in production (when PORT is not set by Render)
+    # In production, Gunicorn will import this module and run the app
+    if not os.getenv('PORT'):
+        logger.info("Running in development mode with Flask dev server")
+        app.run(host='0.0.0.0', port=5001, debug=False)
+    else:
+        logger.info("Running in production mode - Gunicorn will handle the app")

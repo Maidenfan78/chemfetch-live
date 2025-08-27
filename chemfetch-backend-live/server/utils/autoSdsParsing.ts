@@ -38,6 +38,7 @@ function convertToISODate(dateString: string | null | undefined): string | null 
   }
 }
 
+// CRITICAL: Use the same environment variable as scraper.ts
 const OCR_SERVICE_URL = process.env.EXPO_PUBLIC_OCR_API_URL || 
                         process.env.OCR_SERVICE_URL || 
                         'http://127.0.0.1:5001';

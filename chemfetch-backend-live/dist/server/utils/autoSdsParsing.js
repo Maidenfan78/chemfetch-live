@@ -32,7 +32,15 @@ function convertToISODate(dateString) {
         return null;
     }
 }
-const OCR_SERVICE_URL = process.env.OCR_SERVICE_URL || 'http://127.0.0.1:5001';
+const OCR_SERVICE_URL = process.env.EXPO_PUBLIC_OCR_API_URL || 
+                        process.env.OCR_SERVICE_URL || 
+                        'http://127.0.0.1:5001';
+
+console.log('[AUTO_SDS_OCR_CONFIG] OCR Service URL:', OCR_SERVICE_URL);
+console.log('[AUTO_SDS_OCR_CONFIG] Available env vars:', {
+  EXPO_PUBLIC_OCR_API_URL: !!process.env.EXPO_PUBLIC_OCR_API_URL,
+  OCR_SERVICE_URL: !!process.env.OCR_SERVICE_URL
+});
 /**
  * Automatically triggers SDS parsing for a product if it has an SDS URL
  * but no existing metadata (unless force=true)
