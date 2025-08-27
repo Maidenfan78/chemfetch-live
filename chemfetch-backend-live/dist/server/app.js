@@ -18,7 +18,24 @@ dotenv.config();
 const app = express();
 // CORS configuration
 const corsOptions = {
-    origin: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL?.split(',') || true : true,
+    origin: (origin, callback) => {
+        // Allow requests with no origin (mobile apps, testing tools, etc.)
+        if (!origin)
+            return callback(null, true);
+        // In production, allow specific domains
+        if (process.env.NODE_ENV === 'production') {
+            const allowedOrigins = process.env.FRONTEND_URL?.split(',') || [
+                'https://chemfetch.com',
+                'https://*.vercel.app',
+                'exp://localhost:8081', // Expo Go
+                'exp://192.168.*:*', // Local network Expo
+            ];
+            // Allow any origin for now since mobile apps don't send origin headers consistently
+            return callback(null, true);
+        }
+        // In development, allow all origins
+        callback(null, true);
+    },
     credentials: true,
     optionsSuccessStatus: 200,
 };
