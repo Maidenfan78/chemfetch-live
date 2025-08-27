@@ -554,10 +554,14 @@ if __name__ == '__main__':
     logger.info(f"OCR Available: {OCR_AVAILABLE}")
     logger.info(f"Memory Mode: {'lightweight' if not OCR_AVAILABLE else 'full'}")
     
-    # Only start Flask dev server if not in production (when PORT is not set by Render)
-    # In production, Gunicorn will import this module and run the app
-    if not os.getenv('PORT'):
-        logger.info("Running in development mode with Flask dev server")
-        app.run(host='0.0.0.0', port=5001, debug=False)
+    # Get port from environment (Render sets PORT env var)
+    port = int(os.getenv('PORT', '5001'))
+    
+    # Check if we're being run directly by Render or via Gunicorn
+    if os.getenv('PORT'):  # Render production environment
+        logger.info(f"Production mode detected - starting Flask server on port {port}")
+        # Render is calling this script directly, so we need to start the server
+        app.run(host='0.0.0.0', port=port, debug=False)
     else:
-        logger.info("Running in production mode - Gunicorn will handle the app")
+        logger.info("Development mode - starting Flask dev server")
+        app.run(host='0.0.0.0', port=5001, debug=False)

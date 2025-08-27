@@ -32,13 +32,14 @@ services:
   - type: pserv
     name: chemfetch-ocr-lightweight
     env: python
-    # Simplified build command - prefer binary but allow fallback
+    # Build command - prefer binary but allow fallback
     buildCommand: |
       cd ocr_service && 
       pip install --upgrade pip &&
       pip install --prefer-binary --no-cache-dir -r requirements.txt
-    startCommand: cd ocr_service && gunicorn ocr_service:app --workers=1 --threads=2 --timeout=120 --preload=false -b 0.0.0.0:5001
-    plan: free # Now fits within 512MB limit!
+    # IMPORTANT: Use python script directly since Render isn't respecting Gunicorn command
+    startCommand: cd ocr_service && python ocr_service.py
+    plan: free
     envVars:
       - key: PORT
         value: 5001
