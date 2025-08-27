@@ -96,6 +96,19 @@ async function executeSdsParsing(productId, sdsUrl) {
         logger.info(`Auto-SDS: SDS URL: ${sdsUrl}`);
         logger.info(`Auto-SDS: OCR Service URL: ${OCR_SERVICE_URL}`);
         const startTime = Date.now();
+        // First, test if OCR service is available
+        try {
+            const healthCheck = await axios.get(`${OCR_SERVICE_URL}/health`, {
+                timeout: 5000,
+            });
+            logger.info(`Auto-SDS: OCR health check passed for product ${productId}`);
+        }
+        catch (healthError) {
+            logger.error(`Auto-SDS: OCR service health check failed for product ${productId}: ${healthError}`);
+            // Create basic metadata entry without OCR parsing
+            await createBasicSdsMetadata(productId, sdsUrl);
+            return;
+        }
         // Call the OCR service HTTP endpoint
         const response = await axios.post(`${OCR_SERVICE_URL}/parse-sds`, {
             product_id: productId,
@@ -111,11 +124,15 @@ async function executeSdsParsing(productId, sdsUrl) {
         if (response.status !== 200) {
             logger.error(`Auto-SDS: HTTP parsing failed for product ${productId} with status ${response.status}`);
             logger.error(`Auto-SDS: Response data: ${JSON.stringify(response.data)}`);
+            // Create basic metadata entry as fallback
+            await createBasicSdsMetadata(productId, sdsUrl);
             return;
         }
         const parsedMetadata = response.data;
         if (parsedMetadata.error) {
             logger.error({ error: parsedMetadata.error, productId }, `Auto-SDS: Parse error for product ${productId}`);
+            // Create basic metadata entry as fallback
+            await createBasicSdsMetadata(productId, sdsUrl);
             return;
         }
         logger.debug({ parsedMetadata, productId }, `Auto-SDS: Parsed metadata for product ${productId}`);
@@ -155,6 +172,8 @@ async function executeSdsParsing(productId, sdsUrl) {
     catch (error) {
         if (error.code === 'ECONNREFUSED') {
             logger.error(`Auto-SDS: OCR service not available at ${OCR_SERVICE_URL} for product ${productId}`);
+            // Create basic metadata entry as fallback
+            await createBasicSdsMetadata(productId, sdsUrl);
         }
         else if (error.response) {
             logger.error({
@@ -162,10 +181,64 @@ async function executeSdsParsing(productId, sdsUrl) {
                 data: error.response.data,
                 productId,
             }, `Auto-SDS: HTTP error for product ${productId}`);
+            // Create basic metadata entry as fallback
+            await createBasicSdsMetadata(productId, sdsUrl);
         }
         else {
             logger.error({ error: error.message, productId }, `Auto-SDS: Execution error for product ${productId}`);
         }
+    }
+}
+/**
+ * Creates basic SDS metadata when OCR parsing fails
+ */
+async function createBasicSdsMetadata(productId, sdsUrl) {
+    try {
+        const supabase = createServiceRoleClient();
+        // Get product name for basic metadata
+        const { data: product } = await supabase
+            .from('product')
+            .select('name')
+            .eq('id', productId)
+            .single();
+        const { error: upsertError } = await supabase.from('sds_metadata').upsert({
+            product_id: productId,
+            vendor: null,
+            issue_date: null,
+            hazardous_substance: null,
+            dangerous_good: null,
+            dangerous_goods_class: null,
+            description: product?.name || null,
+            packing_group: null,
+            subsidiary_risks: null,
+            raw_json: {
+                note: 'Basic metadata created - OCR parsing unavailable',
+                sds_url: sdsUrl,
+                created_at: new Date().toISOString()
+            },
+        });
+        if (!upsertError) {
+            // Update user watch lists with basic info
+            await supabase
+                .from('user_chemical_watch_list')
+                .update({
+                sds_available: true,
+                sds_issue_date: null,
+                hazardous_substance: null,
+                dangerous_good: null,
+                dangerous_goods_class: null,
+                packing_group: null,
+                subsidiary_risks: null,
+            })
+                .eq('product_id', productId);
+            logger.info(`Auto-SDS: Created basic metadata for product ${productId} (OCR unavailable)`);
+        }
+        else {
+            logger.error({ error: upsertError, productId }, `Auto-SDS: Failed to create basic metadata for product ${productId}`);
+        }
+    }
+    catch (error) {
+        logger.error({ error, productId }, `Auto-SDS: Failed to create basic metadata for product ${productId}`);
     }
 }
 /**
