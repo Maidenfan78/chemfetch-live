@@ -225,6 +225,15 @@ def extract_text_from_pdf_multiple_methods(pdf_path: Path, max_pages: int = 10) 
 # -----------------------------------------------------------------------------
 # Health check with OCR capability reporting
 # -----------------------------------------------------------------------------
+@app.route("/")
+def root():
+    return jsonify({
+        "service": "ChemFetch OCR Service",
+        "status": "healthy",
+        "endpoints": ["/health", "/verify-sds", "/parse-sds", "/parse-pdf-direct"],
+        "ocr_available": OCR_AVAILABLE
+    })
+
 @app.route("/health")
 def health_check():
     return jsonify({
