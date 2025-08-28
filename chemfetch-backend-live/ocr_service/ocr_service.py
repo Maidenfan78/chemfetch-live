@@ -165,6 +165,19 @@ def extract_text_from_pdf_with_ocr(pdf_path: Path, max_pages: int = 10) -> Tuple
     except Exception as e:
         logger.error(f"OCR extraction failed: {e}")
         return text, True
+    
+ # PyMuPDF import (robust)
+try:
+    import fitz  # preferred module name for PyMuPDF
+    PDF_EXTRACTOR = "pymupdf"
+    logger.info("Using PyMuPDF (fitz) for PDF text extraction")
+except Exception:
+    try:
+        import PyMuPDF as fitz  # alias on some systems
+        PDF_EXTRACTOR = "pymupdf"
+        logger.info("Using PyMuPDF (PyMuPDF alias) for PDF text extraction")
+    except Exception:
+        fitz = None  # ensure the name exists module-wide
 
 
 def extract_text_from_pdf_multiple_methods(pdf_path: Path, max_pages: int = 10) -> Tuple[str, bool]:
@@ -175,19 +188,19 @@ def extract_text_from_pdf_multiple_methods(pdf_path: Path, max_pages: int = 10) 
     text = ""
 
     # Method 1: PyMuPDF
-    if PDF_EXTRACTOR == "pymupdf":
+# Method 1: PyMuPDF
+    if fitz is not None:
         try:
-            import PyMuPDF as fitz
-            doc = fitz.open(pdf_path)
-            for page_num in range(min(len(doc), max_pages)):
-                page = doc[page_num]
-                text += page.get_text()
-            doc.close()
+            # context manager ensures the document is closed even on exceptions
+            with fitz.open(str(pdf_path)) as doc:
+                for page in doc:
+                    text += page.get_text()
             if len(text.strip()) >= 50:
                 logger.info(f"Extracted {len(text)} characters using PyMuPDF")
                 return text, False
         except Exception as e:
             logger.warning(f"PyMuPDF extraction failed: {e}")
+
 
     # Method 2: pdfplumber
     if PDF_EXTRACTOR == "pdfplumber" or ('pdfplumber' in globals() and not text.strip()):
