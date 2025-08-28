@@ -32,15 +32,20 @@ function convertToISODate(dateString) {
         return null;
     }
 }
-// CRITICAL: Use the same environment variable as scraper.ts
+// CRITICAL: Use the same environment variable as scraper.ts and render.yaml
 const OCR_SERVICE_URL = process.env.EXPO_PUBLIC_OCR_API_URL ||
     process.env.OCR_SERVICE_URL ||
     'http://127.0.0.1:5001';
-console.log('[AUTO_SDS_OCR_CONFIG] OCR Service URL:', OCR_SERVICE_URL);
-console.log('[AUTO_SDS_OCR_CONFIG] Available env vars:', {
-    EXPO_PUBLIC_OCR_API_URL: !!process.env.EXPO_PUBLIC_OCR_API_URL,
-    OCR_SERVICE_URL: !!process.env.OCR_SERVICE_URL
+// Enhanced debugging for OCR service configuration
+console.log('[AUTO_SDS_DEBUG] ' + '='.repeat(30));
+console.log('[AUTO_SDS_DEBUG] OCR Service URL:', OCR_SERVICE_URL);
+console.log('[AUTO_SDS_DEBUG] Environment variables:', {
+    EXPO_PUBLIC_OCR_API_URL: process.env.EXPO_PUBLIC_OCR_API_URL || 'NOT_SET',
+    OCR_SERVICE_URL: process.env.OCR_SERVICE_URL || 'NOT_SET',
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT
 });
+console.log('[AUTO_SDS_DEBUG] ' + '='.repeat(30));
 /**
  * Automatically triggers SDS parsing for a product if it has an SDS URL
  * but no existing metadata (unless force=true)
@@ -96,15 +101,37 @@ async function executeSdsParsing(productId, sdsUrl) {
         logger.info(`Auto-SDS: SDS URL: ${sdsUrl}`);
         logger.info(`Auto-SDS: OCR Service URL: ${OCR_SERVICE_URL}`);
         const startTime = Date.now();
-        // First, test if OCR service is available
+        // First, test if OCR service is available with enhanced error handling
         try {
+            logger.info(`Auto-SDS: Testing OCR service at ${OCR_SERVICE_URL}`);
             const healthCheck = await axios.get(`${OCR_SERVICE_URL}/health`, {
-                timeout: 5000,
+                timeout: 10000, // Increased timeout for slow services
+                validateStatus: (status) => status < 500, // Accept 4xx as valid responses
             });
-            logger.info(`Auto-SDS: OCR health check passed for product ${productId}`);
+            logger.info({
+                status: healthCheck.status,
+                data: healthCheck.data,
+                productId
+            }, `Auto-SDS: OCR health check response:`);
+            if (healthCheck.status === 404) {
+                logger.error(`Auto-SDS: OCR service not found at ${OCR_SERVICE_URL} - check service URL`);
+                await createBasicSdsMetadata(productId, sdsUrl);
+                return;
+            }
+            if (healthCheck.status !== 200) {
+                logger.error(`Auto-SDS: OCR service unhealthy (status ${healthCheck.status})`);
+                await createBasicSdsMetadata(productId, sdsUrl);
+                return;
+            }
+            logger.info(`Auto-SDS: OCR service healthy, proceeding with parsing`);
         }
         catch (healthError) {
-            logger.error(`Auto-SDS: OCR service health check failed for product ${productId}: ${healthError}`);
+            logger.error({
+                error: healthError.message,
+                code: healthError.code,
+                url: OCR_SERVICE_URL,
+                timeout: healthError.code === 'ECONNABORTED'
+            }, `Auto-SDS: OCR service health check failed for product ${productId}:`);
             // Create basic metadata entry without OCR parsing
             await createBasicSdsMetadata(productId, sdsUrl);
             return;
@@ -170,23 +197,28 @@ async function executeSdsParsing(productId, sdsUrl) {
         logger.info(`Auto-SDS: Successfully parsed and stored metadata for product ${productId}`);
     }
     catch (error) {
-        if (error.code === 'ECONNREFUSED') {
-            logger.error(`Auto-SDS: OCR service not available at ${OCR_SERVICE_URL} for product ${productId}`);
-            // Create basic metadata entry as fallback
-            await createBasicSdsMetadata(productId, sdsUrl);
+        // Enhanced error handling with more specific error types
+        logger.error({
+            message: error.message,
+            code: error.code,
+            status: error.response?.status,
+            url: OCR_SERVICE_URL,
+            timeout: error.code === 'ECONNABORTED'
+        }, `Auto-SDS: Execution error for product ${productId}:`);
+        if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+            logger.error(`Auto-SDS: OCR service not reachable at ${OCR_SERVICE_URL} for product ${productId}`);
+        }
+        else if (error.response?.status === 404) {
+            logger.error(`Auto-SDS: OCR service endpoint not found - check service deployment`);
+        }
+        else if (error.code === 'ECONNABORTED') {
+            logger.error(`Auto-SDS: OCR service timeout - PDF processing took too long`);
         }
         else if (error.response) {
-            logger.error({
-                status: error.response.status,
-                data: error.response.data,
-                productId,
-            }, `Auto-SDS: HTTP error for product ${productId}`);
-            // Create basic metadata entry as fallback
-            await createBasicSdsMetadata(productId, sdsUrl);
+            logger.error(`Auto-SDS: HTTP error ${error.response.status}: ${JSON.stringify(error.response.data)}`);
         }
-        else {
-            logger.error({ error: error.message, productId }, `Auto-SDS: Execution error for product ${productId}`);
-        }
+        // Create basic metadata entry as fallback for all error types
+        await createBasicSdsMetadata(productId, sdsUrl);
     }
 }
 /**
@@ -214,7 +246,9 @@ async function createBasicSdsMetadata(productId, sdsUrl) {
             raw_json: {
                 note: 'Basic metadata created - OCR parsing unavailable',
                 sds_url: sdsUrl,
-                created_at: new Date().toISOString()
+                created_at: new Date().toISOString(),
+                ocr_service_url: OCR_SERVICE_URL,
+                fallback_reason: 'OCR service unavailable or failed'
             },
         });
         if (!upsertError) {

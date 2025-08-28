@@ -136,11 +136,11 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
         validateStatus: (status) => status < 500, // Accept 4xx as valid responses
       });
       
-      logger.info(`Auto-SDS: OCR health check response:`, {
+      logger.info({
         status: healthCheck.status,
         data: healthCheck.data,
         productId
-      });
+      }, `Auto-SDS: OCR health check response:`);
       
       if (healthCheck.status === 404) {
         logger.error(`Auto-SDS: OCR service not found at ${OCR_SERVICE_URL} - check service URL`);
@@ -157,13 +157,13 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
       logger.info(`Auto-SDS: OCR service healthy, proceeding with parsing`);
     } catch (healthError: any) {
       logger.error(
-        `Auto-SDS: OCR service health check failed for product ${productId}:`,
         {
           error: healthError.message,
           code: healthError.code,
           url: OCR_SERVICE_URL,
           timeout: healthError.code === 'ECONNABORTED'
-        }
+        },
+        `Auto-SDS: OCR service health check failed for product ${productId}:`
       );
       // Create basic metadata entry without OCR parsing
       await createBasicSdsMetadata(productId, sdsUrl);
@@ -255,13 +255,13 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
     logger.info(`Auto-SDS: Successfully parsed and stored metadata for product ${productId}`);
   } catch (error: any) {
     // Enhanced error handling with more specific error types
-    logger.error(`Auto-SDS: Execution error for product ${productId}:`, {
+    logger.error({
       message: error.message,
       code: error.code,
       status: error.response?.status,
       url: OCR_SERVICE_URL,
       timeout: error.code === 'ECONNABORTED'
-    });
+    }, `Auto-SDS: Execution error for product ${productId}:`);
     
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
       logger.error(

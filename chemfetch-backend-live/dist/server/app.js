@@ -14,6 +14,7 @@ import confirmRoute from './routes/confirm.js';
 import healthRoute from './routes/health.js';
 import verifySdsProxy from './routes/verifySds.js'; // Keep SDS verification OCR
 import parseSDSEnhancedRoute from './routes/parseSDSEnhanced.js';
+import parseSdsRoute from './routes/parseSds.js';
 dotenv.config();
 const app = express();
 // CORS configuration
@@ -58,14 +59,7 @@ app.use('/sds-trigger', sdsTriggerRoute);
 app.use('/confirm', confirmRoute);
 app.use('/health', healthRoute);
 app.use('/verify-sds', verifySdsProxy); // Keep SDS verification OCR
-// Load parse-sds route dynamically to avoid ESM parsing issues in tests
-try {
-    const parseSdsRoute = require('./routes/parseSds').default;
-    app.use('/parse-sds', parseSdsRoute);
-}
-catch (err) {
-    logger.warn({ err }, 'parse-sds route not loaded');
-}
+app.use('/parse-sds', parseSdsRoute);
 app.use('/parse-sds-enhanced', parseSDSEnhancedRoute);
 app.use('/batch-sds', batchSdsRoute);
 export default app;
