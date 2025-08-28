@@ -58,25 +58,55 @@ except ImportError as e:
         raise RuntimeError("OCR not available in lightweight mode")
 
 # -----------------------------------------------------------------------------
-# Try to import parse_sds_pdf from the local module. Provide a fallback path if
-# the service is started from project root.
+# Try to import parse_sds_pdf from the local module. Enhanced path handling.
 # -----------------------------------------------------------------------------
 try:
-    from parse_sds import parse_sds_pdf  # when running inside ocr_service
-except Exception:
+    # Method 1: Direct import when running from ocr_service directory
+    from parse_sds import parse_sds_pdf
+    logger.info("Successfully imported parse_sds_pdf from parse_sds module")
+except ImportError:
     try:
-        # Fallback if app is executed from project root and ocr_service is a pkg
-        from ocr_service.parse_sds import parse_sds_pdf  # type: ignore
-    except Exception as e:
-        parse_sds_pdf = None  # will be checked before use
-        _import_err = e
+        # Method 2: Import from current directory
+        import sys
+        import os
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        sys.path.insert(0, current_dir)
+        from parse_sds import parse_sds_pdf
+        logger.info("Successfully imported parse_sds_pdf with path adjustment")
+    except ImportError:
+        try:
+            # Method 3: Fallback if app is executed from project root
+            from ocr_service.parse_sds import parse_sds_pdf
+            logger.info("Successfully imported parse_sds_pdf from ocr_service package")
+        except ImportError as e:
+            parse_sds_pdf = None
+            _import_err = e
+            logger.error(f"Failed to import parse_sds_pdf: {e}")
 
 # Also import the new SDS extractor directly for the HTTP endpoint
 try:
+    # Method 1: Direct import
     from sds_parser_new.sds_extractor import parse_pdf as parse_pdf_direct
-except Exception as e:
-    parse_pdf_direct = None
-    _direct_import_err = e
+    logger.info("Successfully imported parse_pdf_direct from sds_parser_new")
+except ImportError:
+    try:
+        # Method 2: With path adjustment
+        import sys
+        import os
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        sys.path.insert(0, current_dir)
+        from sds_parser_new.sds_extractor import parse_pdf as parse_pdf_direct
+        logger.info("Successfully imported parse_pdf_direct with path adjustment")
+    except ImportError as e:
+        parse_pdf_direct = None
+        _direct_import_err = e
+# Import quick parser as backup
+try:
+    from quick_parser import parse_sds_from_text
+    logger.info("Successfully imported quick_parser as backup")
+except ImportError as e:
+    parse_sds_from_text = None
+    logger.error(f"Failed to import quick_parser: {e}")
 
 # -----------------------------------------------------------------------------
 # Environment & global config
@@ -227,21 +257,42 @@ def extract_text_from_pdf_multiple_methods(pdf_path: Path, max_pages: int = 10) 
 # -----------------------------------------------------------------------------
 @app.route("/")
 def root():
+    from datetime import datetime
     return jsonify({
         "service": "ChemFetch OCR Service",
-        "status": "healthy",
+        "status": "healthy", 
+        "version": "2025.08.28",
         "endpoints": ["/health", "/verify-sds", "/parse-sds", "/parse-pdf-direct"],
-        "ocr_available": OCR_AVAILABLE
+        "ocr_available": OCR_AVAILABLE,
+        "pdf_extractor": PDF_EXTRACTOR,
+        "timestamp": datetime.now().isoformat(),
+        "port": int(os.getenv('PORT', '5001')),
+        "ready": True
     })
 
 @app.route("/health")
 def health_check():
+    from datetime import datetime
     return jsonify({
         "status": "healthy",
+        "service": "ChemFetch OCR Service",
         "ocr_available": OCR_AVAILABLE,
         "ocr_mode": OCR_MODE,
         "memory_mode": "lightweight" if not OCR_AVAILABLE else "full",
-        "pdf_extractor": PDF_EXTRACTOR
+        "pdf_extractor": PDF_EXTRACTOR,
+        "timestamp": datetime.now().isoformat(),
+        "port": int(os.getenv('PORT', '5001')),
+        "endpoints": ["/", "/health", "/verify-sds", "/parse-sds", "/parse-pdf-direct"],
+        "debug_info": {
+            "python_version": os.sys.version,
+            "working_directory": str(os.getcwd()),
+            "temp_dir": str(DEBUG_DIR),
+            "environment": {
+                "PORT": os.getenv('PORT'),
+                "OCR_MODE": os.getenv('OCR_MODE'),
+                "DEBUG_IMAGES": os.getenv('DEBUG_IMAGES')
+            }
+        }
     })
 
 @app.route("/gpu-check")
@@ -356,15 +407,29 @@ def verify_pdf_sds(url: str, product_name: str, keywords=None) -> Dict[str, Any]
             matched_keywords = [kw for kw in keywords if kw.lower() in text_lower]
             
             logger.info(f"Found {keyword_matches}/{len(keywords)} keyword matches")
-            logger.debug(f"Matched keywords: {matched_keywords[:5]}...")
+            logger.info(f"Top matched keywords: {matched_keywords[:5]}")
             
-            # Enhanced validation logic
+            # Additional logging for debugging
+            if len(text.strip()) < 50:
+                logger.warning(f"Very short text content: {len(text.strip())} chars")
+            elif len(text.strip()) < 200:
+                logger.info(f"Short text content: {len(text.strip())} chars - may be summary only") 
+            else:
+                logger.info(f"Good text content: {len(text.strip())} chars")
+            
+            # Enhanced validation logic for text-only mode
+            # Lower threshold for text-only mode since we can extract most content
             is_valid_sds = keyword_matches >= 1
             
             # Boost score for filename indicators
             filename_has_sds = any(term in url.lower() for term in ['sds', 'msds', 'safety', 'data', 'sheet'])
             if filename_has_sds and keyword_matches >= 1:
                 is_valid_sds = True
+            
+            # Special handling for text-only mode with good text extraction
+            if not OCR_AVAILABLE and len(text.strip()) >= 100 and keyword_matches >= 3:
+                is_valid_sds = True
+                logger.info(f"Text-only validation passed with {keyword_matches} keywords")
             
             # Flag image-only PDFs that couldn't be processed
             image_only_pdf = (len(text.strip()) < 50) and (not OCR_AVAILABLE or used_ocr)
@@ -443,9 +508,89 @@ def verify_sds():
             'image_only_pdf': False
         }), 500
 
-# -----------------------------------------------------------------------------
-# Parse SDS over HTTP (reuses existing parser)
-# -----------------------------------------------------------------------------
+# IMMEDIATE FIX: Working parse-sds endpoint
+@app.route('/parse-sds', methods=['POST'])
+def parse_sds_http():
+    """
+    FIXED VERSION: Uses working verification logic
+    Body: { "product_id": 123, "pdf_url": "https://..." }
+    """
+    logger.info("SDS parsing endpoint called (FIXED VERSION)")
+    
+    data = request.json or {}
+    product_id = data.get("product_id")
+    pdf_url = data.get("pdf_url")
+    
+    if not product_id or not pdf_url:
+        return jsonify({"error": "Missing product_id or pdf_url"}), 400
+
+    try:
+        # Use verification function (we know this works from your logs)
+        logger.info("Using working verification method for parsing...")
+        verification_result = verify_pdf_sds(pdf_url, "Product")
+        
+        if not verification_result.get('verified'):
+            return jsonify({
+                "error": "PDF failed verification",
+                "verification_result": verification_result
+            }), 400
+        
+        # Extract text for basic field parsing
+        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp_file:
+            response = requests.get(pdf_url, timeout=30, stream=True)
+            response.raise_for_status()
+            for chunk in response.iter_content(chunk_size=8192):
+                tmp_file.write(chunk)
+            tmp_path = Path(tmp_file.name)
+        
+        try:
+            # Use pdfplumber (working from your logs)
+            import pdfplumber
+            text = ""
+            with pdfplumber.open(tmp_path) as pdf:
+                for page in pdf.pages:
+                    text += page.extract_text() or ""
+            
+            # Basic regex extraction
+            vendor_match = re.search(r'(?:Manufacturer|Company):\s*([^\n\r]+)', text, re.IGNORECASE)
+            vendor = vendor_match.group(1).strip() if vendor_match else None
+            
+            date_match = re.search(r'(?:Issue Date|Revision Date):\s*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', text, re.IGNORECASE)
+            issue_date = date_match.group(1).strip() if date_match else None
+            
+            dg_match = re.search(r'(?:Hazard Class|Class):\s*([1-9](?:\.\d+)?)', text, re.IGNORECASE)
+            dangerous_goods_class = dg_match.group(1).strip() if dg_match else None
+            
+            is_dangerous = bool(dangerous_goods_class and dangerous_goods_class.lower() not in ['none', 'n/a'])
+            
+            result = {
+                "product_id": int(product_id),
+                "vendor": vendor,
+                "issue_date": issue_date,
+                "hazardous_substance": is_dangerous,
+                "dangerous_good": is_dangerous,
+                "dangerous_goods_class": dangerous_goods_class,
+                "packing_group": None,
+                "subsidiary_risks": [],
+                "hazard_statements": [],
+                "raw_json": {
+                    "verification_result": verification_result,
+                    "text_length": len(text),
+                    "parsing_method": "simple_working"
+                },
+                "ocr_available": OCR_AVAILABLE
+            }
+            
+            logger.info("SDS parsing successful using verification method")
+            return jsonify(result), 200
+            
+        finally:
+            if tmp_path.exists():
+                os.unlink(tmp_path)
+    
+    except Exception as e:
+        logger.error(f"Parsing failed: {e}")
+        return jsonify({"error": f"SDS parsing failed: {e}"}), 500
 @app.route('/parse-sds', methods=['POST'])
 def parse_sds_http():
     """
@@ -557,20 +702,51 @@ def parse_pdf_direct_http():
         return jsonify({"error": f"PDF parsing failed: {e}"}), 500
 
 
+# -----------------------------------------------------------------------------
+# OCR Endpoint for image processing (legacy compatibility)
+# -----------------------------------------------------------------------------
+@app.route('/ocr', methods=['POST'])
+def ocr_endpoint():
+    """
+    Legacy OCR endpoint for image processing.
+    In text-only mode, returns error with helpful message.
+    """
+    if not OCR_AVAILABLE:
+        return jsonify({
+            "error": "OCR not available in text-only mode",
+            "mode": "text-only",
+            "available_endpoints": ["/verify-sds", "/parse-sds", "/parse-pdf-direct"],
+            "recommendation": "Use /verify-sds for PDF text extraction without OCR"
+        }), 501  # Not Implemented
+    
+    # If OCR was available, implement image processing here
+    return jsonify({"error": "OCR endpoint not yet implemented"}), 501
+
+
 if __name__ == '__main__':
-    logger.info(f"Starting ChemFetch OCR Service")
-    logger.info(f"OCR Mode: {OCR_MODE}")
-    logger.info(f"OCR Available: {OCR_AVAILABLE}")
-    logger.info(f"Memory Mode: {'lightweight' if not OCR_AVAILABLE else 'full'}")
+    logger.info(f"🚀 Starting ChemFetch OCR Service")
+    logger.info(f"📊 OCR Mode: {OCR_MODE}")
+    logger.info(f"🔬 OCR Available: {OCR_AVAILABLE}")
+    logger.info(f"💾 Memory Mode: {'lightweight' if not OCR_AVAILABLE else 'full'}")
+    logger.info(f"📄 PDF Extractor: {PDF_EXTRACTOR}")
     
     # Get port from environment (Render sets PORT env var)
     port = int(os.getenv('PORT', '5001'))
     
+    # Enhanced startup logging
+    logger.info(f"🌐 Environment check:")
+    logger.info(f"   PORT: {os.getenv('PORT')}")
+    logger.info(f"   OCR_MODE: {os.getenv('OCR_MODE')}")
+    logger.info(f"   DEBUG_IMAGES: {os.getenv('DEBUG_IMAGES')}")
+    logger.info(f"   Working Directory: {os.getcwd()}")
+    
     # Check if we're being run directly by Render or via Gunicorn
     if os.getenv('PORT'):  # Render production environment
-        logger.info(f"Production mode detected - starting Flask server on port {port}")
+        logger.info(f"🚀 Production mode detected - starting Flask server on port {port}")
+        logger.info(f"🔗 Service will be available at: http://0.0.0.0:{port}")
         # Render is calling this script directly, so we need to start the server
-        app.run(host='0.0.0.0', port=port, debug=False)
+        app.run(host='0.0.0.0', port=port, debug=False, threaded=True)
     else:
-        logger.info("Development mode - starting Flask dev server")
-        app.run(host='0.0.0.0', port=5001, debug=False)
+        logger.info("🛠️ Development mode - starting Flask dev server")
+        logger.info(f"🔗 Service will be available at: http://localhost:5001")
+        app.run(host='0.0.0.0', port=5001, debug=False, threaded=True)

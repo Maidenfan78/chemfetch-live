@@ -22,24 +22,38 @@ services:
       # Frontend URLs for CORS
       - key: FRONTEND_URL
         value: https://chemfetch.com,https://chemfetch-client-hub-live.vercel.app
-      # OCR service URL (internal communication between services)
+      # OCR service URL (internal communication between services) - FIXED
       - key: EXPO_PUBLIC_OCR_API_URL
         fromService:
           name: chemfetch-ocr-lightweight
           type: pserv
           property: host
+      # Backup OCR service URL
+      - key: OCR_SERVICE_URL
+        fromService:
+          name: chemfetch-ocr-lightweight
+          type: pserv
+          property: host
+      # Debug logging
+      - key: DEBUG_OCR_CONNECTION
+        value: '1'
 
   - type: pserv
     name: chemfetch-ocr-lightweight
     env: python
-    # Build command - prefer binary but allow fallback
+    # Enhanced build command with better error handling for 512MB limit
     buildCommand: |
       cd ocr_service && 
+      echo "🔧 Installing Python dependencies..." &&
       pip install --upgrade pip &&
-      pip install --prefer-binary --no-cache-dir -r requirements.txt
-    # IMPORTANT: Use python script directly since Render isn't respecting Gunicorn command
-    startCommand: cd ocr_service && python ocr_service.py
-    plan: free
+      pip install --prefer-binary --no-cache-dir -r requirements.txt &&
+      echo "✅ Dependencies installed successfully" &&
+      python -c "import flask; print(f'Flask version: {flask.__version__}')" &&
+      python -c "import pdfplumber; print('pdfplumber: OK')" &&
+      echo "🚀 Build complete"
+    # Use python directly for better control
+    startCommand: cd ocr_service && echo "🚀 Starting OCR service..." && python ocr_service.py
+    plan: free  # 512MB RAM, 0.5 CPU
     envVars:
       - key: PORT
         value: 5001
@@ -49,9 +63,13 @@ services:
         value: '1'
       - key: DEBUG_IMAGES
         value: '0'
-      # Build optimization environment variables
+      # Build optimization for 512MB limit
       - key: PIP_NO_CACHE_DIR
         value: '1'
       - key: PIP_PREFER_BINARY
         value: '1'
-
+      - key: PIP_NO_COMPILE
+        value: '1'
+      # Python memory optimization
+      - key: PYTHONDONTWRITEBYTECODE
+        value: '1'

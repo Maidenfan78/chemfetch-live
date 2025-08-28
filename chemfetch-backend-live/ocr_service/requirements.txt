@@ -1,37 +1,45 @@
-# Ultra-lightweight requirements for Render Free (512MB limit)
-# FIXED: Using exact versions that work together
+# Optimized requirements for Render Free Tier (512MB RAM, 0.5 CPU)
+# Total estimated memory: ~150-200MB
 
-# Build tools - keep these for safety
+# Essential build tools (minimal)
 wheel
 setuptools>=65.0.0
 
-# Core Flask and web services
+# Core Flask web framework (lightweight)
 Flask==2.3.3
 flask-cors==4.0.0
 requests==2.31.0
 gunicorn==21.2.0
 
-# PDF text extraction - EXACT COMPATIBLE VERSIONS
-pdfplumber==0.11.4  # Latest version
-pdfminer.six==20231228  # Version that pdfplumber 0.11.4 actually requires
-Pillow>=10.0.0  # Let pip choose a compatible version with pre-built wheels
+# PDF text extraction - optimized versions for 512MB limit
+# These work together without heavy dependencies
+pdfplumber==0.11.4
+pdfminer.six==20231228
+Pillow>=10.0.0
 
-# Text processing and parsing
+# Text processing (essential only)
 python-dateutil==2.8.2
 regex==2024.5.15
 
-# Utilities (minimal)
-numpy>=1.24.0,<2.0.0  # Flexible numpy version for better wheel availability
+# NumPy - minimal version for PDF processing
+numpy>=1.24.0,<2.0.0
 
-# REMOVED PROBLEMATIC PACKAGES:
-# PyMuPDF - C++ compilation issues on Render
-# paddleocr - MAIN MEMORY HOG (300-400MB)
-# paddlepaddle - MAIN MEMORY HOG  
-# opencv-python - Heavy image processing (50-100MB)
-# pdf2image - OCR dependency (requires Poppler)
-# pytesseract - OCR dependency (requires Tesseract)
-# torch, transformers, spacy - ML libraries (100s of MB each)
-# scikit-learn, pandas - Data science libraries
-# camelot-py, tabula-py - Table extraction libraries
+# MEMORY BREAKDOWN:
+# - Flask + deps: ~20MB
+# - PDF libraries: ~50MB  
+# - NumPy: ~30MB
+# - Python runtime: ~50MB
+# - Total: ~150MB (comfortable within 512MB limit)
 
-# TOTAL ESTIMATED MEMORY: ~80-120MB (much lighter without compilation)
+# REMOVED FOR MEMORY OPTIMIZATION:
+# - PyMuPDF (C++ compilation issues + memory)
+# - pytesseract (requires Tesseract binary + memory)
+# - pdf2image (requires Poppler + memory)
+# - opencv-python (image processing - 50-100MB)
+# - All ML libraries (torch, transformers, etc.)
+
+# This configuration provides:
+# ✅ Reliable PDF text extraction via pdfplumber
+# ✅ Text-only SDS parsing (no OCR)
+# ✅ Fits within 512MB memory limit
+# ✅ Fast startup and deployment

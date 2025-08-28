@@ -1,20 +1,52 @@
 import re
+import os
+import tempfile
 from pathlib import Path
-from typing import cast
-import fitz
-from pdf2image import convert_from_path
-import pytesseract
+from typing import Dict, Any, Optional
 import logging
 
 # Configure logging for this module
 logger = logging.getLogger(__name__)
 
+# Graceful imports for lightweight mode
+try:
+    import fitz  # PyMuPDF
+    PYMUPDF_AVAILABLE = True
+    logger.info("[SDS_EXTRACTOR] PyMuPDF available")
+except ImportError:
+    PYMUPDF_AVAILABLE = False
+    logger.info("[SDS_EXTRACTOR] PyMuPDF not available")
 
-# detect section headers like "Section 3" or "14:" but avoid subpoints such as "1.1"
+try:
+    from pdf2image import convert_from_path
+    import pytesseract
+    OCR_AVAILABLE = True
+    logger.info("[SDS_EXTRACTOR] OCR libraries available")
+except ImportError:
+    OCR_AVAILABLE = False
+    logger.info("[SDS_EXTRACTOR] OCR libraries not available")
+
+# Fallback to pdfplumber for text extraction
+try:
+    import pdfplumber
+    PDFPLUMBER_AVAILABLE = True
+    logger.info("[SDS_EXTRACTOR] pdfplumber available")
+except ImportError:
+    PDFPLUMBER_AVAILABLE = False
+    logger.warning("[SDS_EXTRACTOR] pdfplumber not available")
+
+# Always available fallback
+try:
+    from pdfminer.high_level import extract_text as pdfminer_extract
+    PDFMINER_AVAILABLE = True
+    logger.info("[SDS_EXTRACTOR] pdfminer.six available")
+except ImportError:
+    PDFMINER_AVAILABLE = False
+    logger.error("[SDS_EXTRACTOR] pdfminer.six not available - this should not happen!")
+
+# Patterns for parsing
 SECTION_PATTERN = re.compile(r'^\s*(?:section\s*)?(\d{1,2})(?:\s|:|\.)(?=\s)', re.IGNORECASE | re.MULTILINE)
 
-# allow some text (e.g. "/ Date of revision") and optional footer lines between
-# the label and the actual date value
 DATE_PATTERN = re.compile(
     r'(\b(?:Revision(?: Date)?|Issue Date|Date of issue|Version date|SDS creation date|Date Prepared|Issued)[^\n]{0,40})\s*[:]?\s*(?:\nPage[^\n]*\n)?\s*'
     r'((?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4})|(?:[A-Za-z]+\s+\d{1,2},?\s*\d{4})|(?:\d{4}-\d{2}-\d{2}))',
@@ -24,230 +56,347 @@ FIELD_LABELS = {
     'product_name': [r'Product identifier', r'Product Name', r'Trade name'],
     'manufacturer': [r'Manufacturer', r'Supplier', r'Company name of supplier', r'Producer', r'Company'],
     'product_use': [r'Recommended use', r'Intended use', r'Use', r'Product use', r'Relevant identified uses', r'Identified uses'],
-    # section 14 labels handled separately
     'dangerous_goods_class': [r'DG Class', r'Class', r'Transport hazard class', r'(?:IMDG|IATA|ADG)?\s*Hazard Class', r'Australian Dangerous Goods class'],
     'subsidiary_risk': [r'Subsidiary risk'],
     'packing_group': [r'Packing group', r'PG', r'.*packing group', r'Australian Dangerous Goods packing group'],
 }
 
-# flattened list of all label regexes for filtering
+# Flattened list of all label regexes for filtering
 ALL_LABELS = [lab for labs in FIELD_LABELS.values() for lab in labs] + ['SDS no.', 'SDS number']
 
 
 def extract_text(path: Path) -> str:
+    """Extract text from PDF with multiple fallback methods for 512MB limit"""
     logger.info(f"[SDS_EXTRACTOR] Starting text extraction from: {path}")
-    logger.info(f"[SDS_EXTRACTOR] File size: {path.stat().st_size} bytes")
     
-    try:
-        logger.info(f"[SDS_EXTRACTOR] Attempting PyMuPDF text extraction...")
-        doc = fitz.open(str(path))
-        logger.info(f"[SDS_EXTRACTOR] PDF opened, pages: {len(doc)}")
-        
-        text = "".join(cast(fitz.Page, page).get_text() for page in doc)  # type: ignore[attr-defined]
-        logger.info(f"[SDS_EXTRACTOR] PyMuPDF extracted {len(text)} characters")
-        
-        if text.strip():
-            logger.info(f"[SDS_EXTRACTOR] PyMuPDF extraction successful")
-            return text
+    # Method 1: PyMuPDF (if available - fastest)
+    if PYMUPDF_AVAILABLE:
+        try:
+            logger.info("[SDS_EXTRACTOR] Attempting PyMuPDF text extraction...")
+            doc = fitz.open(str(path))
+            logger.info(f"[SDS_EXTRACTOR] PDF opened, pages: {len(doc)}")
             
-        logger.warning(f"[SDS_EXTRACTOR] PyMuPDF extracted empty text, falling back to OCR...")
-        
-    except Exception as e:
-        logger.error(f"[SDS_EXTRACTOR] PyMuPDF extraction failed: {type(e).__name__}: {e}")
-        logger.info(f"[SDS_EXTRACTOR] Falling back to OCR...")
+            text = ""
+            for i, page in enumerate(doc):
+                page_text = page.get_text()
+                text += page_text
+                if i == 0:  # Log first page for debugging
+                    logger.info(f"[SDS_EXTRACTOR] First page extracted {len(page_text)} chars")
+            
+            doc.close()
+            logger.info(f"[SDS_EXTRACTOR] PyMuPDF extracted {len(text)} characters total")
+            
+            if text.strip():
+                logger.info("[SDS_EXTRACTOR] PyMuPDF extraction successful")
+                return text
+                
+        except Exception as e:
+            logger.error(f"[SDS_EXTRACTOR] PyMuPDF extraction failed: {e}")
     
-    try:
-        logger.info(f"[SDS_EXTRACTOR] Converting PDF to images for OCR...")
-        images = convert_from_path(str(path))
-        logger.info(f"[SDS_EXTRACTOR] Converted to {len(images)} images")
-        
-        logger.info(f"[SDS_EXTRACTOR] Running OCR on images...")
-        ocr_text = ''.join(pytesseract.image_to_string(img) for img in images)
-        logger.info(f"[SDS_EXTRACTOR] OCR extracted {len(ocr_text)} characters")
-        
-        return ocr_text
-        
-    except Exception as e:
-        logger.error(f"[SDS_EXTRACTOR] OCR extraction failed: {type(e).__name__}: {e}")
-        raise Exception(f"Both PyMuPDF and OCR text extraction failed: {e}")
+    # Method 2: pdfplumber (reliable for text-based PDFs)
+    if PDFPLUMBER_AVAILABLE:
+        try:
+            logger.info("[SDS_EXTRACTOR] Attempting pdfplumber text extraction...")
+            with pdfplumber.open(path) as pdf:
+                text = ""
+                for i, page in enumerate(pdf.pages):
+                    page_text = page.extract_text() or ""
+                    text += page_text
+                    if i == 0:
+                        logger.info(f"[SDS_EXTRACTOR] First page extracted {len(page_text)} chars")
+            
+            logger.info(f"[SDS_EXTRACTOR] pdfplumber extracted {len(text)} characters total")
+            if text.strip():
+                logger.info("[SDS_EXTRACTOR] pdfplumber extraction successful")
+                return text
+                
+        except Exception as e:
+            logger.error(f"[SDS_EXTRACTOR] pdfplumber extraction failed: {e}")
+    
+    # Method 3: pdfminer.six fallback (always available)
+    if PDFMINER_AVAILABLE:
+        try:
+            logger.info("[SDS_EXTRACTOR] Attempting pdfminer.six text extraction...")
+            with open(path, 'rb') as f:
+                text = pdfminer_extract(f)
+            
+            logger.info(f"[SDS_EXTRACTOR] pdfminer.six extracted {len(text)} characters")
+            if text.strip():
+                logger.info("[SDS_EXTRACTOR] pdfminer.six extraction successful")
+                return text
+                
+        except Exception as e:
+            logger.error(f"[SDS_EXTRACTOR] pdfminer.six extraction failed: {e}")
+    
+    # Method 4: OCR fallback (if available and other methods failed)
+    if OCR_AVAILABLE:
+        try:
+            logger.warning("[SDS_EXTRACTOR] All text methods failed, falling back to OCR...")
+            images = convert_from_path(str(path), dpi=200, first_page=1, last_page=10)
+            logger.info(f"[SDS_EXTRACTOR] Converted to {len(images)} images for OCR")
+            
+            ocr_text = ""
+            for i, img in enumerate(images):
+                try:
+                    page_text = pytesseract.image_to_string(img, config='--psm 1')
+                    ocr_text += f"\n--- Page {i+1} ---\n{page_text}"
+                    logger.info(f"[SDS_EXTRACTOR] OCR page {i+1}: {len(page_text)} chars")
+                except Exception as page_error:
+                    logger.warning(f"[SDS_EXTRACTOR] OCR failed for page {i+1}: {page_error}")
+                    continue
+            
+            logger.info(f"[SDS_EXTRACTOR] OCR extracted {len(ocr_text)} characters total")
+            if ocr_text.strip():
+                return ocr_text
+                
+        except Exception as e:
+            logger.error(f"[SDS_EXTRACTOR] OCR extraction failed: {e}")
+    
+    # All methods failed
+    logger.error("[SDS_EXTRACTOR] All text extraction methods failed")
+    return ""
 
 
 def get_section(text: str, number: int) -> str:
+    """Extract a specific numbered section from the SDS text"""
     pattern = re.compile(rf'^\s*(?:section\s*)?{number}\b[^\n]*', re.IGNORECASE | re.MULTILINE)
     match = pattern.search(text)
     if not match:
         return ''
+    
     start = match.end()
     end = len(text)
+    
+    # Find the start of the next section
     for m in SECTION_PATTERN.finditer(text, start):
         num = int(m.group(1))
         if num > number:
             end = m.start()
             break
+    
     return text[start:end]
 
 
 def extract_after_label(section_text: str, labels):
+    """Extract value after finding a matching label"""
     lines = section_text.splitlines()
+    
     for i, line in enumerate(lines):
         clean = line.strip()
+        if not clean:
+            continue
+            
         label_part = clean.split(':', 1)[0]
+        
         for label in labels:
             if re.fullmatch(label, label_part, re.IGNORECASE):
-                # try same line after colon
+                # Try same line after colon
                 if ':' in clean:
                     after = clean.split(':', 1)[1].strip()
                     if after and not any(re.fullmatch(lab, after, re.IGNORECASE) for lab in ALL_LABELS):
                         return after
-                # look at subsequent lines for value
+                
+                # Look at subsequent lines for value
                 j = i + 1
                 while j < len(lines):
                     candidate = lines[j].strip()
-                    if candidate and not candidate.startswith(':') and not re.match(r'^[:\-]+$', candidate, re.IGNORECASE):
+                    if candidate and not candidate.startswith(':') and not re.match(r'^[:\-]+$', candidate):
                         if not any(re.fullmatch(lab, candidate, re.IGNORECASE) for lab in ALL_LABELS):
                             return candidate
                     j += 1
+    
     return None
 
 
 def extract_section14_field(sec14: str, labels, value_pattern):
+    """Extract specific fields from Section 14 (Transport Information)"""
     lines = sec14.splitlines()
     value_re = re.compile(value_pattern, re.IGNORECASE)
+    
     for i, line in enumerate(lines):
         stripped = line.strip()
         for lab in labels:
-            # handle "Label: value" on the same line
+            # Handle "Label: value" on the same line
             same_line = re.search(rf'{lab}\s*[:\-]?\s*({value_pattern})', stripped, re.IGNORECASE)
             if same_line:
                 candidate = same_line.group(1).strip()
                 if value_re.fullmatch(candidate):
                     return candidate
-            # label present in this line, value on subsequent line
+            
+            # Label present in this line, value on subsequent line
             if re.search(lab, stripped, re.IGNORECASE):
                 j = i + 1
                 while j < len(lines):
                     candidate = lines[j].strip()
-                    if candidate and not candidate.startswith(':') and not any(re.search(l, candidate, re.IGNORECASE) for l in ALL_LABELS):
-                        if not re.match(r'^\d+\.[A-Za-z]', candidate):
-                            if value_re.fullmatch(candidate):
-                                return candidate
-                    j += 1
-            # handle label split across two lines
-            if i + 1 < len(lines):
-                combined = stripped + " " + lines[i + 1].strip()
-                if re.search(lab, combined, re.IGNORECASE):
-                    j = i + 2
-                    while j < len(lines):
-                        candidate = lines[j].strip()
-                        if candidate and not candidate.startswith(':') and not any(re.search(l, candidate, re.IGNORECASE) for l in ALL_LABELS):
+                    if candidate and not candidate.startswith(':'):
+                        if not any(re.search(l, candidate, re.IGNORECASE) for l in ALL_LABELS):
                             if not re.match(r'^\d+\.[A-Za-z]', candidate):
                                 if value_re.fullmatch(candidate):
                                     return candidate
-                        j += 1
-    # fallback: search across entire section text
-    compact = ' '.join(lines)
-    for lab in labels:
-        m = re.search(rf'{lab}\s*[:\-]?\s*({value_pattern})', compact, re.IGNORECASE)
-        if m:
-            return m.group(1).strip()
-    if labels is FIELD_LABELS.get('dangerous_goods_class'):
-        for line in lines:
-            cand = line.strip()
-            if value_re.fullmatch(cand):
-                return cand
+                    j += 1
+    
     return None
 
 
-def parse_pdf(path: Path):
+def parse_pdf(path: Path) -> Dict[str, Any]:
+    """
+    Parse SDS PDF and extract key information.
+    Enhanced for lightweight deployment with graceful degradation.
+    
+    Args:
+        path: Path to the PDF file
+        
+    Returns:
+        Dictionary with extracted SDS data
+    """
     logger.info(f"[SDS_EXTRACTOR] Starting PDF parsing: {path}")
+    logger.info(f"[SDS_EXTRACTOR] Available extraction methods: PyMuPDF={PYMUPDF_AVAILABLE}, pdfplumber={PDFPLUMBER_AVAILABLE}, OCR={OCR_AVAILABLE}")
     
     # Step 1: Extract text
-    logger.info(f"[SDS_EXTRACTOR] Step 1: Extracting text from PDF...")
-    text = extract_text(path)
-    logger.info(f"[SDS_EXTRACTOR] Text extraction complete, total length: {len(text)}")
+    logger.info("[SDS_EXTRACTOR] Step 1: Extracting text from PDF...")
+    try:
+        text = extract_text(path)
+        logger.info(f"[SDS_EXTRACTOR] Text extraction complete, total length: {len(text)}")
+        
+        if len(text) < 100:
+            logger.warning(f"[SDS_EXTRACTOR] Very short text extracted ({len(text)} chars)")
+            return {
+                "error": "Insufficient text extracted from PDF",
+                "text_length": len(text),
+                "available_methods": {
+                    "pymupdf": PYMUPDF_AVAILABLE,
+                    "pdfplumber": PDFPLUMBER_AVAILABLE, 
+                    "ocr": OCR_AVAILABLE
+                },
+                "extraction_mode": "text-only" if not OCR_AVAILABLE else "full"
+            }
+    except Exception as e:
+        logger.error(f"[SDS_EXTRACTOR] Text extraction failed: {e}")
+        return {
+            "error": f"Text extraction failed: {e}",
+            "available_methods": {
+                "pymupdf": PYMUPDF_AVAILABLE,
+                "pdfplumber": PDFPLUMBER_AVAILABLE,
+                "ocr": OCR_AVAILABLE
+            },
+            "extraction_mode": "text-only" if not OCR_AVAILABLE else "full"
+        }
     
-    if len(text) < 100:
-        logger.warning(f"[SDS_EXTRACTOR] Very short text extracted ({len(text)} chars), may indicate extraction failure")
-    
-    result = {}
+    result = {
+        "extraction_info": {
+            "text_length": len(text),
+            "available_methods": {
+                "pymupdf": PYMUPDF_AVAILABLE,
+                "pdfplumber": PDFPLUMBER_AVAILABLE,
+                "ocr": OCR_AVAILABLE
+            },
+            "extraction_mode": "text-only" if not OCR_AVAILABLE else "full"
+        }
+    }
     
     # Step 2: Extract sections
-    logger.info(f"[SDS_EXTRACTOR] Step 2: Extracting sections...")
+    logger.info("[SDS_EXTRACTOR] Step 2: Extracting sections...")
     sec1 = get_section(text, 1)
     sec14 = get_section(text, 14)
     
     logger.info(f"[SDS_EXTRACTOR] Section 1 length: {len(sec1)} chars")
     logger.info(f"[SDS_EXTRACTOR] Section 14 length: {len(sec14)} chars")
     
-    if len(sec1) == 0:
-        logger.warning(f"[SDS_EXTRACTOR] Section 1 not found or empty")
-    if len(sec14) == 0:
-        logger.warning(f"[SDS_EXTRACTOR] Section 14 not found or empty")
-    # product name with fallback
+    # Step 3: Extract fields
+    logger.info("[SDS_EXTRACTOR] Step 3: Extracting fields...")
+    
+    # Product name with fallback logic
     product_name = extract_after_label(sec1, FIELD_LABELS['product_name'])
-    if not product_name or 'sds' in product_name.lower() or 'use' in product_name.lower():
+    if not product_name or 'sds' in product_name.lower():
+        # Try to find a reasonable product name from section 1
         candidates = []
-        for l in sec1.splitlines():
-            l = l.strip()
-            if not l or l.startswith(':'):
+        for line in sec1.splitlines():
+            line = line.strip()
+            if not line or line.startswith(':'):
                 continue
-            if any(re.fullmatch(lab, l, re.IGNORECASE) for lab in ALL_LABELS):
+            if any(re.fullmatch(lab, line, re.IGNORECASE) for lab in ALL_LABELS):
                 continue
-            if any(x in l.lower() for x in ['use', 'telephone', 'emergency', 'poison', 'fax', 'website', 'email', 'details', 'supplier', 'australia', 'new zealand', 'company', 'sds']):
+            if any(x in line.lower() for x in ['use', 'telephone', 'emergency', 'poison', 'fax', 'website', 'email']):
                 continue
-            if re.match(r'^\d', l):
+            if re.match(r'^\d', line):
                 continue
-            candidates.append(l)
+            candidates.append(line)
         product_name = candidates[-1] if candidates else None
+    
     result['product_name'] = {'value': product_name, 'confidence': 1.0 if product_name else 0.0}
+    
+    # Manufacturer
     manufacturer = extract_after_label(sec1, FIELD_LABELS['manufacturer'])
     if not manufacturer:
+        # Try alternative pattern
         m = re.search(r'Details of the supplier[^\n]*\n([^\n]+)', sec1, re.IGNORECASE)
         if m:
             manufacturer = m.group(1).strip()
     result['manufacturer'] = {'value': manufacturer, 'confidence': 1.0 if manufacturer else 0.0}
+    
+    # Product use
     value = extract_after_label(sec1, FIELD_LABELS['product_use'])
     result['product_use'] = {'value': value, 'confidence': 1.0 if value else 0.0}
-    # Section 14 fields: allow table-style layouts
+    
+    # Section 14 fields (Transport Information)
     value = extract_section14_field(sec14, FIELD_LABELS['dangerous_goods_class'], r'\d[0-9A-Za-z\.]*|not\b.*|none')
     result['dangerous_goods_class'] = {'value': value, 'confidence': 1.0 if value else 0.0}
+    
     value = extract_section14_field(sec14, FIELD_LABELS['subsidiary_risk'], r'\d[0-9A-Za-z\.]*|none|not\b.*')
     result['subsidiary_risk'] = {'value': value, 'confidence': 1.0 if value else 0.0}
+    
     value = extract_section14_field(sec14, FIELD_LABELS['packing_group'], r'I{1,3}|IV|V|N\.?/?A|none|not\b.*')
     if not value:
         value = extract_section14_field(sec14, FIELD_LABELS['packing_group'], r'\d+|N\.?/?A|none|not\b.*')
     result['packing_group'] = {'value': value, 'confidence': 1.0 if value else 0.0}
+    
+    # Issue date extraction
     matches = list(DATE_PATTERN.finditer(text))
     chosen = None
     chosen_iso = None
+    
     if matches:
-        from datetime import date
-        from dateutil import parser as dateparser
-        today = date.today()
-        for m in matches:
-            label = m.group(1).lower()
-            candidate = m.group(2).strip()
-            try:
-                # Try parsing with dayfirst=True for Australian/UK format (DD/MM/YYYY)
-                d = dateparser.parse(candidate, dayfirst=True).date()
-                if d > today:
+        try:
+            from datetime import date
+            from dateutil import parser as dateparser
+            
+            today = date.today()
+            for m in matches:
+                label = m.group(1).lower()
+                candidate = m.group(2).strip()
+                
+                try:
+                    # Parse with dayfirst=True for Australian format (DD/MM/YYYY)
+                    d = dateparser.parse(candidate, dayfirst=True).date()
+                    if d > today:  # Skip future dates
+                        continue
+                    
+                    # Convert to ISO format
+                    chosen_iso = d.strftime('%Y-%m-%d')
+                    logger.info(f"[SDS_EXTRACTOR] Parsed date '{candidate}' as {d} -> ISO: {chosen_iso}")
+                    
+                    # Prefer issue/prepared dates
+                    if any(key in label for key in ['issue', 'prepared', 'issued', 'creation']):
+                        chosen = chosen_iso
+                        break
+                    if not chosen:
+                        chosen = chosen_iso
+                        
+                except Exception as e:
+                    logger.warning(f"[SDS_EXTRACTOR] Failed to parse date '{candidate}': {e}")
                     continue
-                # Convert to ISO format for database compatibility
-                chosen_iso = d.strftime('%Y-%m-%d')
-                logger.info(f"[SDS_EXTRACTOR] Parsed date '{candidate}' as {d} -> ISO: {chosen_iso}")
-            except Exception as e:
-                logger.warning(f"[SDS_EXTRACTOR] Failed to parse date '{candidate}': {e}")
-                continue
-            if any(key in label for key in ['issue', 'prepared', 'issued', 'creation']):
-                chosen = chosen_iso
-                break
-            if not chosen:
-                chosen = chosen_iso
+                    
+        except ImportError:
+            logger.warning("[SDS_EXTRACTOR] python-dateutil not available, skipping date parsing")
+            chosen = None
+    
     result['issue_date'] = {'value': chosen, 'confidence': 1.0 if chosen else 0.0}
     
-    # Step 5: Summary
-    logger.info(f"[SDS_EXTRACTOR] Parsing complete. Results:")
+    # Step 4: Summary logging
+    logger.info("[SDS_EXTRACTOR] Step 4: Parsing complete. Results summary:")
     for key, value in result.items():
+        if key == 'extraction_info':
+            continue
         conf = value.get('confidence', 0) if isinstance(value, dict) else 0
         val = value.get('value', value) if isinstance(value, dict) else value
         logger.info(f"[SDS_EXTRACTOR]   {key}: '{val}' (confidence: {conf})")
@@ -256,8 +405,26 @@ def parse_pdf(path: Path):
 
 
 if __name__ == '__main__':
-    import json, sys
-    for pdf in sys.argv[1:]:
-        res = parse_pdf(Path(pdf))
-        print(pdf)
-        print(json.dumps(res, indent=2, ensure_ascii=False))
+    import json
+    import sys
+    
+    if len(sys.argv) < 2:
+        print("Usage: python sds_extractor.py <pdf_file> [pdf_file2] ...")
+        sys.exit(1)
+    
+    for pdf_path in sys.argv[1:]:
+        path = Path(pdf_path)
+        if not path.exists():
+            print(f"Error: {pdf_path} not found")
+            continue
+            
+        print(f"\n{'='*50}")
+        print(f"Processing: {pdf_path}")
+        print('='*50)
+        
+        try:
+            result = parse_pdf(path)
+            print(json.dumps(result, indent=2, ensure_ascii=False))
+        except Exception as e:
+            print(f"Error parsing {pdf_path}: {e}")
+            logger.error(f"[SDS_EXTRACTOR] Failed to parse {pdf_path}: {e}")
