@@ -14,25 +14,28 @@ from datetime import datetime
 from typing import Optional, Dict, Any
 import logging
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 # Import the new SDS extractor
 try:
     from sds_parser_new.sds_extractor import parse_pdf
     logger.info("[PARSE_SDS] Successfully imported sds_extractor.parse_pdf")
 except ImportError as e:
     logger.error(f"[PARSE_SDS] Failed to import sds_extractor: {e}")
-    logger.error(f"[PARSE_SDS] Check that sds_parser_new directory exists and contains sds_extractor.py")
+    logger.error(
+        "[PARSE_SDS] Check that sds_parser_new directory exists and contains sds_extractor.py"
+    )
     # Create a fallback parse function
     def parse_pdf(pdf_path):
         return {
             "error": "SDS extractor not available",
             "fallback": True,
-            "note": "Using basic text extraction only"
+            "note": "Using basic text extraction only",
         }
-    logger.warning("[PARSE_SDS] Using fallback parse function")
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+    logger.warning("[PARSE_SDS] Using fallback parse function")
 
 
 def download_pdf(url: str, temp_dir: Path) -> Optional[Path]:
