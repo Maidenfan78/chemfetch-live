@@ -10,21 +10,15 @@ services:
         value: production
       - key: PORT
         value: 10000
-      # OCR service URL - FIXED to use proper service name
+      # OCR service URL - Internal service communication
       - key: EXPO_PUBLIC_OCR_API_URL
-        fromService:
-          name: chemfetch-ocr-lightweight
-          type: pserv
-          property: host
+        value: http://chemfetch-ocr:5001
       # Alternative backup URL
       - key: OCR_SERVICE_URL
-        fromService:
-          name: chemfetch-ocr-lightweight
-          type: pserv
-          property: host
+        value: http://chemfetch-ocr:5001
 
   - type: pserv
-    name: chemfetch-ocr-lightweight
+    name: chemfetch-ocr
     env: python
     buildCommand: |
       cd ocr_service && 
