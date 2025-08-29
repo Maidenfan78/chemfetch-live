@@ -59,6 +59,12 @@ export const BottomBar = () => {
           label="Register"
           isActive={pathname === '/register'}
         />
+        <TabButton
+          onPress={() => router.replace('/help')}
+          icon="❓"
+          label="Help"
+          isActive={pathname === '/help'}
+        />
         <TabButton onPress={handleLogout} icon="🚪" label="Sign Out" />
       </View>
     </SafeAreaView>

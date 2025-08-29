@@ -104,6 +104,10 @@ export default function HomeScreen() {
                 🔧 Network Diagnostics
               </ActionButton>
 
+              <ActionButton style="bg-blue-500" onPress={() => router.push('/help')}>
+                ❓ Help & Support
+              </ActionButton>
+
               <ActionButton
                 style="bg-white border border-border-color"
                 textColor="text-text-primary"
