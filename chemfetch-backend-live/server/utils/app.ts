@@ -4,9 +4,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import pinoHttp from 'pino-http';
-import sdsByNameRoute from '../routes/sdsByName';
+import sdsByNameRoute from '../routes/sdsByName.js';
 
-import logger from './logger';
+import logger from './logger.js';
 
 import scanRoute from '../routes/scan.js';
 import confirmRoute from '../routes/confirm.js';
@@ -21,7 +21,14 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '15mb' }));
 app.use('/sds-by-name', sdsByNameRoute);
-app.use(pinoHttp({ logger }));
+
+// --- Fix pino-http typing under ESM/NodeNext ---
+const pinoHttpFactory = pinoHttp as unknown as (opts?: {
+  logger?: any;
+}) => import('pino-http').HttpLogger;
+
+app.use(pinoHttpFactory({ logger }));
+// -----------------------------------------------
 
 const limiter = rateLimit({ windowMs: 60_000, max: 60 });
 app.use(limiter);

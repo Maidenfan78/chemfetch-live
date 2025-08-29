@@ -43,7 +43,7 @@ function collectLogs() {
     '..',
     'chemfetch-client-hub-live',
     'logs',
-    `client-hub-${today}.log`,
+    `client-hub-${today}.log`
   );
   if (fs.existsSync(clientHubLogFile)) {
     const clientLogs = fs.readFileSync(clientHubLogFile, 'utf8');
@@ -55,7 +55,7 @@ function collectLogs() {
 
   // 4. Mobile logs (note: these are stored on device, not accessible from here)
   allLogs.push(
-    `\n=== MOBILE LOGS ===\nMobile logs are stored on device at: Documents/logs/mobile-${today}.log\nAccess via app debug menu or device file system\n`,
+    `\n=== MOBILE LOGS ===\nMobile logs are stored on device at: Documents/logs/mobile-${today}.log\nAccess via app debug menu or device file system\n`
   );
 
   // 5. Add timestamp and system info

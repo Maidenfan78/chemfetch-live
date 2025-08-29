@@ -1,3 +1,4 @@
+// server/routes/scan.ts
 import express from 'express';
 import { supabase } from '../utils/supabaseClient.js';
 import {
@@ -8,20 +9,31 @@ import {
 } from '../utils/scraper.js';
 import { isValidCode, isValidName, isValidSize } from '../utils/validation.js';
 import logger from '../utils/logger.js';
-import puppeteer from 'puppeteer-extra';
+
+// ⬇⬇ Fix puppeteer-extra typing under ESM/NodeNext
+import puppeteerBase from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import type { PuppeteerNode } from 'puppeteer'; // removed PuppeteerLaunchOptions (not exported in some versions)
+
+// Teach TS that puppeteer-extra behaves like PuppeteerNode and has .use()
+const puppeteer = puppeteerBase as unknown as PuppeteerNode & {
+  use: (plugin: unknown) => void;
+};
+
+puppeteer.use(StealthPlugin());
+// ⬆⬆ End fix
+
 import { triggerAutoSdsParsing } from '../utils/autoSdsParsing.js';
 
 const router = express.Router();
-puppeteer.use(StealthPlugin());
 
-export type ScrapedProduct = {
+export interface ScrapedProduct {
   name?: string;
   contents_size_weight?: string;
   url: string;
   size?: string;
   sdsUrl?: string;
-};
+}
 
 // --- Helpers -----------------------------------------------------------------
 function isProbablyA1Base64(s: string): boolean {

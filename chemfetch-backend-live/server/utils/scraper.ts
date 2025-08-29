@@ -1,11 +1,21 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import puppeteer from 'puppeteer-extra';
+
+// ⬇⬇ Fix puppeteer-extra typing under ESM/NodeNext
+import puppeteerBase from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { setTimeout as delay } from 'timers/promises';
-import { TTLCache } from './cache.js';
+import type { PuppeteerNode } from 'puppeteer';
+
+// Teach TS that puppeteer-extra behaves like PuppeteerNode and has .use()
+const puppeteer = puppeteerBase as unknown as PuppeteerNode & {
+  use: (plugin: unknown) => void;
+};
 
 puppeteer.use(StealthPlugin());
+// ⬆⬆ End fix
+
+import { setTimeout as delay } from 'timers/promises';
+import { TTLCache } from './cache.js';
 
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36';
@@ -228,7 +238,13 @@ async function fetchGoogleSearchResults(query: string): Promise<{ title: string;
 // Bing search fallback (AU-biased) via Puppeteer (stealth)
 // -----------------------------------------------------------------------------
 async function fetchBingLinksRaw(query: string): Promise<{ title: string; url: string }[]> {
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+  // Inferred launch options type from the actual function
+  type LaunchOpts = Parameters<typeof puppeteer.launch>[0];
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox'],
+  } as LaunchOpts);
   try {
     const page = await browser.newPage();
     await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-AU,en;q=0.9' });

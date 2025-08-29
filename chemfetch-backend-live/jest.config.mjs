@@ -5,15 +5,13 @@ export default {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  transform: {},
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        target: 'es2017',
-        module: 'esnext',
-        moduleResolution: 'node',
-        esModuleInterop: true,
+  transform: {
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+        tsconfig: 'tsconfig.jest.json',
       },
-    },
+    ],
   },
 };
