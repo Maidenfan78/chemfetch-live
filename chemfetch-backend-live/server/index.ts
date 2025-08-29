@@ -2,7 +2,6 @@
 import app from './app.js';
 import logger from './utils/logger.js';
 
-
 // Note: OCR route registration is now handled in app.ts to avoid duplicate registration
 // The proxy configuration is properly centralized in the main app configuration.
 

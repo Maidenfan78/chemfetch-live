@@ -2,6 +2,8 @@
 
 **Expo + React Native** mobile app for barcode scanning, OCR, and chemical safety management. Part of the ChemFetch platform for field workers and safety personnel.
 
+**Currently in closed testing on Android** - Contact support@chemfetch.com for access to the internal testing program.
+
 This mobile application enables on-site chemical identification, Safety Data Sheet verification, and inventory management through an intuitive touch interface optimized for industrial environments.
 
 ---
@@ -23,7 +25,7 @@ This mobile application enables on-site chemical identification, Safety Data She
 - **🌙 Dark Mode Support**: Optimized for various lighting conditions
 - **⚡ Fast Performance**: Optimized for quick scanning workflows
 - **🔒 Secure Authentication**: User login with role-based permissions
-- **📱 Cross-Platform**: Native iOS and Android support via Expo
+- **📱 Android Platform**: Native Android support via Expo (iOS version planned for future release)
 
 ---
 
@@ -31,7 +33,7 @@ This mobile application enables on-site chemical identification, Safety Data She
 
 ### Core Framework
 
-- **React Native 0.79** with Expo 53 for cross-platform development
+- **React Native 0.79** with Expo 53 for Android development (iOS support planned)
 - **Expo Router 5** for file-based navigation
 - **TypeScript** for type safety and better development experience
 
@@ -66,8 +68,9 @@ This mobile application enables on-site chemical identification, Safety Data She
 
 - Node.js 18+ and npm
 - Expo CLI: `npm install -g expo-cli`
-- iOS Simulator (macOS) or Android Emulator
-- Physical device with Expo Go app (recommended)
+- Android Emulator or physical Android device
+- Expo Go app for Android (recommended for testing)
+- iOS development planned for future release
 
 ### 1. Environment Setup
 
@@ -96,9 +99,9 @@ npx expo start
 
 **Options:**
 
-- Scan QR code with Expo Go app (iOS/Android)
-- Press `i` to open iOS Simulator
+- Scan QR code with Expo Go app on Android
 - Press `a` to open Android Emulator
+- iOS development coming in future release
 
 ### 4. Build for Production
 
@@ -534,10 +537,10 @@ This project is proprietary software. All rights reserved.
 
 **Device Compatibility:**
 
-- iOS 13.0+ required
-- Android API level 21+ (Android 5.0+)
+- Android API level 21+ (Android 5.0+) - Currently supported
 - Camera required for barcode scanning
 - Network connection for data sync
+- iOS version planned for future release
 
 ---
 
@@ -552,6 +555,7 @@ This project is proprietary software. All rights reserved.
 
 ### Q2 2025
 
+- **iOS Release**: Native iOS app launch
 - **AR Integration**: Augmented reality chemical identification
 - **Voice Commands**: Hands-free operation for industrial use
 - **Wearable Support**: Apple Watch and Android Wear integration

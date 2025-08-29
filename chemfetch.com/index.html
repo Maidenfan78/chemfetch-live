@@ -6,6 +6,13 @@
     <title>ChemFetch - Chemical Safety Management Platform (Testing Phase)</title>
     <meta name="description" content="Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification. Built for field workers and safety personnel.">
     
+    <!-- SEO and Indexing -->
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="https://chemfetch.com/">
+    <meta name="author" content="ChemFetch">
+    <meta name="keywords" content="chemical safety, barcode scanning, SDS verification, chemical management, OCR recognition, safety data sheet, chemical inventory, workplace safety, compliance management">
+    
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="ChemFetch - Chemical Safety Management Platform">
     <meta property="og:description" content="Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification.">
@@ -14,6 +21,7 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     
     <!-- CSS -->
     <style>
@@ -396,6 +404,7 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#platform">Platform</a></li>
                 <li><a href="https://chem-fetch-client-hub.vercel.app" target="_blank" class="hub-link">Client Hub</a></li>
+                <li><a href="/help">Help</a></li>
                 <li><a href="#contact">Contact</a></li>
                 <li><a href="/privacy-policy.html">Privacy</a></li>
             </ul>
@@ -407,7 +416,7 @@
         <div class="container">
             <h1 class="fade-in-up">Chemical Safety Management Platform</h1>
             <div class="testing-banner fade-in-up">
-                ⚠️ Currently in Testing Phase - Some features may be limited
+                ⚠️ Currently in Testing Phase - Mobile app in Android closed testing | <a href="mailto:support@chemfetch.com?subject=Testing Access Request" style="color: inherit; text-decoration: underline;">Request access</a>
             </div>
             <p class="fade-in-up">Professional barcode scanning, OCR text recognition, and Safety Data Sheet verification for field workers and safety personnel.</p>
             <div class="cta-buttons fade-in-up">
@@ -476,7 +485,7 @@
             <div class="platform-grid">
                 <div class="platform-item">
                     <h3>📱 Mobile Application</h3>
-                    <p>Cross-platform React Native app with Expo for iOS and Android. Optimized for field use with offline capabilities and intuitive touch interface.</p>
+                    <p>React Native app with Expo for Android devices (currently in closed testing). Optimized for field use with offline capabilities and intuitive touch interface. iOS version coming 2025.</p>
                     <ul class="tech-list">
                         <li>React Native 0.79 + Expo 53</li>
                         <li>TypeScript + NativeWind (Tailwind CSS)</li>
@@ -640,6 +649,42 @@
                 }
             });
         });
+    </script>
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "ChemFetch",
+      "description": "Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification for field workers and safety personnel.",
+      "url": "https://chemfetch.com",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "Safety Management",
+      "operatingSystem": ["Android", "Web"],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "AUD"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "ChemFetch",
+        "url": "https://chemfetch.com"
+      },
+      "featureList": [
+        "Barcode Scanning",
+        "OCR Text Recognition", 
+        "Safety Data Sheet Management",
+        "Chemical Inventory Management",
+        "Regulatory Compliance",
+        "Australian-focused Web Scraping",
+        "Multi-platform Support"
+      ],
+      "screenshot": "https://chemfetch.com/screenshot.png",
+      "softwareVersion": "2024.12",
+      "releaseNotes": "Enhanced OCR processing, improved scanning workflows, and comprehensive SDS management."
+    }
     </script>
 </body>
 </html>

@@ -28,10 +28,11 @@ ChemFetch is built as a modern microservices architecture with separate frontend
 ## 📁 Project Structure
 
 ### [`chemfetch-mobile-live/`](./chemfetch-mobile-live)
-**React Native mobile app** for field workers and safety personnel
+**React Native mobile app** for field workers and safety personnel (**Currently in Android closed testing**)
 - **Technology**: Expo 53, React Native 0.79, TypeScript
 - **Features**: Barcode scanning, manual entry, chemical register access
-- **Platforms**: iOS, Android, Web (via Expo)
+- **Platforms**: Android (closed testing), Web (via Expo) - iOS version planned for future release
+- **Access**: Contact support@chemfetch.com for testing program invitation
 - **Key Capabilities**: 
   - Multi-format barcode scanning (EAN, UPC, ITF-14, Code128)
   - GTIN normalization and validation
@@ -171,7 +172,7 @@ See individual README files for detailed environment setup instructions.
 ### Frontend Applications
 - **Mobile-first design** optimized for industrial environments
 - **Real-time updates** with Supabase subscriptions
-- **Cross-platform compatibility** (iOS, Android, Web)
+- **Android platform support** (iOS version planned for future release)
 - **Modern UI frameworks** with Tailwind CSS and shadcn/ui components
 
 ---
@@ -270,6 +271,7 @@ This project is proprietary software. All rights reserved.
 - **API improvements** with enhanced rate limiting and caching
 
 ### Q2 2025
+- **iOS mobile app release** with full feature parity
 - **Multi-organization support** with enterprise features
 - **International expansion** with localization for different markets
 - **AR integration** for mobile chemical identification

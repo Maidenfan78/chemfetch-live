@@ -15,7 +15,7 @@ export class NetworkUtil {
   static async testBackendConnection(): Promise<ApiResponse> {
     try {
       mobileLogger.info('NETWORK_TEST', `Testing connection to: ${BACKEND_API_URL}`);
-      
+
       const response = await fetch(`${BACKEND_API_URL}/health`, {
         method: 'GET',
         headers: {
@@ -25,7 +25,7 @@ export class NetworkUtil {
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         mobileLogger.info('NETWORK_TEST', 'Backend connection successful', {
           status: response.status,
@@ -38,9 +38,9 @@ export class NetworkUtil {
           statusText: response.statusText,
           data,
         });
-        return { 
-          error: `HTTP ${response.status}: ${response.statusText}`, 
-          status: response.status 
+        return {
+          error: `HTTP ${response.status}: ${response.statusText}`,
+          status: response.status,
         };
       }
     } catch (error: any) {
@@ -48,9 +48,9 @@ export class NetworkUtil {
         error: error.message,
         backendUrl: BACKEND_API_URL,
       });
-      return { 
+      return {
         error: `Network error: ${error.message}`,
-        status: 0
+        status: 0,
       };
     }
   }
@@ -58,13 +58,10 @@ export class NetworkUtil {
   /**
    * Enhanced fetch with better error handling and logging
    */
-  static async fetchWithLogging(
-    endpoint: string, 
-    options: RequestInit = {}
-  ): Promise<Response> {
+  static async fetchWithLogging(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const url = `${BACKEND_API_URL}${endpoint}`;
     const requestId = Math.random().toString(36).substring(7);
-    
+
     mobileLogger.info('API_REQUEST', `[${requestId}] ${options.method || 'GET'} ${endpoint}`, {
       url,
       headers: options.headers,
@@ -72,7 +69,7 @@ export class NetworkUtil {
     });
 
     const startTime = Date.now();
-    
+
     try {
       const response = await fetch(url, {
         ...options,
@@ -83,7 +80,7 @@ export class NetworkUtil {
       });
 
       const duration = Date.now() - startTime;
-      
+
       if (response.ok) {
         mobileLogger.info('API_REQUEST', `[${requestId}] Success`, {
           status: response.status,
@@ -122,9 +119,9 @@ export class NetworkUtil {
       const data = await response.json();
       return { data, status: response.status };
     } catch (error: any) {
-      return { 
+      return {
         error: `Scan failed: ${error.message}`,
-        status: 0
+        status: 0,
       };
     }
   }

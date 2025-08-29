@@ -2,14 +2,7 @@ import { NetworkUtil } from '../lib/network';
 import { BACKEND_API_URL } from '../lib/constants';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function NetworkTest() {
@@ -24,10 +17,10 @@ export default function NetworkTest() {
   const runTests = async () => {
     setTesting(true);
     setResults([]);
-    
+
     addResult(`Testing backend connection...`);
     addResult(`Backend URL: ${BACKEND_API_URL}`);
-    
+
     try {
       // Test 1: Basic connectivity
       const healthTest = await NetworkUtil.testBackendConnection();
@@ -45,7 +38,6 @@ export default function NetworkTest() {
       } else {
         addResult(`✅ Scan test passed: Status ${scanTest.status}`);
       }
-
     } catch (error: any) {
       addResult(`❌ Test suite failed: ${error.message}`);
     }
@@ -60,7 +52,7 @@ export default function NetworkTest() {
   const showSummary = () => {
     const successCount = results.filter(r => r.includes('✅')).length;
     const failCount = results.filter(r => r.includes('❌')).length;
-    
+
     Alert.alert(
       'Test Summary',
       `Passed: ${successCount}\nFailed: ${failCount}\n\nCheck console logs for detailed output.`,
@@ -71,70 +63,59 @@ export default function NetworkTest() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 p-4">
-        <Text className="text-2xl font-bold mb-4">Network Diagnostics</Text>
-        
-        <Text className="text-base mb-2">Backend URL:</Text>
-        <Text className="text-sm text-gray-600 mb-4 p-2 bg-gray-100 rounded">
+        <Text className="mb-4 text-2xl font-bold">Network Diagnostics</Text>
+
+        <Text className="mb-2 text-base">Backend URL:</Text>
+        <Text className="mb-4 rounded bg-gray-100 p-2 text-sm text-gray-600">
           {BACKEND_API_URL}
         </Text>
 
-        <View className="flex-row gap-2 mb-4">
+        <View className="mb-4 flex-row gap-2">
           <Pressable
-            className={`flex-1 py-3 px-4 rounded ${
-              testing ? 'bg-gray-400' : 'bg-blue-500'
-            }`}
+            className={`flex-1 rounded px-4 py-3 ${testing ? 'bg-gray-400' : 'bg-blue-500'}`}
             onPress={runTests}
             disabled={testing}
           >
-            <Text className="text-white text-center font-semibold">
+            <Text className="text-center font-semibold text-white">
               {testing ? 'Testing...' : 'Run Tests'}
             </Text>
           </Pressable>
 
-          <Pressable
-            className="py-3 px-4 bg-gray-500 rounded"
-            onPress={clearResults}
-          >
-            <Text className="text-white text-center font-semibold">Clear</Text>
+          <Pressable className="rounded bg-gray-500 px-4 py-3" onPress={clearResults}>
+            <Text className="text-center font-semibold text-white">Clear</Text>
           </Pressable>
         </View>
 
         {results.length > 0 && (
-          <View className="flex-row gap-2 mb-4">
-            <Pressable
-              className="py-2 px-4 bg-green-500 rounded"
-              onPress={showSummary}
-            >
-              <Text className="text-white text-center text-sm">Summary</Text>
+          <View className="mb-4 flex-row gap-2">
+            <Pressable className="rounded bg-green-500 px-4 py-2" onPress={showSummary}>
+              <Text className="text-center text-sm text-white">Summary</Text>
             </Pressable>
           </View>
         )}
 
-        <ScrollView className="flex-1 bg-gray-50 rounded p-3">
+        <ScrollView className="flex-1 rounded bg-gray-50 p-3">
           {testing && (
             <View className="items-center py-4">
               <ActivityIndicator size="large" color="#3B82F6" />
             </View>
           )}
-          
+
           {results.map((result, index) => (
-            <Text key={index} className="text-sm mb-1 font-mono">
+            <Text key={index} className="mb-1 font-mono text-sm">
               {result}
             </Text>
           ))}
-          
+
           {results.length === 0 && !testing && (
-            <Text className="text-gray-500 text-center py-8">
-              Tap "Run Tests" to start network diagnostics
+            <Text className="py-8 text-center text-gray-500">
+              Tap &quot;Run Tests&quot; to start network diagnostics
             </Text>
           )}
         </ScrollView>
 
-        <Pressable
-          className="mt-4 py-3 bg-gray-600 rounded"
-          onPress={() => router.back()}
-        >
-          <Text className="text-white text-center font-semibold">Back</Text>
+        <Pressable className="mt-4 rounded bg-gray-600 py-3" onPress={() => router.back()}>
+          <Text className="text-center font-semibold text-white">Back</Text>
         </Pressable>
       </View>
     </SafeAreaView>

@@ -9,14 +9,13 @@ puppeteer.use(StealthPlugin());
 
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36';
-const OCR_SERVICE_URL = process.env.EXPO_PUBLIC_OCR_API_URL || 
-                        process.env.OCR_SERVICE_URL || 
-                        'http://127.0.0.1:5001';
+const OCR_SERVICE_URL =
+  process.env.EXPO_PUBLIC_OCR_API_URL || process.env.OCR_SERVICE_URL || 'http://127.0.0.1:5001';
 
 console.log('[OCR_CONFIG] OCR Service URL:', OCR_SERVICE_URL);
 console.log('[OCR_CONFIG] Available env vars:', {
   EXPO_PUBLIC_OCR_API_URL: !!process.env.EXPO_PUBLIC_OCR_API_URL,
-  OCR_SERVICE_URL: !!process.env.OCR_SERVICE_URL
+  OCR_SERVICE_URL: !!process.env.OCR_SERVICE_URL,
 });
 
 // Google Search API configuration
@@ -403,13 +402,13 @@ function isRelevantForAustralia(url: string, title: string): boolean {
 
   // Accept major international retailers that ship to Australia
   const acceptedDomains = [
-    'amazon.com', 
-    'ebay.com', 
+    'amazon.com',
+    'ebay.com',
     'walmart.com',
     'chemist.net',
     'pharmacy',
     'chemwatch',
-    'msdsdigital'
+    'msdsdigital',
   ];
   if (acceptedDomains.some(domain => urlLower.includes(domain))) return true;
 
@@ -499,33 +498,35 @@ export async function fetchSdsByName(
 
   // Use relevant hits if we have them, otherwise fall back to all hits
   const searchHits = relevantHits.length > 0 ? relevantHits : hits;
-  
+
   // Prioritize Australian pharmacy/chemical sites over international ones
   const prioritizedHits = searchHits.sort((a, b) => {
     const aUrl = a.url.toLowerCase();
     const bUrl = b.url.toLowerCase();
-    
+
     // Australian pharmacy sites get highest priority
-    const auPharmacyA = aUrl.includes('.com.au') && (aUrl.includes('pharmacy') || aUrl.includes('chemist'));
-    const auPharmacyB = bUrl.includes('.com.au') && (bUrl.includes('pharmacy') || bUrl.includes('chemist'));
+    const auPharmacyA =
+      aUrl.includes('.com.au') && (aUrl.includes('pharmacy') || aUrl.includes('chemist'));
+    const auPharmacyB =
+      bUrl.includes('.com.au') && (bUrl.includes('pharmacy') || bUrl.includes('chemist'));
     if (auPharmacyA && !auPharmacyB) return -1;
     if (auPharmacyB && !auPharmacyA) return 1;
-    
+
     // Then other Australian sites
     const auA = aUrl.includes('.com.au');
     const auB = bUrl.includes('.com.au');
     if (auA && !auB) return -1;
     if (auB && !auA) return 1;
-    
+
     // Deprioritize eBay (often has anti-bot protection)
     const ebayA = aUrl.includes('ebay');
     const ebayB = bUrl.includes('ebay');
     if (ebayA && !ebayB) return 1;
     if (ebayB && !ebayA) return -1;
-    
+
     return 0;
   });
-  
+
   const topLinks = prioritizedHits.slice(0, 5).map(h => extractGoogleTarget(h.url));
 
   for (const h of prioritizedHits) {
@@ -738,7 +739,7 @@ export async function scrapeProductInfo(
   // Check for anti-bot detection phrases
   const pageText = $('body').text().toLowerCase();
   const title = $('title').text().toLowerCase();
-  
+
   const antiBotPhrases = [
     'checking your browser',
     'browser check',
@@ -746,11 +747,11 @@ export async function scrapeProductInfo(
     'cloudflare',
     'access denied',
     'blocked',
-    'captcha'
+    'captcha',
   ];
-  
-  const hasAntiBotDetection = antiBotPhrases.some(phrase => 
-    pageText.includes(phrase) || title.includes(phrase)
+
+  const hasAntiBotDetection = antiBotPhrases.some(
+    phrase => pageText.includes(phrase) || title.includes(phrase)
   );
 
   if (hasAntiBotDetection) {

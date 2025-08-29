@@ -3,11 +3,13 @@
 ## Issues Found and Fixed:
 
 ### 1. ES Modules vs CommonJS Issue ✅ FIXED
+
 - **Error**: `ReferenceError: require is not defined` in `app.js` line 63
 - **Cause**: Using `require()` in ES modules context (`"type": "module"` in package.json)
 - **Fix**: Changed dynamic `require()` to static import in `server/app.ts`
 
 ### 2. Puppeteer Chrome Installation ✅ FIXED
+
 - **Error**: `Could not find Chrome (ver. 139.0.7258.138)`
 - **Cause**: Chrome not installed during Render build process
 - **Fix**: Added `npx puppeteer browsers install chrome` to buildCommand in `render.yaml`
@@ -15,11 +17,13 @@
 ### 3. Other Issues Identified:
 
 #### Google Search API Configuration
+
 - API key is not configured (`GOOGLE_SEARCH_API_KEY` missing)
 - Falling back to Bing search via Puppeteer
 - This is working as intended (fallback mechanism)
 
 #### OCR Service
+
 - OCR service URLs are properly configured
 - Fallback mechanisms are in place
 
@@ -40,6 +44,7 @@ git push origin main
 ```
 
 ## Expected Results:
+
 - No more "require is not defined" errors
 - Successful Chrome installation during build
 - Puppeteer-based scraping working properly

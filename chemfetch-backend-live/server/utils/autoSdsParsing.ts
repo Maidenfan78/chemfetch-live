@@ -39,9 +39,8 @@ function convertToISODate(dateString: string | null | undefined): string | null 
 }
 
 // CRITICAL: Use the same environment variable as scraper.ts and render.yaml
-const OCR_SERVICE_URL = process.env.EXPO_PUBLIC_OCR_API_URL || 
-                        process.env.OCR_SERVICE_URL || 
-                        'http://127.0.0.1:5001';
+const OCR_SERVICE_URL =
+  process.env.EXPO_PUBLIC_OCR_API_URL || process.env.OCR_SERVICE_URL || 'http://127.0.0.1:5001';
 
 // Enhanced debugging for OCR service configuration
 console.log('[AUTO_SDS_DEBUG] ' + '='.repeat(30));
@@ -50,7 +49,7 @@ console.log('[AUTO_SDS_DEBUG] Environment variables:', {
   EXPO_PUBLIC_OCR_API_URL: process.env.EXPO_PUBLIC_OCR_API_URL || 'NOT_SET',
   OCR_SERVICE_URL: process.env.OCR_SERVICE_URL || 'NOT_SET',
   NODE_ENV: process.env.NODE_ENV,
-  PORT: process.env.PORT
+  PORT: process.env.PORT,
 });
 console.log('[AUTO_SDS_DEBUG] ' + '='.repeat(30));
 
@@ -133,27 +132,30 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
       logger.info(`Auto-SDS: Testing OCR service at ${OCR_SERVICE_URL}`);
       const healthCheck = await axios.get(`${OCR_SERVICE_URL}/health`, {
         timeout: 10000, // Increased timeout for slow services
-        validateStatus: (status) => status < 500, // Accept 4xx as valid responses
+        validateStatus: status => status < 500, // Accept 4xx as valid responses
       });
-      
-      logger.info({
-        status: healthCheck.status,
-        data: healthCheck.data,
-        productId
-      }, `Auto-SDS: OCR health check response:`);
-      
+
+      logger.info(
+        {
+          status: healthCheck.status,
+          data: healthCheck.data,
+          productId,
+        },
+        `Auto-SDS: OCR health check response:`
+      );
+
       if (healthCheck.status === 404) {
         logger.error(`Auto-SDS: OCR service not found at ${OCR_SERVICE_URL} - check service URL`);
         await createBasicSdsMetadata(productId, sdsUrl);
         return;
       }
-      
+
       if (healthCheck.status !== 200) {
         logger.error(`Auto-SDS: OCR service unhealthy (status ${healthCheck.status})`);
         await createBasicSdsMetadata(productId, sdsUrl);
         return;
       }
-      
+
       logger.info(`Auto-SDS: OCR service healthy, proceeding with parsing`);
     } catch (healthError: any) {
       logger.error(
@@ -161,7 +163,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
           error: healthError.message,
           code: healthError.code,
           url: OCR_SERVICE_URL,
-          timeout: healthError.code === 'ECONNABORTED'
+          timeout: healthError.code === 'ECONNABORTED',
         },
         `Auto-SDS: OCR service health check failed for product ${productId}:`
       );
@@ -255,32 +257,31 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
     logger.info(`Auto-SDS: Successfully parsed and stored metadata for product ${productId}`);
   } catch (error: any) {
     // Enhanced error handling with more specific error types
-    logger.error({
-      message: error.message,
-      code: error.code,
-      status: error.response?.status,
-      url: OCR_SERVICE_URL,
-      timeout: error.code === 'ECONNABORTED'
-    }, `Auto-SDS: Execution error for product ${productId}:`);
-    
+    logger.error(
+      {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+        url: OCR_SERVICE_URL,
+        timeout: error.code === 'ECONNABORTED',
+      },
+      `Auto-SDS: Execution error for product ${productId}:`
+    );
+
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
       logger.error(
         `Auto-SDS: OCR service not reachable at ${OCR_SERVICE_URL} for product ${productId}`
       );
     } else if (error.response?.status === 404) {
-      logger.error(
-        `Auto-SDS: OCR service endpoint not found - check service deployment`
-      );
+      logger.error(`Auto-SDS: OCR service endpoint not found - check service deployment`);
     } else if (error.code === 'ECONNABORTED') {
-      logger.error(
-        `Auto-SDS: OCR service timeout - PDF processing took too long`
-      );
+      logger.error(`Auto-SDS: OCR service timeout - PDF processing took too long`);
     } else if (error.response) {
       logger.error(
         `Auto-SDS: HTTP error ${error.response.status}: ${JSON.stringify(error.response.data)}`
       );
     }
-    
+
     // Create basic metadata entry as fallback for all error types
     await createBasicSdsMetadata(productId, sdsUrl);
   }
@@ -292,7 +293,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
 async function createBasicSdsMetadata(productId: number, sdsUrl: string): Promise<void> {
   try {
     const supabase = createServiceRoleClient();
-    
+
     // Get product name for basic metadata
     const { data: product } = await supabase
       .from('product')
@@ -315,7 +316,7 @@ async function createBasicSdsMetadata(productId: number, sdsUrl: string): Promis
         sds_url: sdsUrl,
         created_at: new Date().toISOString(),
         ocr_service_url: OCR_SERVICE_URL,
-        fallback_reason: 'OCR service unavailable or failed'
+        fallback_reason: 'OCR service unavailable or failed',
       },
     });
 

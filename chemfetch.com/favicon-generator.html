@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favicon Generator</title>
+</head>
+<body>
+    <canvas id="canvas" width="32" height="32" style="border: 1px solid #ccc;"></canvas>
+    
+    <script>
+        // Create favicon on canvas
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Background circle
+        ctx.fillStyle = '#2563eb';
+        ctx.beginPath();
+        ctx.arc(16, 16, 15, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Flask outline
+        ctx.strokeStyle = '#1d4ed8';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        
+        // Flask neck (white)
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(14, 6, 4, 6);
+        
+        // Flask body (white)
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(11, 12);
+        ctx.lineTo(14, 12);
+        ctx.lineTo(14, 18);
+        ctx.quadraticCurveTo(14, 20, 16, 20);
+        ctx.quadraticCurveTo(18, 20, 18, 18);
+        ctx.lineTo(18, 12);
+        ctx.lineTo(21, 12);
+        ctx.lineTo(23, 22);
+        ctx.quadraticCurveTo(23, 24, 21, 24);
+        ctx.lineTo(11, 24);
+        ctx.quadraticCurveTo(9, 24, 9, 22);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Liquid inside flask
+        ctx.fillStyle = '#06b6d4';
+        ctx.beginPath();
+        ctx.moveTo(12, 16);
+        ctx.lineTo(13.5, 16);
+        ctx.lineTo(13.5, 20);
+        ctx.quadraticCurveTo(13.5, 21, 14.5, 21);
+        ctx.lineTo(17.5, 21);
+        ctx.quadraticCurveTo(18.5, 21, 18.5, 20);
+        ctx.lineTo(18.5, 16);
+        ctx.lineTo(20, 16);
+        ctx.lineTo(21.5, 22);
+        ctx.quadraticCurveTo(21.5, 23, 20.5, 23);
+        ctx.lineTo(11.5, 23);
+        ctx.quadraticCurveTo(10.5, 23, 10.5, 22);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Bubbles
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.beginPath();
+        ctx.arc(15, 19, 0.8, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.beginPath();
+        ctx.arc(19, 18, 0.6, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.beginPath();
+        ctx.arc(17, 20.5, 0.5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Flask rim
+        ctx.fillStyle = '#e5e7eb';
+        ctx.beginPath();
+        ctx.ellipse(18, 12, 7, 1, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Convert to ICO and trigger download
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.download = 'favicon.ico';
+            link.href = canvas.toDataURL('image/x-icon');
+            link.click();
+        }, 100);
+    </script>
+</body>
+</html>

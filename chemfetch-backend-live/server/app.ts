@@ -19,7 +19,6 @@ import verifySdsProxy from './routes/verifySds.js'; // Keep SDS verification OCR
 import parseSDSEnhancedRoute from './routes/parseSDSEnhanced.js';
 import parseSdsRoute from './routes/parseSds.js';
 
-
 dotenv.config();
 
 const app = express();
@@ -29,7 +28,7 @@ const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     // Allow requests with no origin (mobile apps, testing tools, etc.)
     if (!origin) return callback(null, true);
-    
+
     // In production, allow specific domains
     if (process.env.NODE_ENV === 'production') {
       const allowedOrigins = process.env.FRONTEND_URL?.split(',') || [
@@ -38,11 +37,11 @@ const corsOptions = {
         'exp://localhost:8081', // Expo Go
         'exp://192.168.*:*', // Local network Expo
       ];
-      
+
       // Allow any origin for now since mobile apps don't send origin headers consistently
       return callback(null, true);
     }
-    
+
     // In development, allow all origins
     callback(null, true);
   },

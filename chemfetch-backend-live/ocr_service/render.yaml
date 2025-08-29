@@ -45,4 +45,3 @@ services:
         value: '1'
       - key: PIP_PREFER_BINARY
         value: '1'
-
