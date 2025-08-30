@@ -6,59 +6,51 @@
   "results": {
     "sds_1.PDF": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 2,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
-          "value": "SUPER GLUE FAST 20G",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Würth Chile Ltda.",
+          "value": "1 / 12",
           "confidence": 1.0
         },
         "issue_date": {
           "value": "2025-06-26",
           "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "Not regulated as a dangerous good",
-          "confidence": 1.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 23963,
+          "text_length": 23332,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "SUPER GLUE FAST 20G",
+          "value": "1 / 12",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Würth Chile Ltda.",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
-          "value": "of the substance or mixture and uses advised against",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "dangerous_goods_class": {
-          "value": "Not regulated as a dangerous good",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "III",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": "2025-06-26",
@@ -69,47 +61,34 @@
     },
     "sds_10.pdf": {
       "success": true,
-      "fields_extracted": 3,
+      "fields_extracted": 0,
       "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "JET POWER FUEL – 100GM/230GM/450GM",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "TAEYANG CORPORATION",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "2.1",
-          "confidence": 1.0
-        }
-      },
+      "extracted_values": {},
       "full_data": {
         "extraction_info": {
-          "text_length": 16793,
+          "text_length": 16083,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "JET POWER FUEL – 100GM/230GM/450GM",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "manufacturer": {
-          "value": "TAEYANG CORPORATION",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
-          "value": "Fuel etc.",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "dangerous_goods_class": {
-          "value": "2.1",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "subsidiary_risk": {
           "value": null,
@@ -128,19 +107,15 @@
     },
     "sds_11.pdf": {
       "success": true,
-      "fields_extracted": 3,
+      "fields_extracted": 2,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
-          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
+          "value": "Product name",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2023-05-08",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "3",
+          "value": "2023-05-18",
           "confidence": 1.0
         }
       },
@@ -150,12 +125,12 @@
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
+          "value": "Product name",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -167,19 +142,19 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "3",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "subsidiary_risk": {
-          "value": "Not Applicable",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "packing_group": {
-          "value": "II",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
-          "value": "2023-05-08",
+          "value": "2023-05-18",
           "confidence": 1.0
         }
       },
@@ -187,51 +162,42 @@
     },
     "sds_12.pdf": {
       "success": true,
-      "fields_extracted": 2,
+      "fields_extracted": 0,
       "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "MSDS Date",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Name",
-          "confidence": 1.0
-        }
-      },
+      "extracted_values": {},
       "full_data": {
         "extraction_info": {
-          "text_length": 12477,
+          "text_length": 12165,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "MSDS Date",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "manufacturer": {
-          "value": "Name",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
-          "value": "(s)",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "dangerous_goods_class": {
           "value": null,
           "confidence": 0.0
         },
         "subsidiary_risk": {
-          "value": null,
-          "confidence": 0.0
+          "value": "(s)",
+          "confidence": 1.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "DG Class",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": null,
@@ -242,39 +208,30 @@
     },
     "sds_13.pdf": {
       "success": true,
-      "fields_extracted": 2,
+      "fields_extracted": 0,
       "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "UK, NPIS - 0344 8920111 (Healthcare Professionals only)",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "safety data sheet",
-          "confidence": 1.0
-        }
-      },
+      "extracted_values": {},
       "full_data": {
         "extraction_info": {
-          "text_length": 26254,
+          "text_length": 25472,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "UK, NPIS - 0344 8920111 (Healthcare Professionals only)",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "manufacturer": {
-          "value": "safety data sheet",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
-          "value": "of the Substance/Mixture",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "dangerous_goods_class": {
           "value": null,
@@ -297,7 +254,7 @@
     },
     "sds_14.pdf": {
       "success": true,
-      "fields_extracted": 3,
+      "fields_extracted": 2,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
@@ -305,21 +262,17 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": ":",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "1950",
+          "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
           "confidence": 1.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 23263,
+          "text_length": 22931,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
@@ -328,7 +281,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": ":",
+          "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
           "confidence": 1.0
         },
         "product_use": {
@@ -336,16 +289,16 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "1950",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "None",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": null,
@@ -356,23 +309,15 @@
     },
     "sds_15.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 2,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
-          "value": "Dy-Mark Spray & Mark - All colours (LPG new formula)",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Registered company name",
+          "value": "Product name",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2021-11-03",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "2.1",
+          "value": "2021-11-23",
           "confidence": 1.0
         }
       },
@@ -382,36 +327,36 @@
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Dy-Mark Spray & Mark - All colours (LPG new formula)",
+          "value": "Product name",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Registered company name",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
           "value": "of the substance or mixture and uses advised against",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "2.1",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "Not Applicable",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
-          "value": "2021-11-03",
+          "value": "2021-11-23",
           "confidence": 1.0
         }
       },
@@ -419,7 +364,7 @@
     },
     "sds_2.pdf": {
       "success": true,
-      "fields_extracted": 2,
+      "fields_extracted": 3,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
@@ -427,17 +372,21 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Facsimile Number",
+          "value": "Nicepak Products",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2022-03-29",
           "confidence": 1.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 13440,
+          "text_length": 13212,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
@@ -446,7 +395,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Facsimile Number",
+          "value": "Nicepak Products",
           "confidence": 1.0
         },
         "product_use": {
@@ -462,75 +411,58 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Label",
+          "confidence": 1.0
         },
         "issue_date": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2022-03-29",
+          "confidence": 1.0
         }
       },
       "file_size_mb": 0.31
     },
     "sds_3.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 0,
       "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "Alternative number(s)",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Energizer Manufacturing, Inc.",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2019-01-04",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "14.5",
-          "confidence": 1.0
-        }
-      },
+      "extracted_values": {},
       "full_data": {
         "extraction_info": {
-          "text_length": 17105,
+          "text_length": 16662,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Alternative number(s)",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "manufacturer": {
-          "value": "Energizer Manufacturing, Inc.",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
-          "value": "of the substance or mixture and uses advised against",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "dangerous_goods_class": {
-          "value": "14.5",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "Not subject to transport regulations.",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
-          "value": "2019-01-04",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         }
       },
       "file_size_mb": 0.09
@@ -541,15 +473,16 @@
       "total_fields": 4,
       "extracted_values": {},
       "full_data": {
-        "error": "convert_from_path failed: Unable to get page count. Is poppler installed and in PATH?",
-        "text_length": 0,
-        "available_methods": {
-          "pymupdf": true,
-          "pdfplumber": true,
-          "ocr": true
-        },
-        "extraction_mode": "full",
-        "debug_info": "convert_from_path failed: Unable to get page count. Is poppler installed and in PATH?"
+        "error": "Could not extract text from PDF",
+        "extraction_info": {
+          "text_length": 0,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "pdfminer": true
+          },
+          "extraction_mode": "full"
+        }
       },
       "file_size_mb": 1.98
     },
@@ -559,11 +492,11 @@
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
-          "value": "WD-40 Aerosol",
+          "value": "1 – Product Identifier & Identity for the Chemical",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "WD-40",
+          "value": "WD-40 Company Australia",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
@@ -573,25 +506,25 @@
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 17125,
+          "text_length": 16909,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "WD-40 Aerosol",
+          "value": "1 – Product Identifier & Identity for the Chemical",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "WD-40",
+          "value": "WD-40 Company Australia",
           "confidence": 1.0
         },
         "product_use": {
-          "value": "Lubricant, Penetrant, Drives Out",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "dangerous_goods_class": {
           "value": "2.1",
@@ -614,7 +547,7 @@
     },
     "sds_6.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 3,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
@@ -622,25 +555,21 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "’s",
+          "value": "’s Product Code",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2022-02-08",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "3",
+          "value": "2022-02-28",
           "confidence": 1.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 14280,
+          "text_length": 13990,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
@@ -649,7 +578,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "’s",
+          "value": "’s Product Code",
           "confidence": 1.0
         },
         "product_use": {
@@ -657,19 +586,19 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "3",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "II",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
-          "value": "2022-02-08",
+          "value": "2022-02-28",
           "confidence": 1.0
         }
       },
@@ -685,21 +614,21 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": ":",
+          "value": "Penrite Oil Company Pty Ltd",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2021-07-01",
+          "value": "2021-07-21",
           "confidence": 1.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 17350,
+          "text_length": 17095,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
@@ -708,7 +637,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": ":",
+          "value": "Penrite Oil Company Pty Ltd",
           "confidence": 1.0
         },
         "product_use": {
@@ -728,7 +657,7 @@
           "confidence": 0.0
         },
         "issue_date": {
-          "value": "2021-07-01",
+          "value": "2021-07-21",
           "confidence": 1.0
         }
       },
@@ -736,63 +665,55 @@
     },
     "sds_8.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 2,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
-          "value": "Australia - 13 11 26",
+          "value": "SDS no.",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Glen 20 All in One Spray Disinfectant Original",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2023-04-13",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "2.1",
+          "value": "RB (Hygiene Home) Australia Pty Ltd",
           "confidence": 1.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 27207,
+          "text_length": 26608,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Australia - 13 11 26",
+          "value": "SDS no.",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Glen 20 All in One Spray Disinfectant Original",
+          "value": "RB (Hygiene Home) Australia Pty Ltd",
           "confidence": 1.0
         },
         "product_use": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Disinfectant Spray Consumer use",
+          "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "2.1",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "2",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
-          "value": "2023-04-13",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         }
       },
       "file_size_mb": 0.16
@@ -803,11 +724,11 @@
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
-          "value": ":",
+          "value": "Earth Choice Dishwashing Liquid",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": ":",
+          "value": "Natures Organics Pty Ltd",
           "confidence": 1.0
         },
         "issue_date": {
@@ -821,24 +742,24 @@
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 12514,
+          "text_length": 12083,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
-            "ocr": true
+            "pdfminer": true
           },
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": ":",
+          "value": "Earth Choice Dishwashing Liquid",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": ":",
+          "value": "Natures Organics Pty Ltd",
           "confidence": 1.0
         },
         "product_use": {
-          "value": ":",
+          "value": "Manual dishwashing liquid",
           "confidence": 1.0
         },
         "dangerous_goods_class": {

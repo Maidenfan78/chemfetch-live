@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Improved SDS extractor - fixing specific issues identified in testing
-Integration of working_parser.py into the modular structure
+Working SDS extractor - fixing specific issues identified in testing
 """
 import re
 import logging
@@ -307,13 +306,13 @@ def extract_date(text: str) -> Optional[str]:
     return None
 
 
-def parse_pdf(path: Path) -> Dict[str, Any]:
+def parse_pdf(pdf_path: Path) -> Dict[str, Any]:
     """Main parsing function that fixes the specific issues found in testing."""
     
-    logger.info(f"Starting to parse: {path}")
+    logger.info(f"Starting to parse: {pdf_path}")
     
     # Extract text
-    text = extract_text_from_pdf(path)
+    text = extract_text_from_pdf(pdf_path)
     if not text:
         return {
             "error": "Could not extract text from PDF",
@@ -323,8 +322,7 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
                     "pymupdf": PYMUPDF_AVAILABLE,
                     "pdfplumber": PDFPLUMBER_AVAILABLE,
                     "pdfminer": PDFMINER_AVAILABLE
-                },
-                "extraction_mode": "full"
+                }
             }
         }
     
@@ -342,8 +340,7 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
                 "pymupdf": PYMUPDF_AVAILABLE,
                 "pdfplumber": PDFPLUMBER_AVAILABLE,
                 "pdfminer": PDFMINER_AVAILABLE
-            },
-            "extraction_mode": "full"
+            }
         }
     }
     
@@ -415,7 +412,7 @@ if __name__ == '__main__':
     import sys
     
     if len(sys.argv) < 2:
-        print("Usage: python sds_extractor.py <pdf_file>")
+        print("Usage: python working_parser.py <pdf_file>")
         sys.exit(1)
     
     pdf_path = Path(sys.argv[1])
