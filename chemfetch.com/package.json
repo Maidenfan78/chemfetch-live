@@ -1,0 +1,24 @@
+{
+  "name": "chemfetch.com",
+  "version": "1.0.0",
+  "description": "Website for ChemFetch platform",
+  "license": "ISC",
+  "author": "maidenfan78",
+  "type": "commonjs",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint:html": "htmlhint **/*.html --ignore **/google*.html",
+    "lint:css": "stylelint **/*.css",
+    "lint:js": "prettier --check **/*.js",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js",
+    "format": "prettier --write .",
+    "fix:css": "stylelint **/*.css --fix"
+  },
+  "devDependencies": {
+    "htmlhint": "^1.6.3",
+    "prettier": "^3.6.2",
+    "stylelint": "^16.23.1",
+    "stylelint-config-standard": "^39.0.0"
+  }
+}

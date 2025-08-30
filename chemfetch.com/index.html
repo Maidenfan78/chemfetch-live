@@ -1,690 +1,798 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChemFetch - Chemical Safety Management Platform (Testing Phase)</title>
-    <meta name="description" content="Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification. Built for field workers and safety personnel.">
-    
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      ChemFetch - Chemical Safety Management Platform (Testing Phase)
+    </title>
+    <meta
+      name="description"
+      content="Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification. Built for field workers and safety personnel."
+    />
+
     <!-- SEO and Indexing -->
-    <meta name="robots" content="index, follow">
-    <meta name="googlebot" content="index, follow">
-    <link rel="canonical" href="https://chemfetch.com/">
-    <meta name="author" content="ChemFetch">
-    <meta name="keywords" content="chemical safety, barcode scanning, SDS verification, chemical management, OCR recognition, safety data sheet, chemical inventory, workplace safety, compliance management">
-    
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="https://chemfetch.com/" />
+    <meta name="author" content="ChemFetch" />
+    <meta
+      name="keywords"
+      content="chemical safety, barcode scanning, SDS verification, chemical management, OCR recognition, safety data sheet, chemical inventory, workplace safety, compliance management"
+    />
+
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="ChemFetch - Chemical Safety Management Platform">
-    <meta property="og:description" content="Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://chemfetch.com">
-    
+    <meta
+      property="og:title"
+      content="ChemFetch - Chemical Safety Management Platform"
+    />
+    <meta
+      property="og:description"
+      content="Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://chemfetch.com" />
+
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
     <!-- CSS -->
     <style>
-        :root {
-            --primary-color: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary-color: #64748b;
-            --accent-color: #06b6d4;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --border-color: #e5e7eb;
-        }
+      :root {
+        --primary-color: #2563eb;
+        --primary-dark: #1d4ed8;
+        --secondary-color: #64748b;
+        --accent-color: #06b6d4;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8fafc;
+        --border-color: #e5e7eb;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: var(--text-primary);
-            background: var(--bg-primary);
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: var(--bg-primary);
+      }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
 
-        /* Header */
-        header {
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
-        }
+      /* Header */
+      header {
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border-color);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+      }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-        }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+      }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .hub-link {
+        background: var(--primary-color) !important;
+        color: white !important;
+        padding: 8px 16px !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+      }
+
+      .hub-link:hover {
+        background: var(--primary-dark) !important;
+        color: white !important;
+        transform: translateY(-1px);
+      }
+
+      /* Hero Section */
+      .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 120px 0 80px 0;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+      }
+
+      .hero p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .btn-primary {
+        background: var(--bg-primary);
+        color: var(--primary-color);
+      }
+
+      .btn-primary:hover {
+        background: var(--bg-secondary);
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      /* Features Section */
+      .features {
+        padding: 80px 0;
+        background: var(--bg-secondary);
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .section-title p {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+
+      .feature-card {
+        background: var(--bg-primary);
+        padding: 2rem;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      /* Platform Section */
+      .platform {
+        padding: 80px 0;
+      }
+
+      .platform-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 3rem;
+        margin-top: 3rem;
+      }
+
+      .platform-item {
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--bg-primary);
+      }
+
+      .platform-item h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+      }
+
+      .tech-list {
+        list-style: none;
+        margin-top: 1rem;
+      }
+
+      .tech-list li {
+        padding: 0.5rem 0;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .tech-list li:last-child {
+        border-bottom: none;
+      }
+
+      /* Stats Section */
+      .stats {
+        background: var(--primary-color);
+        color: white;
+        padding: 60px 0;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        text-align: center;
+      }
+
+      .stat-item h3 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-item p {
+        opacity: 0.9;
+      }
+
+      /* Footer */
+      footer {
+        background: var(--text-primary);
+        color: white;
+        padding: 40px 0 20px 0;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      .footer-section h3 {
+        margin-bottom: 1rem;
+        color: var(--accent-color);
+      }
+
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-section ul li a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-section ul li a:hover {
+        color: white;
+      }
+
+      .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 2rem;
+        padding-top: 1rem;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2.5rem;
         }
 
         .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
-
-        .hub-link {
-            background: var(--primary-color) !important;
-            color: white !important;
-            padding: 8px 16px !important;
-            border-radius: 6px !important;
-            font-weight: 600 !important;
-            transition: all 0.3s ease !important;
-        }
-
-        .hub-link:hover {
-            background: var(--primary-dark) !important;
-            color: white !important;
-            transform: translateY(-1px);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 120px 0 80px 0;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+          display: none;
         }
 
         .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
+          flex-direction: column;
+          align-items: center;
         }
 
-        .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .btn-primary {
-            background: var(--bg-primary);
-            color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background: var(--bg-secondary);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 80px 0;
-            background: var(--bg-secondary);
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .section-title p {
-            font-size: 1.125rem;
-            color: var(--text-secondary);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature-card {
-            background: var(--bg-primary);
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        /* Platform Section */
-        .platform {
-            padding: 80px 0;
-        }
-
+        .features-grid,
         .platform-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-            margin-top: 3rem;
+          grid-template-columns: 1fr;
         }
+      }
 
-        .platform-item {
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background: var(--bg-primary);
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
         }
-
-        .platform-item h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
 
-        .tech-list {
-            list-style: none;
-            margin-top: 1rem;
-        }
+      .fade-in-up {
+        animation: fadeInUp 0.6s ease forwards;
+      }
 
-        .tech-list li {
-            padding: 0.5rem 0;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--border-color);
-        }
+      /* Testing Banner */
+      .testing-banner {
+        background: rgba(255, 193, 7, 0.9);
+        color: #333;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-top: 1rem;
+        display: inline-block;
+        backdrop-filter: blur(10px);
+      }
 
-        .tech-list li:last-child {
-            border-bottom: none;
-        }
-
-        /* Stats Section */
-        .stats {
-            background: var(--primary-color);
-            color: white;
-            padding: 60px 0;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            text-align: center;
-        }
-
-        .stat-item h3 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-item p {
-            opacity: 0.9;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--text-primary);
-            color: white;
-            padding: 40px 0 20px 0;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-section h3 {
-            margin-bottom: 1rem;
-            color: var(--accent-color);
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-section ul li a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section ul li a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 2rem;
-            padding-top: 1rem;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .features-grid,
-            .platform-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        /* Testing Banner */
-        .testing-banner {
-            background: rgba(255, 193, 7, 0.9);
-            color: #333;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-top: 1rem;
-            display: inline-block;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Scroll Behavior */
-        html {
-            scroll-behavior: smooth;
-        }
+      /* Scroll Behavior */
+      html {
+        scroll-behavior: smooth;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Header -->
     <header>
-        <nav class="container">
-            <a href="#" class="logo">🧪 ChemFetch</a>
-            <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#platform">Platform</a></li>
-                <li><a href="https://chem-fetch-client-hub.vercel.app" target="_blank" class="hub-link">Client Hub</a></li>
-                <li><a href="/help">Help</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="/privacy-policy.html">Privacy</a></li>
-            </ul>
-        </nav>
+      <nav class="container">
+        <a href="#" class="logo">🧪 ChemFetch</a>
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#platform">Platform</a></li>
+          <li>
+            <a
+              href="https://chem-fetch-client-hub.vercel.app"
+              target="_blank"
+              class="hub-link"
+              >Client Hub</a
+            >
+          </li>
+          <li><a href="/help">Help</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="/privacy-policy.html">Privacy</a></li>
+        </ul>
+      </nav>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="container">
-            <h1 class="fade-in-up">Chemical Safety Management Platform</h1>
-            <div class="testing-banner fade-in-up">
-                ⚠️ Currently in Testing Phase - Mobile app in Android closed testing | <a href="mailto:support@chemfetch.com?subject=Testing Access Request" style="color: inherit; text-decoration: underline;">Request access</a>
-            </div>
-            <p class="fade-in-up">Professional barcode scanning, OCR text recognition, and Safety Data Sheet verification for field workers and safety personnel.</p>
-            <div class="cta-buttons fade-in-up">
-                <a href="https://chem-fetch-client-hub.vercel.app" target="_blank" class="btn btn-primary">Access Client Hub</a>
-                <a href="#features" class="btn btn-secondary">Explore Features</a>
-            </div>
+      <div class="container">
+        <h1 class="fade-in-up">Chemical Safety Management Platform</h1>
+        <div class="testing-banner fade-in-up">
+          ⚠️ Currently in Testing Phase - Mobile app in Android closed testing |
+          <a
+            href="mailto:support@chemfetch.com?subject=Testing Access Request"
+            style="color: inherit; text-decoration: underline"
+            >Request access</a
+          >
         </div>
+        <p class="fade-in-up">
+          Professional barcode scanning, OCR text recognition, and Safety Data
+          Sheet verification for field workers and safety personnel.
+        </p>
+        <div class="cta-buttons fade-in-up">
+          <a
+            href="https://chem-fetch-client-hub.vercel.app"
+            target="_blank"
+            class="btn btn-primary"
+            >Access Client Hub</a
+          >
+          <a href="#features" class="btn btn-secondary">Explore Features</a>
+        </div>
+      </div>
     </section>
 
     <!-- Features Section -->
     <section class="features" id="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>Powerful Chemical Management Tools</h2>
-                <p>Everything you need for comprehensive chemical safety management in the field</p>
-            </div>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3>Mobile Barcode Scanning</h3>
-                    <p>Instant product identification through EAN-8, EAN-13, and other standard barcode formats with real-time camera scanning.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <h3>OCR Text Recognition</h3>
-                    <p>Advanced GPU-accelerated text extraction from product labels, even in challenging industrial lighting conditions.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📄</div>
-                    <h3>SDS Management</h3>
-                    <p>Intelligent Safety Data Sheet discovery, verification, and structured metadata extraction with automated compliance checking.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🏷️</div>
-                    <h3>Smart Product ID</h3>
-                    <p>Automatic product name and size detection with Australian-focused web scraping and database matching.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Inventory Management</h3>
-                    <p>Personal and company chemical registers with real-time sync across devices and offline capability.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Secure & Compliant</h3>
-                    <p>Enterprise-grade security with role-based permissions and comprehensive audit trails for regulatory compliance.</p>
-                </div>
-            </div>
+      <div class="container">
+        <div class="section-title">
+          <h2>Powerful Chemical Management Tools</h2>
+          <p>
+            Everything you need for comprehensive chemical safety management in
+            the field
+          </p>
         </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>Mobile Barcode Scanning</h3>
+            <p>
+              Instant product identification through EAN-8, EAN-13, and other
+              standard barcode formats with real-time camera scanning.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <h3>OCR Text Recognition</h3>
+            <p>
+              Advanced GPU-accelerated text extraction from product labels, even
+              in challenging industrial lighting conditions.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📄</div>
+            <h3>SDS Management</h3>
+            <p>
+              Intelligent Safety Data Sheet discovery, verification, and
+              structured metadata extraction with automated compliance checking.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🏷️</div>
+            <h3>Smart Product ID</h3>
+            <p>
+              Automatic product name and size detection with Australian-focused
+              web scraping and database matching.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Inventory Management</h3>
+            <p>
+              Personal and company chemical registers with real-time sync across
+              devices and offline capability.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Secure & Compliant</h3>
+            <p>
+              Enterprise-grade security with role-based permissions and
+              comprehensive audit trails for regulatory compliance.
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Platform Section -->
     <section class="platform" id="platform">
-        <div class="container">
-            <div class="section-title">
-                <h2>Complete Platform Architecture</h2>
-                <p>Modern, scalable technology stack built for reliability and performance</p>
-            </div>
-            
-            <div class="platform-grid">
-                <div class="platform-item">
-                    <h3>📱 Mobile Application</h3>
-                    <p>React Native app with Expo for Android devices (currently in closed testing). Optimized for field use with offline capabilities and intuitive touch interface. iOS version coming 2025.</p>
-                    <ul class="tech-list">
-                        <li>React Native 0.79 + Expo 53</li>
-                        <li>TypeScript + NativeWind (Tailwind CSS)</li>
-                        <li>Camera integration with barcode scanning</li>
-                        <li>Offline sync with Zustand state management</li>
-                        <li>Dark mode for various lighting conditions</li>
-                    </ul>
-                </div>
-                
-                <div class="platform-item">
-                    <h3>🚀 Backend API</h3>
-                    <p>High-performance Node.js server with integrated Python OCR microservice. Handles web scraping, SDS processing, and real-time product lookup.</p>
-                    <ul class="tech-list">
-                        <li>Node.js 18+ with Express 5 + TypeScript</li>
-                        <li>Python Flask OCR service with PaddleOCR</li>
-                        <li>Puppeteer for intelligent web scraping</li>
-                        <li>Rate limiting and security with Helmet</li>
-                        <li>Comprehensive logging with Pino</li>
-                    </ul>
-                </div>
-                
-                <div class="platform-item">
-                    <h3>🌐 Web Client Hub</h3>
-                    <p>Administrative dashboard for chemical register management, reporting, and team collaboration. Built with modern web technologies.</p>
-                    <ul class="tech-list">
-                        <li>Next.js 15 with App Router + React 19</li>
-                        <li>Tailwind CSS 4 + shadcn/ui components</li>
-                        <li>Real-time data synchronization with Supabase</li>
-                        <li>Advanced filtering and search capabilities</li>
-                        <li>Export and reporting for compliance</li>
-                        <li>Role-based access control and multi-tenant</li>
-                    </ul>
-                    <div style="margin-top: 1rem;">
-                        <a href="https://chem-fetch-client-hub.vercel.app" target="_blank" class="btn" style="display: inline-block; padding: 8px 16px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 6px; font-size: 0.9rem; font-weight: 500;">Launch Client Hub →</a>
-                    </div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="section-title">
+          <h2>Complete Platform Architecture</h2>
+          <p>
+            Modern, scalable technology stack built for reliability and
+            performance
+          </p>
         </div>
+
+        <div class="platform-grid">
+          <div class="platform-item">
+            <h3>📱 Mobile Application</h3>
+            <p>
+              React Native app with Expo for Android devices (currently in
+              closed testing). Optimized for field use with offline capabilities
+              and intuitive touch interface. iOS version coming 2025.
+            </p>
+            <ul class="tech-list">
+              <li>React Native 0.79 + Expo 53</li>
+              <li>TypeScript + NativeWind (Tailwind CSS)</li>
+              <li>Camera integration with barcode scanning</li>
+              <li>Offline sync with Zustand state management</li>
+              <li>Dark mode for various lighting conditions</li>
+            </ul>
+          </div>
+
+          <div class="platform-item">
+            <h3>🚀 Backend API</h3>
+            <p>
+              High-performance Node.js server with integrated Python OCR
+              microservice. Handles web scraping, SDS processing, and real-time
+              product lookup.
+            </p>
+            <ul class="tech-list">
+              <li>Node.js 18+ with Express 5 + TypeScript</li>
+              <li>Python Flask OCR service with PaddleOCR</li>
+              <li>Puppeteer for intelligent web scraping</li>
+              <li>Rate limiting and security with Helmet</li>
+              <li>Comprehensive logging with Pino</li>
+            </ul>
+          </div>
+
+          <div class="platform-item">
+            <h3>🌐 Web Client Hub</h3>
+            <p>
+              Administrative dashboard for chemical register management,
+              reporting, and team collaboration. Built with modern web
+              technologies.
+            </p>
+            <ul class="tech-list">
+              <li>Next.js 15 with App Router + React 19</li>
+              <li>Tailwind CSS 4 + shadcn/ui components</li>
+              <li>Real-time data synchronization with Supabase</li>
+              <li>Advanced filtering and search capabilities</li>
+              <li>Export and reporting for compliance</li>
+              <li>Role-based access control and multi-tenant</li>
+            </ul>
+            <div style="margin-top: 1rem">
+              <a
+                href="https://chem-fetch-client-hub.vercel.app"
+                target="_blank"
+                class="btn"
+                style="
+                  display: inline-block;
+                  padding: 8px 16px;
+                  background: var(--primary-color);
+                  color: white;
+                  text-decoration: none;
+                  border-radius: 6px;
+                  font-size: 0.9rem;
+                  font-weight: 500;
+                "
+                >Launch Client Hub →</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Stats Section -->
     <section class="stats">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <h3>~2-5s</h3>
-                    <p>Average Scan Time</p>
-                </div>
-                <div class="stat-item">
-                    <h3>95%+</h3>
-                    <p>OCR Accuracy</p>
-                </div>
-                <div class="stat-item">
-                    <h3>24/7</h3>
-                    <p>Uptime Reliability</p>
-                </div>
-                <div class="stat-item">
-                    <h3>🇦🇺</h3>
-                    <p>Australian Focused</p>
-                </div>
-            </div>
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <h3>~2-5s</h3>
+            <p>Average Scan Time</p>
+          </div>
+          <div class="stat-item">
+            <h3>95%+</h3>
+            <p>OCR Accuracy</p>
+          </div>
+          <div class="stat-item">
+            <h3>24/7</h3>
+            <p>Uptime Reliability</p>
+          </div>
+          <div class="stat-item">
+            <h3>🇦🇺</h3>
+            <p>Australian Focused</p>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Footer -->
     <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>🧪 ChemFetch</h3>
-                    <p>Professional chemical safety management platform for field workers and safety personnel. Built with modern technology for reliability and performance.</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Platform</h3>
-                    <ul>
-                        <li><a href="https://chem-fetch-client-hub.vercel.app" target="_blank">Client Hub Dashboard</a></li>
-                        <li><a href="#features">Mobile App</a></li>
-                        <li><a href="#platform">Backend API</a></li>
-                        <li><a href="#platform">OCR Service</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Features</h3>
-                    <ul>
-                        <li><a href="#features">Barcode Scanning</a></li>
-                        <li><a href="#features">OCR Recognition</a></li>
-                        <li><a href="#features">SDS Management</a></li>
-                        <li><a href="#features">Inventory Tracking</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <ul>
-                        <li><a href="mailto:privacy@chemfetch.com">privacy@chemfetch.com</a></li>
-                        <li><a href="mailto:support@chemfetch.com">support@chemfetch.com</a></li>
-                        <li><a href="/privacy-policy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 ChemFetch. All rights reserved. | Professional chemical safety management platform.</p>
-            </div>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>🧪 ChemFetch</h3>
+            <p>
+              Professional chemical safety management platform for field workers
+              and safety personnel. Built with modern technology for reliability
+              and performance.
+            </p>
+          </div>
+
+          <div class="footer-section">
+            <h3>Platform</h3>
+            <ul>
+              <li>
+                <a
+                  href="https://chem-fetch-client-hub.vercel.app"
+                  target="_blank"
+                  >Client Hub Dashboard</a
+                >
+              </li>
+              <li><a href="#features">Mobile App</a></li>
+              <li><a href="#platform">Backend API</a></li>
+              <li><a href="#platform">OCR Service</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h3>Features</h3>
+            <ul>
+              <li><a href="#features">Barcode Scanning</a></li>
+              <li><a href="#features">OCR Recognition</a></li>
+              <li><a href="#features">SDS Management</a></li>
+              <li><a href="#features">Inventory Tracking</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h3>Contact</h3>
+            <ul>
+              <li>
+                <a href="mailto:privacy@chemfetch.com">privacy@chemfetch.com</a>
+              </li>
+              <li>
+                <a href="mailto:support@chemfetch.com">support@chemfetch.com</a>
+              </li>
+              <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+            </ul>
+          </div>
         </div>
+
+        <div class="footer-bottom">
+          <p>
+            &copy; 2025 ChemFetch. All rights reserved. | Professional chemical
+            safety management platform.
+          </p>
+        </div>
+      </div>
     </footer>
 
     <!-- JavaScript for animations -->
     <script>
-        // Simple fade-in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+      // Simple fade-in animation on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+          }
+        });
+      }, observerOptions);
 
-        // Observe all cards and sections for animation
-        document.addEventListener('DOMContentLoaded', () => {
-            const animateElements = document.querySelectorAll('.feature-card, .platform-item, .stat-item');
-            
-            animateElements.forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'all 0.6s ease';
-                observer.observe(el);
-            });
+      // Observe all cards and sections for animation
+      document.addEventListener("DOMContentLoaded", () => {
+        const animateElements = document.querySelectorAll(
+          ".feature-card, .platform-item, .stat-item"
+        );
 
-            // Smooth scrolling for navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
+        animateElements.forEach(el => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(30px)";
+          el.style.transition = "all 0.6s ease";
+          observer.observe(el);
         });
 
-        // Add loading animation to CTA buttons
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (this.getAttribute('href').startsWith('#')) {
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1)';
-                    }, 150);
-                }
-            });
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute("href"));
+            if (target) {
+              target.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }
+          });
         });
+      });
+
+      // Add loading animation to CTA buttons
+      document.querySelectorAll(".btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+          if (this.getAttribute("href").startsWith("#")) {
+            this.style.transform = "scale(0.95)";
+            setTimeout(() => {
+              this.style.transform = "scale(1)";
+            }, 150);
+          }
+        });
+      });
     </script>
-    
+
     <!-- Structured Data for SEO -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "ChemFetch",
-      "description": "Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification for field workers and safety personnel.",
-      "url": "https://chemfetch.com",
-      "applicationCategory": "BusinessApplication",
-      "applicationSubCategory": "Safety Management",
-      "operatingSystem": ["Android", "Web"],
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "AUD"
-      },
-      "creator": {
-        "@type": "Organization",
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
         "name": "ChemFetch",
-        "url": "https://chemfetch.com"
-      },
-      "featureList": [
-        "Barcode Scanning",
-        "OCR Text Recognition", 
-        "Safety Data Sheet Management",
-        "Chemical Inventory Management",
-        "Regulatory Compliance",
-        "Australian-focused Web Scraping",
-        "Multi-platform Support"
-      ],
-      "screenshot": "https://chemfetch.com/screenshot.png",
-      "softwareVersion": "2024.12",
-      "releaseNotes": "Enhanced OCR processing, improved scanning workflows, and comprehensive SDS management."
-    }
+        "description": "Professional chemical safety management through barcode scanning, OCR text recognition, and Safety Data Sheet verification for field workers and safety personnel.",
+        "url": "https://chemfetch.com",
+        "applicationCategory": "BusinessApplication",
+        "applicationSubCategory": "Safety Management",
+        "operatingSystem": ["Android", "Web"],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "AUD"
+        },
+        "creator": {
+          "@type": "Organization",
+          "name": "ChemFetch",
+          "url": "https://chemfetch.com"
+        },
+        "featureList": [
+          "Barcode Scanning",
+          "OCR Text Recognition",
+          "Safety Data Sheet Management",
+          "Chemical Inventory Management",
+          "Regulatory Compliance",
+          "Australian-focused Web Scraping",
+          "Multi-platform Support"
+        ],
+        "screenshot": "https://chemfetch.com/screenshot.png",
+        "softwareVersion": "2024.12",
+        "releaseNotes": "Enhanced OCR processing, improved scanning workflows, and comprehensive SDS management."
+      }
     </script>
-</body>
+  </body>
 </html>

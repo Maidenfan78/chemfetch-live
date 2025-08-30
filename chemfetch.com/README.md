@@ -23,6 +23,7 @@ Professional chemical safety management platform website.
 Simply upload all files to your web server root directory.
 
 For Dreamhost:
+
 1. Upload files to your domain's public folder
 2. Ensure the privacy-policy.html is accessible at: https://chemfetch.com/privacy-policy.html
 

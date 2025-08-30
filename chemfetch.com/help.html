@@ -1,747 +1,916 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Help & Instructions - ChemFetch Platform</title>
-    <meta name="description" content="Complete guide to using ChemFetch mobile app and Client Hub for chemical safety management, barcode scanning, and SDS verification.">
-    
+    <meta
+      name="description"
+      content="Complete guide to using ChemFetch mobile app and Client Hub for chemical safety management, barcode scanning, and SDS verification."
+    />
+
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="ChemFetch Help & Instructions">
-    <meta property="og:description" content="Complete guide to using ChemFetch for chemical safety management.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://chemfetch.com/help">
-    
+    <meta property="og:title" content="ChemFetch Help & Instructions" />
+    <meta
+      property="og:description"
+      content="Complete guide to using ChemFetch for chemical safety management."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://chemfetch.com/help" />
+
     <!-- SEO and Indexing -->
-    <meta name="robots" content="index, follow">
-    <meta name="googlebot" content="index, follow">
-    <link rel="canonical" href="https://chemfetch.com/help">
-    
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="https://chemfetch.com/help" />
+
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
     <!-- CSS -->
     <style>
-        :root {
-            --primary-color: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary-color: #64748b;
-            --accent-color: #06b6d4;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --border-color: #e5e7eb;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
-        }
+      :root {
+        --primary-color: #2563eb;
+        --primary-dark: #1d4ed8;
+        --secondary-color: #64748b;
+        --accent-color: #06b6d4;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8fafc;
+        --border-color: #e5e7eb;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --error-color: #ef4444;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: var(--text-primary);
-            background: var(--bg-primary);
-            padding-top: 80px;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: var(--bg-primary);
+        padding-top: 80px;
+      }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
 
-        /* Header */
-        header {
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
-        }
+      /* Header */
+      header {
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border-color);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+      }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-left: 20px;
+        padding-right: 20px;
+      }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
 
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .hub-link {
+        background: var(--primary-color) !important;
+        color: white !important;
+        padding: 8px 16px !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+      }
+
+      /* Main Content */
+      .help-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--primary-dark)
+        );
+        color: white;
+        padding: 60px 0;
+        text-align: center;
+      }
+
+      .help-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .help-header p {
+        font-size: 1.125rem;
+        opacity: 0.9;
+      }
+
+      .help-content {
+        padding: 60px 0;
+      }
+
+      .platform-nav {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+      }
+
+      .platform-card {
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .platform-card:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.1);
+      }
+
+      .platform-card.active {
+        border-color: var(--primary-color);
+        background: rgba(37, 99, 235, 0.05);
+      }
+
+      .platform-card h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .platform-card .icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .help-section {
+        display: none;
+        animation: fadeIn 0.3s ease-in;
+      }
+
+      .help-section.active {
+        display: block;
+      }
+
+      .section-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        color: var(--text-primary);
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 0.5rem;
+      }
+
+      .steps-grid {
+        display: grid;
+        gap: 2rem;
+        margin: 2rem 0;
+      }
+
+      .step-card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1.5rem;
+        position: relative;
+      }
+
+      .step-number {
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background: var(--primary-color);
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .step-card h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      .step-card p {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .feature-list {
+        list-style: none;
+        margin: 1rem 0;
+      }
+
+      .feature-list li {
+        padding: 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .feature-list li::before {
+        content: "✓";
+        color: var(--success-color);
+        font-weight: bold;
+      }
+
+      .tip-box {
+        background: rgba(6, 182, 212, 0.1);
+        border-left: 4px solid var(--accent-color);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .tip-box h5 {
+        color: var(--accent-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .warning-box {
+        background: rgba(245, 158, 11, 0.1);
+        border-left: 4px solid var(--warning-color);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .warning-box h5 {
+        color: var(--warning-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .button {
+        background: var(--primary-color);
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .button:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+      }
+
+      .back-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: var(--primary-color);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .back-to-top:hover {
+        background: var(--primary-dark);
+        transform: scale(1.1);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
-
-        .hub-link {
-            background: var(--primary-color) !important;
-            color: white !important;
-            padding: 8px 16px !important;
-            border-radius: 6px !important;
-            font-weight: 600 !important;
-        }
-
-        /* Main Content */
-        .help-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            padding: 60px 0;
-            text-align: center;
+          display: none;
         }
 
         .help-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .help-header p {
-            font-size: 1.125rem;
-            opacity: 0.9;
-        }
-
-        .help-content {
-            padding: 60px 0;
+          font-size: 2rem;
         }
 
         .platform-nav {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
+          grid-template-columns: 1fr;
         }
 
-        .platform-card {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        .container {
+          padding: 0 15px;
         }
+      }
 
-        .platform-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.1);
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-
-        .platform-card.active {
-            border-color: var(--primary-color);
-            background: rgba(37, 99, 235, 0.05);
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-
-        .platform-card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .platform-card .icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .help-section {
-            display: none;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        .help-section.active {
-            display: block;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            color: var(--text-primary);
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 0.5rem;
-        }
-
-        .steps-grid {
-            display: grid;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .step-card {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1.5rem;
-            position: relative;
-        }
-
-        .step-number {
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: var(--primary-color);
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .step-card h4 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .step-card p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .feature-list {
-            list-style: none;
-            margin: 1rem 0;
-        }
-
-        .feature-list li {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .feature-list li::before {
-            content: "✓";
-            color: var(--success-color);
-            font-weight: bold;
-        }
-
-        .tip-box {
-            background: rgba(6, 182, 212, 0.1);
-            border-left: 4px solid var(--accent-color);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .tip-box h5 {
-            color: var(--accent-color);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .warning-box {
-            background: rgba(245, 158, 11, 0.1);
-            border-left: 4px solid var(--warning-color);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .warning-box h5 {
-            color: var(--warning-color);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .button {
-            background: var(--primary-color);
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--primary-color);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .back-to-top:hover {
-            background: var(--primary-dark);
-            transform: scale(1.1);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .help-header h1 {
-                font-size: 2rem;
-            }
-
-            .platform-nav {
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                padding: 0 15px;
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Header -->
     <header>
-        <nav>
-            <a href="/" class="logo">🧪 ChemFetch</a>
-            <ul class="nav-links">
-                <li><a href="/#features">Features</a></li>
-                <li><a href="/#platform">Platform</a></li>
-                <li><a href="https://chem-fetch-client-hub.vercel.app" target="_blank" class="hub-link">Client Hub</a></li>
-                <li><a href="/help">Help</a></li>
-                <li><a href="/privacy-policy.html">Privacy</a></li>
-            </ul>
-        </nav>
+      <nav>
+        <a href="/" class="logo">🧪 ChemFetch</a>
+        <ul class="nav-links">
+          <li><a href="/#features">Features</a></li>
+          <li><a href="/#platform">Platform</a></li>
+          <li>
+            <a
+              href="https://chem-fetch-client-hub.vercel.app"
+              target="_blank"
+              class="hub-link"
+              >Client Hub</a
+            >
+          </li>
+          <li><a href="/help">Help</a></li>
+          <li><a href="/privacy-policy.html">Privacy</a></li>
+        </ul>
+      </nav>
     </header>
 
     <!-- Help Header -->
     <section class="help-header">
-        <div class="container">
-            <h1>Help & Instructions</h1>
-            <p>Complete guide to using ChemFetch for chemical safety management</p>
-        </div>
+      <div class="container">
+        <h1>Help & Instructions</h1>
+        <p>Complete guide to using ChemFetch for chemical safety management</p>
+      </div>
     </section>
 
     <!-- Help Content -->
     <section class="help-content">
-        <div class="container">
-            <!-- Platform Navigation -->
-            <div class="platform-nav">
-                <div class="platform-card active" onclick="showSection('mobile')">
-                    <div class="icon">📱</div>
-                    <h3>Mobile App</h3>
-                    <p>Barcode scanning and field use</p>
-                </div>
-                <div class="platform-card" onclick="showSection('client-hub')">
-                    <div class="icon">🌐</div>
-                    <h3>Client Hub</h3>
-                    <p>Web dashboard and management</p>
-                </div>
-            </div>
-
-            <!-- Mobile App Instructions -->
-            <div id="mobile-section" class="help-section active">
-                <h2 class="section-title">📱 ChemFetch Mobile App</h2>
-                
-                <div class="warning-box">
-                    <h5>📱 Platform Availability</h5>
-                    <p>ChemFetch mobile app is currently in <strong>closed testing on Android</strong>. Available through Google Play Store internal testing program only. iOS version is planned for release in 2025.</p>
-                </div>
-
-                <div class="tip-box">
-                    <h5>💡 Quick Start Tip</h5>
-                    <p>Download the ChemFetch mobile app and log in with your account credentials. The app works best with good lighting and a steady hand when scanning barcodes.</p>
-                </div>
-
-                <div class="steps-grid">
-                    <div class="step-card">
-                        <div class="step-number">1</div>
-                        <h4>Getting Started</h4>
-                        <p>Join the ChemFetch mobile app closed testing program on Android. Contact support for access to the internal testing version.</p>
-                        <ul class="feature-list">
-                            <li>Currently in closed testing on Android 5.0+ (iOS version coming 2025)</li>
-                            <li>Requires camera permission for barcode scanning</li>
-                            <li>Works offline - data syncs when connected</li>
-                            <li>Access via Google Play Store internal testing program</li>
-                        </ul>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">2</div>
-                        <h4>Barcode Scanning</h4>
-                        <p>Use the camera to scan product barcodes. The app supports multiple barcode formats and provides instant feedback.</p>
-                        <ul class="feature-list">
-                            <li>Supports EAN-8, EAN-13, UPC-A, UPC-E, ITF-14, Code128/39/93</li>
-                            <li>Requires multiple identical scans to prevent errors</li>
-                            <li>Haptic feedback confirms successful scans</li>
-                            <li>Automatic duplicate detection prevents re-adding items</li>
-                        </ul>
-                        <div class="tip-box">
-                            <h5>📸 Scanning Tips</h5>
-                            <p>Hold your device steady, ensure good lighting, and align the barcode within the white frame. The app will vibrate when a successful scan is detected.</p>
-                        </div>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">3</div>
-                        <h4>Manual Entry</h4>
-                        <p>When barcodes can't be scanned or don't exist, manually enter product information including name, size, and barcode (if available).</p>
-                        <ul class="feature-list">
-                            <li>Enter product name and size/weight</li>
-                            <li>Add barcode manually if visible but not scannable</li>
-                            <li>Validation prevents duplicate entries</li>
-                            <li>Automatically triggers Safety Data Sheet search</li>
-                        </ul>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">4</div>
-                        <h4>Product Confirmation</h4>
-                        <p>Review and confirm product details before adding to your chemical register. Edit information as needed.</p>
-                        <ul class="feature-list">
-                            <li>Review web-scraped product information</li>
-                            <li>Edit product name and size before saving</li>
-                            <li>Choose between automated data and manual entry</li>
-                            <li>Automatic Safety Data Sheet discovery</li>
-                        </ul>
-                        <div class="warning-box">
-                            <h5>⚠️ Important</h5>
-                            <p>Always verify product information is accurate before confirming. This data will be used for safety compliance and inventory management.</p>
-                        </div>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">5</div>
-                        <h4>Chemical Register</h4>
-                        <p>Access your complete chemical inventory with all registered products, Safety Data Sheets, and compliance information.</p>
-                        <ul class="feature-list">
-                            <li>View all registered chemicals in one place</li>
-                            <li>Direct access to Safety Data Sheet PDFs</li>
-                            <li>Personal register synced across all devices</li>
-                            <li>Quick navigation from scans and manual entries</li>
-                        </ul>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">6</div>
-                        <h4>Safety Data Sheets</h4>
-                        <p>View PDF Safety Data Sheets directly in the app with native PDF viewing capabilities including zoom and scroll.</p>
-                        <ul class="feature-list">
-                            <li>Native PDF viewer with zoom and scroll</li>
-                            <li>Direct links from product confirmations</li>
-                            <li>Automatic SDS discovery and verification</li>
-                            <li>Seamless web browser integration when needed</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="tip-box">
-                    <h5>🔄 Workflow Summary</h5>
-                    <p><strong>Scan → Confirm → Register → SDS Access</strong><br>
-                    Scan a barcode → Review product details → Save to register → Access Safety Data Sheets</p>
-                </div>
-
-                <div class="warning-box">
-                    <h5>🌐 Need More Management Features?</h5>
-                    <p><strong>Use the Client Hub web dashboard</strong> for advanced chemical register management, compliance reporting, and team collaboration. Visit <a href="https://chem-fetch-client-hub.vercel.app" target="_blank" style="color: var(--warning-color); font-weight: 600;">chem-fetch-client-hub.vercel.app</a> on your computer or tablet.</p>
-                </div>
-            </div>
-
-            <!-- Client Hub Instructions -->
-            <div id="client-hub-section" class="help-section">
-                <h2 class="section-title">🌐 ChemFetch Client Hub</h2>
-                
-                <div class="tip-box">
-                    <h5>🚀 Access Client Hub</h5>
-                    <p>Visit <a href="https://chem-fetch-client-hub.vercel.app" target="_blank" style="color: var(--primary-color); font-weight: 600;">chem-fetch-client-hub.vercel.app</a> and log in with your ChemFetch account credentials. The web dashboard works best on desktop and tablet devices.</p>
-                </div>
-
-                <div class="warning-box">
-                    <h5>📱 Mobile App Integration</h5>
-                    <p><strong>Need to scan barcodes in the field?</strong> Use the ChemFetch mobile app (currently in Android closed testing) for barcode scanning and manual entry. All data syncs automatically with this web dashboard.</p>
-                </div>
-
-                <div class="steps-grid">
-                    <div class="step-card">
-                        <div class="step-number">1</div>
-                        <h4>Dashboard Overview</h4>
-                        <p>The main dashboard provides an overview of your chemical inventory with quick access to key features and recent activity.</p>
-                        <ul class="feature-list">
-                            <li>Total chemicals count and inventory summary</li>
-                            <li>Pending Safety Data Sheet updates</li>
-                            <li>Compliance status and alerts</li>
-                            <li>Recent chemical additions and SDS updates</li>
-                            <li>Quick action buttons for common tasks</li>
-                        </ul>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">2</div>
-                        <h4>Chemical Register Management</h4>
-                        <p>The main chemical register shows all your registered chemicals in a comprehensive data table with advanced features.</p>
-                        <ul class="feature-list">
-                            <li>Complete product information with manufacturer details</li>
-                            <li>Inline editing for quantity, location, and comments</li>
-                            <li>SDS status indicators and expiration tracking</li>
-                            <li>Hazard classifications and dangerous goods information</li>
-                            <li>Risk assessment with consequence and likelihood ratings</li>
-                            <li>Sorting and filtering capabilities</li>
-                        </ul>
-                        <div class="tip-box">
-                            <h5>✏️ Inline Editing</h5>
-                            <p>Click on quantity, location, or comment fields to edit directly in the table. Changes are saved automatically when you press Enter or click elsewhere.</p>
-                        </div>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">3</div>
-                        <h4>Safety Data Sheet Management</h4>
-                        <p>Access and manage Safety Data Sheets with parsed metadata and automated compliance checking.</p>
-                        <ul class="feature-list">
-                            <li>Direct PDF access for all Safety Data Sheets</li>
-                            <li>Parsed metadata including vendor and issue dates</li>
-                            <li>Automatic SDS expiration monitoring</li>
-                            <li>Manual SDS re-parsing and metadata refresh</li>
-                            <li>Hazardous substance and dangerous goods classifications</li>
-                        </ul>
-                        <div class="warning-box">
-                            <h5>⏱️ SDS Processing Time</h5>
-                            <p>SDS parsing can take 30-120 seconds per document. The system processes them automatically in the background, so you can continue working while parsing completes.</p>
-                        </div>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">4</div>
-                        <h4>Compliance & Reporting</h4>
-                        <p>Track regulatory compliance with built-in dangerous goods classifications and risk assessment tools.</p>
-                        <ul class="feature-list">
-                            <li>Dangerous goods class descriptions and requirements</li>
-                            <li>Packing group and subsidiary risk information</li>
-                            <li>Risk rating calculations (consequence × likelihood)</li>
-                            <li>Safe Work Procedure (SWP) requirement tracking</li>
-                            <li>Audit trails for regulatory submissions</li>
-                        </ul>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">5</div>
-                        <h4>Team Management</h4>
-                        <p>User authentication and role-based access ensure secure, multi-tenant chemical register management.</p>
-                        <ul class="feature-list">
-                            <li>Secure user authentication with Supabase</li>
-                            <li>Row Level Security ensures data privacy</li>
-                            <li>Real-time data synchronization</li>
-                            <li>Multi-location and department organization</li>
-                            <li>Session management with persistent login</li>
-                        </ul>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">6</div>
-                        <h4>Advanced Features</h4>
-                        <p>Power user features for enhanced productivity and comprehensive chemical safety management.</p>
-                        <ul class="feature-list">
-                            <li>Batch SDS processing for multiple products</li>
-                            <li>Advanced filtering and search capabilities</li>
-                            <li>Data export for compliance reporting</li>
-                            <li>Dark mode support for various environments</li>
-                            <li>Mobile-responsive design for tablet use</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Troubleshooting Section -->
-            <div style="margin-top: 4rem; background: var(--bg-secondary); padding: 2rem; border-radius: 12px;">
-                <h3 style="color: var(--text-primary); margin-bottom: 1.5rem; font-size: 1.5rem;">🔧 Troubleshooting</h3>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                    <div>
-                        <h4 style="color: var(--primary-color); margin-bottom: 1rem;">Mobile App Issues</h4>
-                        <ul style="list-style: none;">
-                            <li style="margin-bottom: 0.5rem;">• Check camera permissions in device settings</li>
-                            <li style="margin-bottom: 0.5rem;">• Verify internet connection for data sync</li>
-                            <li style="margin-bottom: 0.5rem;">• Ensure good lighting for barcode scanning</li>
-                            <li style="margin-bottom: 0.5rem;">• Try restarting the app if scanning fails</li>
-                        </ul>
-                    </div>
-                    
-                    <div>
-                        <h4 style="color: var(--primary-color); margin-bottom: 1rem;">Client Hub Issues</h4>
-                        <ul style="list-style: none;">
-                            <li style="margin-bottom: 0.5rem;">• Check browser console for error messages</li>
-                            <li style="margin-bottom: 0.5rem;">• Verify login credentials and session</li>
-                            <li style="margin-bottom: 0.5rem;">• Ensure stable internet connection</li>
-                            <li style="margin-bottom: 0.5rem;">• Try refreshing the page if data doesn't load</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div style="margin-top: 2rem; text-align: center;">
-                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Need additional support?</p>
-                    <a href="mailto:support@chemfetch.com" class="button">Contact Support</a>
-                </div>
-            </div>
+      <div class="container">
+        <!-- Platform Navigation -->
+        <div class="platform-nav">
+          <div class="platform-card active" onclick="showSection('mobile')">
+            <div class="icon">📱</div>
+            <h3>Mobile App</h3>
+            <p>Barcode scanning and field use</p>
+          </div>
+          <div class="platform-card" onclick="showSection('client-hub')">
+            <div class="icon">🌐</div>
+            <h3>Client Hub</h3>
+            <p>Web dashboard and management</p>
+          </div>
         </div>
+
+        <!-- Mobile App Instructions -->
+        <div id="mobile-section" class="help-section active">
+          <h2 class="section-title">📱 ChemFetch Mobile App</h2>
+
+          <div class="warning-box">
+            <h5>📱 Platform Availability</h5>
+            <p>
+              ChemFetch mobile app is currently in
+              <strong>closed testing on Android</strong>. Available through
+              Google Play Store internal testing program only. iOS version is
+              planned for release in 2025.
+            </p>
+          </div>
+
+          <div class="tip-box">
+            <h5>💡 Quick Start Tip</h5>
+            <p>
+              Download the ChemFetch mobile app and log in with your account
+              credentials. The app works best with good lighting and a steady
+              hand when scanning barcodes.
+            </p>
+          </div>
+
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-number">1</div>
+              <h4>Getting Started</h4>
+              <p>
+                Join the ChemFetch mobile app closed testing program on Android.
+                Contact support for access to the internal testing version.
+              </p>
+              <ul class="feature-list">
+                <li>
+                  Currently in closed testing on Android 5.0+ (iOS version
+                  coming 2025)
+                </li>
+                <li>Requires camera permission for barcode scanning</li>
+                <li>Works offline - data syncs when connected</li>
+                <li>Access via Google Play Store internal testing program</li>
+              </ul>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">2</div>
+              <h4>Barcode Scanning</h4>
+              <p>
+                Use the camera to scan product barcodes. The app supports
+                multiple barcode formats and provides instant feedback.
+              </p>
+              <ul class="feature-list">
+                <li>
+                  Supports EAN-8, EAN-13, UPC-A, UPC-E, ITF-14, Code128/39/93
+                </li>
+                <li>Requires multiple identical scans to prevent errors</li>
+                <li>Haptic feedback confirms successful scans</li>
+                <li>Automatic duplicate detection prevents re-adding items</li>
+              </ul>
+              <div class="tip-box">
+                <h5>📸 Scanning Tips</h5>
+                <p>
+                  Hold your device steady, ensure good lighting, and align the
+                  barcode within the white frame. The app will vibrate when a
+                  successful scan is detected.
+                </p>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">3</div>
+              <h4>Manual Entry</h4>
+              <p>
+                When barcodes can't be scanned or don't exist, manually enter
+                product information including name, size, and barcode (if
+                available).
+              </p>
+              <ul class="feature-list">
+                <li>Enter product name and size/weight</li>
+                <li>Add barcode manually if visible but not scannable</li>
+                <li>Validation prevents duplicate entries</li>
+                <li>Automatically triggers Safety Data Sheet search</li>
+              </ul>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">4</div>
+              <h4>Product Confirmation</h4>
+              <p>
+                Review and confirm product details before adding to your
+                chemical register. Edit information as needed.
+              </p>
+              <ul class="feature-list">
+                <li>Review web-scraped product information</li>
+                <li>Edit product name and size before saving</li>
+                <li>Choose between automated data and manual entry</li>
+                <li>Automatic Safety Data Sheet discovery</li>
+              </ul>
+              <div class="warning-box">
+                <h5>⚠️ Important</h5>
+                <p>
+                  Always verify product information is accurate before
+                  confirming. This data will be used for safety compliance and
+                  inventory management.
+                </p>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">5</div>
+              <h4>Chemical Register</h4>
+              <p>
+                Access your complete chemical inventory with all registered
+                products, Safety Data Sheets, and compliance information.
+              </p>
+              <ul class="feature-list">
+                <li>View all registered chemicals in one place</li>
+                <li>Direct access to Safety Data Sheet PDFs</li>
+                <li>Personal register synced across all devices</li>
+                <li>Quick navigation from scans and manual entries</li>
+              </ul>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">6</div>
+              <h4>Safety Data Sheets</h4>
+              <p>
+                View PDF Safety Data Sheets directly in the app with native PDF
+                viewing capabilities including zoom and scroll.
+              </p>
+              <ul class="feature-list">
+                <li>Native PDF viewer with zoom and scroll</li>
+                <li>Direct links from product confirmations</li>
+                <li>Automatic SDS discovery and verification</li>
+                <li>Seamless web browser integration when needed</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            <h5>🔄 Workflow Summary</h5>
+            <p>
+              <strong>Scan → Confirm → Register → SDS Access</strong><br />
+              Scan a barcode → Review product details → Save to register →
+              Access Safety Data Sheets
+            </p>
+          </div>
+
+          <div class="warning-box">
+            <h5>🌐 Need More Management Features?</h5>
+            <p>
+              <strong>Use the Client Hub web dashboard</strong> for advanced
+              chemical register management, compliance reporting, and team
+              collaboration. Visit
+              <a
+                href="https://chem-fetch-client-hub.vercel.app"
+                target="_blank"
+                style="color: var(--warning-color); font-weight: 600"
+                >chem-fetch-client-hub.vercel.app</a
+              >
+              on your computer or tablet.
+            </p>
+          </div>
+        </div>
+
+        <!-- Client Hub Instructions -->
+        <div id="client-hub-section" class="help-section">
+          <h2 class="section-title">🌐 ChemFetch Client Hub</h2>
+
+          <div class="tip-box">
+            <h5>🚀 Access Client Hub</h5>
+            <p>
+              Visit
+              <a
+                href="https://chem-fetch-client-hub.vercel.app"
+                target="_blank"
+                style="color: var(--primary-color); font-weight: 600"
+                >chem-fetch-client-hub.vercel.app</a
+              >
+              and log in with your ChemFetch account credentials. The web
+              dashboard works best on desktop and tablet devices.
+            </p>
+          </div>
+
+          <div class="warning-box">
+            <h5>📱 Mobile App Integration</h5>
+            <p>
+              <strong>Need to scan barcodes in the field?</strong> Use the
+              ChemFetch mobile app (currently in Android closed testing) for
+              barcode scanning and manual entry. All data syncs automatically
+              with this web dashboard.
+            </p>
+          </div>
+
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-number">1</div>
+              <h4>Dashboard Overview</h4>
+              <p>
+                The main dashboard provides an overview of your chemical
+                inventory with quick access to key features and recent activity.
+              </p>
+              <ul class="feature-list">
+                <li>Total chemicals count and inventory summary</li>
+                <li>Pending Safety Data Sheet updates</li>
+                <li>Compliance status and alerts</li>
+                <li>Recent chemical additions and SDS updates</li>
+                <li>Quick action buttons for common tasks</li>
+              </ul>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">2</div>
+              <h4>Chemical Register Management</h4>
+              <p>
+                The main chemical register shows all your registered chemicals
+                in a comprehensive data table with advanced features.
+              </p>
+              <ul class="feature-list">
+                <li>Complete product information with manufacturer details</li>
+                <li>Inline editing for quantity, location, and comments</li>
+                <li>SDS status indicators and expiration tracking</li>
+                <li>Hazard classifications and dangerous goods information</li>
+                <li>Risk assessment with consequence and likelihood ratings</li>
+                <li>Sorting and filtering capabilities</li>
+              </ul>
+              <div class="tip-box">
+                <h5>✏️ Inline Editing</h5>
+                <p>
+                  Click on quantity, location, or comment fields to edit
+                  directly in the table. Changes are saved automatically when
+                  you press Enter or click elsewhere.
+                </p>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">3</div>
+              <h4>Safety Data Sheet Management</h4>
+              <p>
+                Access and manage Safety Data Sheets with parsed metadata and
+                automated compliance checking.
+              </p>
+              <ul class="feature-list">
+                <li>Direct PDF access for all Safety Data Sheets</li>
+                <li>Parsed metadata including vendor and issue dates</li>
+                <li>Automatic SDS expiration monitoring</li>
+                <li>Manual SDS re-parsing and metadata refresh</li>
+                <li>Hazardous substance and dangerous goods classifications</li>
+              </ul>
+              <div class="warning-box">
+                <h5>⏱️ SDS Processing Time</h5>
+                <p>
+                  SDS parsing can take 30-120 seconds per document. The system
+                  processes them automatically in the background, so you can
+                  continue working while parsing completes.
+                </p>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">4</div>
+              <h4>Compliance & Reporting</h4>
+              <p>
+                Track regulatory compliance with built-in dangerous goods
+                classifications and risk assessment tools.
+              </p>
+              <ul class="feature-list">
+                <li>Dangerous goods class descriptions and requirements</li>
+                <li>Packing group and subsidiary risk information</li>
+                <li>Risk rating calculations (consequence × likelihood)</li>
+                <li>Safe Work Procedure (SWP) requirement tracking</li>
+                <li>Audit trails for regulatory submissions</li>
+              </ul>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">5</div>
+              <h4>Team Management</h4>
+              <p>
+                User authentication and role-based access ensure secure,
+                multi-tenant chemical register management.
+              </p>
+              <ul class="feature-list">
+                <li>Secure user authentication with Supabase</li>
+                <li>Row Level Security ensures data privacy</li>
+                <li>Real-time data synchronization</li>
+                <li>Multi-location and department organization</li>
+                <li>Session management with persistent login</li>
+              </ul>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">6</div>
+              <h4>Advanced Features</h4>
+              <p>
+                Power user features for enhanced productivity and comprehensive
+                chemical safety management.
+              </p>
+              <ul class="feature-list">
+                <li>Batch SDS processing for multiple products</li>
+                <li>Advanced filtering and search capabilities</li>
+                <li>Data export for compliance reporting</li>
+                <li>Dark mode support for various environments</li>
+                <li>Mobile-responsive design for tablet use</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Troubleshooting Section -->
+        <div
+          style="
+            margin-top: 4rem;
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+          "
+        >
+          <h3
+            style="
+              color: var(--text-primary);
+              margin-bottom: 1.5rem;
+              font-size: 1.5rem;
+            "
+          >
+            🔧 Troubleshooting
+          </h3>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+              gap: 2rem;
+            "
+          >
+            <div>
+              <h4 style="color: var(--primary-color); margin-bottom: 1rem">
+                Mobile App Issues
+              </h4>
+              <ul style="list-style: none">
+                <li style="margin-bottom: 0.5rem">
+                  • Check camera permissions in device settings
+                </li>
+                <li style="margin-bottom: 0.5rem">
+                  • Verify internet connection for data sync
+                </li>
+                <li style="margin-bottom: 0.5rem">
+                  • Ensure good lighting for barcode scanning
+                </li>
+                <li style="margin-bottom: 0.5rem">
+                  • Try restarting the app if scanning fails
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 style="color: var(--primary-color); margin-bottom: 1rem">
+                Client Hub Issues
+              </h4>
+              <ul style="list-style: none">
+                <li style="margin-bottom: 0.5rem">
+                  • Check browser console for error messages
+                </li>
+                <li style="margin-bottom: 0.5rem">
+                  • Verify login credentials and session
+                </li>
+                <li style="margin-bottom: 0.5rem">
+                  • Ensure stable internet connection
+                </li>
+                <li style="margin-bottom: 0.5rem">
+                  • Try refreshing the page if data doesn't load
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="margin-top: 2rem; text-align: center">
+            <p style="color: var(--text-secondary); margin-bottom: 1rem">
+              Need additional support?
+            </p>
+            <a href="mailto:support@chemfetch.com" class="button"
+              >Contact Support</a
+            >
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Back to Top Button -->
-    <button class="back-to-top" onclick="scrollToTop()" id="backToTop">↑</button>
+    <button class="back-to-top" onclick="scrollToTop()" id="back-to-top">
+      ↑
+    </button>
 
     <!-- JavaScript -->
     <script>
-        // Platform section switching
-        function showSection(platform) {
-            // Hide all sections
-            document.querySelectorAll('.help-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all cards
-            document.querySelectorAll('.platform-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            
-            // Show selected section
-            const sectionId = platform === 'mobile' ? 'mobile-section' : 'client-hub-section';
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Add active class to clicked card
-            event.target.closest('.platform-card').classList.add('active');
+      // Platform section switching
+      function showSection(platform) {
+        // Hide all sections
+        document.querySelectorAll(".help-section").forEach(section => {
+          section.classList.remove("active");
+        });
+
+        // Remove active class from all cards
+        document.querySelectorAll(".platform-card").forEach(card => {
+          card.classList.remove("active");
+        });
+
+        // Show selected section
+        const sectionId =
+          platform === "mobile" ? "mobile-section" : "client-hub-section";
+        document.getElementById(sectionId).classList.add("active");
+
+        // Add active class to clicked card
+        event.target.closest(".platform-card").classList.add("active");
+      }
+
+      // Back to top functionality
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // Show/hide back to top button
+      window.addEventListener("scroll", () => {
+        const backToTop = document.getElementById("backToTop");
+        if (window.scrollY > 300) {
+          backToTop.style.display = "flex";
+        } else {
+          backToTop.style.display = "none";
         }
+      });
 
-        // Back to top functionality
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Show/hide back to top button
-        window.addEventListener('scroll', () => {
-            const backToTop = document.getElementById('backToTop');
-            if (window.scrollY > 300) {
-                backToTop.style.display = 'flex';
-            } else {
-                backToTop.style.display = 'none';
-            }
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         });
+      });
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
+      // Add loading states to external links
+      document.querySelectorAll('a[target="_blank"]').forEach(link => {
+        link.addEventListener("click", function () {
+          this.style.opacity = "0.8";
+          setTimeout(() => {
+            this.style.opacity = "1";
+          }, 200);
         });
+      });
 
-        // Add loading states to external links
-        document.querySelectorAll('a[target="_blank"]').forEach(link => {
-            link.addEventListener('click', function() {
-                this.style.opacity = '0.8';
-                setTimeout(() => {
-                    this.style.opacity = '1';
-                }, 200);
-            });
+      // Keyboard navigation for platform cards
+      document.querySelectorAll(".platform-card").forEach((card, index) => {
+        card.setAttribute("tabindex", "0");
+        card.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            this.click();
+          }
         });
-
-        // Keyboard navigation for platform cards
-        document.querySelectorAll('.platform-card').forEach((card, index) => {
-            card.setAttribute('tabindex', '0');
-            card.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.click();
-                }
-            });
-        });
+      });
     </script>
 
     <!-- Structured Data for SEO -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Use ChemFetch Chemical Safety Platform",
-      "description": "Complete guide to using ChemFetch mobile app and Client Hub for chemical safety management",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "name": "Download ChemFetch Mobile App",
-          "text": "Download and install the ChemFetch mobile app from your device's app store for Android 5.0+. iOS version coming soon. Enable camera permissions for barcode scanning."
-        },
-        {
-          "@type": "HowToStep", 
-          "name": "Scan Product Barcodes",
-          "text": "Use the camera to scan EAN-8, EAN-13, UPC-A, UPC-E, ITF-14, Code128/39/93 barcode formats. Align barcode in white frame and wait for haptic feedback confirmation."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Manual Product Entry", 
-          "text": "For products without barcodes, use manual entry to add product name, size/weight, and barcode information directly."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Confirm Product Details",
-          "text": "Review web-scraped product information or use manual entry data. Edit product name and size before saving to chemical register."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Access Client Hub Dashboard",
-          "text": "Use the web-based Client Hub for comprehensive chemical register management, SDS tracking, compliance reporting, and team collaboration features."
-        }
-      ]
-    }
+      {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to Use ChemFetch Chemical Safety Platform",
+        "description": "Complete guide to using ChemFetch mobile app and Client Hub for chemical safety management",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "name": "Download ChemFetch Mobile App",
+            "text": "Download and install the ChemFetch mobile app from your device's app store for Android 5.0+. iOS version coming soon. Enable camera permissions for barcode scanning."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Scan Product Barcodes",
+            "text": "Use the camera to scan EAN-8, EAN-13, UPC-A, UPC-E, ITF-14, Code128/39/93 barcode formats. Align barcode in white frame and wait for haptic feedback confirmation."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Manual Product Entry",
+            "text": "For products without barcodes, use manual entry to add product name, size/weight, and barcode information directly."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Confirm Product Details",
+            "text": "Review web-scraped product information or use manual entry data. Edit product name and size before saving to chemical register."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Access Client Hub Dashboard",
+            "text": "Use the web-based Client Hub for comprehensive chemical register management, SDS tracking, compliance reporting, and team collaboration features."
+          }
+        ]
+      }
     </script>
-</body>
+  </body>
 </html>

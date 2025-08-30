@@ -47,20 +47,11 @@
       "expo-camera",
       "expo-web-browser"
     ],
-    "experiments": {
-      "typedRoutes": true
-    },
+    "experiments": { "typedRoutes": true },
     "extra": {
       "router": {},
-      "eas": {
-        "projectId": "add1a4f4-ed11-463e-a137-423538bdcfe5"
-      }
+      "eas": { "projectId": "add1a4f4-ed11-463e-a137-423538bdcfe5" }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/add1a4f4-ed11-463e-a137-423538bdcfe5"
-    }
+    "updates": { "enabled": false, "fallbackToCacheTimeout": 0 }
   }
 }

@@ -28,16 +28,16 @@ const InfoBox: React.FC<InfoBoxProps> = ({
         borderLeftWidth: 4,
         borderColor,
         padding: 12,
-        backgroundColor: '#0B1220',
+        backgroundColor: '#2563EB',
         borderRadius: 8,
         marginTop: 12,
       }}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-        <Ionicons name={iconName} size={18} />
-        <Text style={{ fontWeight: '700', marginLeft: 6 }}>{title}</Text>
+        <Ionicons name={iconName} size={18} color="#E5E7EB" />
+        <Text style={{ fontWeight: '700', marginLeft: 6, color: '#F9FAFB' }}>{title}</Text>
       </View>
-      <Text>{children}</Text>
+      <Text style={{ color: '#E5E7EB' }}>{children}</Text>
     </View>
   );
 };
@@ -51,9 +51,11 @@ const HelpScreen: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
-      <Text style={{ fontSize: 22, fontWeight: '800', marginBottom: 12 }}>ChemFetch — Help</Text>
+      <Text style={{ fontSize: 22, fontWeight: '800', marginBottom: 12, color: '#1F2937' }}>
+        ChemFetch — Help
+      </Text>
 
-      <Text style={{ marginBottom: 12 }}>
+      <Text style={{ marginBottom: 12, color: '#4B5563' }}>
         Quick tips for getting started. For the full guide, including screenshots and advanced
         workflows, use the button below.
       </Text>
@@ -77,8 +79,10 @@ const HelpScreen: React.FC = () => {
         </View>
       </TouchableOpacity>
 
-      <Text style={{ fontSize: 16, fontWeight: '700', marginTop: 8 }}>Getting started</Text>
-      <Text style={{ marginTop: 6 }}>
+      <Text style={{ fontSize: 16, fontWeight: '700', marginTop: 8, color: '#1F2937' }}>
+        Getting started
+      </Text>
+      <Text style={{ marginTop: 6, color: '#4B5563' }}>
         1) Sign in • 2) Scan a barcode • 3) Confirm product • 4) View or attach SDS • 5) Save.
       </Text>
 
@@ -86,7 +90,9 @@ const HelpScreen: React.FC = () => {
         Try steady hands and good lighting. Angle the camera slightly to reduce glare.
       </InfoBox>
 
-      <Text style={{ fontSize: 16, fontWeight: '700', marginTop: 16 }}>Troubleshooting</Text>
+      <Text style={{ fontSize: 16, fontWeight: '700', marginTop: 16, color: '#1F2937' }}>
+        Troubleshooting
+      </Text>
       <InfoBox type="warning" title="Scan did not find a match" icon="search-outline">
         Use manual entry and search by product or manufacturer. If still not found, add a note and
         continue; you can link the SDS later.
@@ -97,8 +103,10 @@ const HelpScreen: React.FC = () => {
         server. Check again after a short while.
       </InfoBox>
 
-      <Text style={{ fontSize: 16, fontWeight: '700', marginTop: 16 }}>Need more detail?</Text>
-      <Text>
+      <Text style={{ fontSize: 16, fontWeight: '700', marginTop: 16, color: '#1F2937' }}>
+        Need more detail?
+      </Text>
+      <Text style={{ color: '#4B5563' }}>
         Visit the full guide for walkthroughs, screenshots, and admin notes. You can also share the
         page as a PDF for training.
       </Text>
