@@ -6,11 +6,15 @@
   "results": {
     "sds_1.PDF": {
       "success": true,
-      "fields_extracted": 2,
+      "fields_extracted": 3,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
-          "value": "1 / 12",
+          "value": "SUPER GLUE FAST 20G",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Würth Chile Ltda.",
           "confidence": 1.0
         },
         "issue_date": {
@@ -29,16 +33,16 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "1 / 12",
+          "value": "SUPER GLUE FAST 20G",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Würth Chile Ltda.",
+          "confidence": 1.0
         },
         "product_use": {
-          "value": null,
-          "confidence": 0.0
+          "value": "of the substance or mixture and uses advised against",
+          "confidence": 1.0
         },
         "dangerous_goods_class": {
           "value": null,
