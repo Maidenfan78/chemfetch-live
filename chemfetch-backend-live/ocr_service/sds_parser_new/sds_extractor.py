@@ -61,8 +61,17 @@ FIELD_LABELS = {
     'packing_group': [r'Packing group', r'PG', r'.*packing group', r'Australian Dangerous Goods packing group'],
 }
 
+# Additional keywords that frequently appear after labels but are not part of the field value
+CONTACT_LABELS = [
+    r'Telephone', r'Tel', r'Phone', r'Fax', r'E[-]?mail', r'Website',
+    r'Emergency', r'Address', r'Poison', r'Product code'
+]
+
 # Flattened list of all label regexes for filtering
-ALL_LABELS = [lab for labs in FIELD_LABELS.values() for lab in labs] + ['SDS no.', 'SDS number']
+ALL_LABELS = [lab for labs in FIELD_LABELS.values() for lab in labs] + ['SDS no.', 'SDS number'] + CONTACT_LABELS
+
+# Precompiled regex for detecting labels within values
+LABEL_SPLIT_RE = re.compile(r"\b(?:" + "|".join(ALL_LABELS) + r")\b", re.IGNORECASE)
 
 
 def extract_text(path: Path) -> str:
@@ -212,33 +221,45 @@ def get_section(text: str, number: int) -> str:
 
 
 def extract_after_label(section_text: str, labels):
-    """Extract value after finding a matching label"""
+    """Extract value that follows a label from Section text."""
     lines = section_text.splitlines()
-    
+
     for i, line in enumerate(lines):
         clean = line.strip()
         if not clean:
             continue
-            
-        label_part = clean.split(':', 1)[0]
-        
+
         for label in labels:
-            if re.fullmatch(label, label_part, re.IGNORECASE):
-                # Try same line after colon
-                if ':' in clean:
-                    after = clean.split(':', 1)[1].strip()
-                    if after and not any(re.fullmatch(lab, after, re.IGNORECASE) for lab in ALL_LABELS):
-                        return after
-                
-                # Look at subsequent lines for value
+            # Case 1: label and value on same line
+            same = re.search(rf"{label}\s*[:\-]\s*(.+)", clean, re.IGNORECASE)
+            if same:
+                value = same.group(1).strip()
+                # Truncate at appearance of other labels/contact keywords
+                trunc = LABEL_SPLIT_RE.search(value)
+                if trunc:
+                    value = value[:trunc.start()].strip()
+                if value:
+                    return value
+
+            # Case 2: label alone on this line, value on next lines
+            if re.fullmatch(label, clean, re.IGNORECASE):
                 j = i + 1
                 while j < len(lines):
                     candidate = lines[j].strip()
-                    if candidate and not candidate.startswith(':') and not re.match(r'^[:\-]+$', candidate):
-                        if not any(re.fullmatch(lab, candidate, re.IGNORECASE) for lab in ALL_LABELS):
+                    if not candidate:
+                        j += 1
+                        continue
+                    # Handle value on separate line prefixed by a colon
+                    if candidate.startswith(':'):
+                        candidate = candidate[1:].strip()
+                        if candidate and not LABEL_SPLIT_RE.search(candidate):
                             return candidate
+                        j += 1
+                        continue
+                    if not LABEL_SPLIT_RE.search(candidate):
+                        return candidate
                     j += 1
-    
+
     return None
 
 
