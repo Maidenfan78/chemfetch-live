@@ -230,8 +230,8 @@ def extract_after_label(section_text: str, labels):
             continue
 
         for label in labels:
-            # Case 1: label and value on same line
-            same = re.search(rf"{label}\s*[:\-]\s*(.+)", clean, re.IGNORECASE)
+            # Case 1: label and value on same line (colon/dash optional)
+            same = re.search(rf"^{label}\b\s*(?:[:\-]\s*)?(.+)", clean, re.IGNORECASE)
             if same:
                 value = same.group(1).strip()
                 # Truncate at appearance of other labels/contact keywords
@@ -398,8 +398,8 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     # Manufacturer
     manufacturer = extract_after_label(sec1, FIELD_LABELS['manufacturer'])
     if not manufacturer:
-        # Try alternative pattern
-        m = re.search(r'Details of the supplier[^\n]*\n([^\n]+)', sec1, re.IGNORECASE)
+        # Try alternative pattern grabbing first non-empty line after heading
+        m = re.search(r'Details of the supplier[^\n]*\n\s*([^\n]+)', sec1, re.IGNORECASE)
         if m:
             manufacturer = m.group(1).strip()
     result['manufacturer'] = {'value': manufacturer, 'confidence': 1.0 if manufacturer else 0.0}
