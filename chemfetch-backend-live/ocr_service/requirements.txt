@@ -17,6 +17,11 @@ pdfplumber==0.11.4
 pdfminer.six==20231228
 Pillow>=10.0.0
 
+# OCR support for scanned PDFs
+pytesseract==0.3.13
+pdf2image==1.17.0
+PyMuPDF==1.26.4
+
 # Text processing (essential only)
 python-dateutil==2.8.2
 regex==2024.5.15
@@ -31,15 +36,8 @@ numpy>=1.24.0,<2.0.0
 # - Python runtime: ~50MB
 # - Total: ~150MB (comfortable within 512MB limit)
 
-# REMOVED FOR MEMORY OPTIMIZATION:
-# - PyMuPDF (C++ compilation issues + memory)
-# - pytesseract (requires Tesseract binary + memory)
-# - pdf2image (requires Poppler + memory)
-# - opencv-python (image processing - 50-100MB)
-# - All ML libraries (torch, transformers, etc.)
-
 # This configuration provides:
-# ✅ Reliable PDF text extraction via pdfplumber
-# ✅ Text-only SDS parsing (no OCR)
+# ✅ Reliable PDF text and image extraction
+# ✅ OCR support for scanned SDS documents
 # ✅ Fits within 512MB memory limit
 # ✅ Fast startup and deployment
