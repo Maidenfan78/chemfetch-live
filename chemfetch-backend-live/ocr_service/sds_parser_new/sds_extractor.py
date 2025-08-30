@@ -150,7 +150,7 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
 def get_section(text: str, section_num: int) -> str:
     """Extract a specific section from SDS text."""
     # Look for section headers
-    pattern = rf'(?:^|\n)\s*(?:section\s*)?{section_num}(?:\s|:|\.).*?(?=\n\s*(?:section\s*)?\d{{1,2}}(?:\s|:|\.)|$)'
+    pattern = rf'(?:^|\n)\s*(?:section\s*)?{section_num}(?!\s*/)(?:\s|:|\.).*?(?=\n\s*(?:section\s*)?\d{{1,2}}(?!\s*/)(?:\s|:|\.)|$)'
     match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
     return match.group(0) if match else ""
 
@@ -188,11 +188,12 @@ def extract_field_value(text: str, field_labels: list, section_text: str = None)
             # Pattern: Label on one line, value on next
             if re.match(rf'^{label}\s*[:\-]?\s*$', line, re.IGNORECASE):
                 # Look at next few lines for the value
-                for j in range(i + 1, min(i + 4, len(lines))):
+                for j in range(i + 1, min(i + 6, len(lines))):
                     candidate = lines[j].strip()
-                    if candidate and not candidate.startswith(':'):
-                        if not is_noise_text(candidate):
-                            return candidate
+                    if not candidate or candidate == ':':
+                        continue
+                    if not candidate.startswith(':') and not is_noise_text(candidate):
+                        return candidate
     
     return None
 
@@ -219,7 +220,7 @@ def extract_product_name(section1_text: str) -> Optional[str]:
         line = line.strip()
         if not line:
             continue
-            
+
         # Skip obvious headers and labels
         if re.match(r'^\d+\.|\bsection\b|\bidentification\b', line, re.IGNORECASE):
             continue
@@ -227,7 +228,11 @@ def extract_product_name(section1_text: str) -> Optional[str]:
             continue
         if is_noise_text(line):
             continue
-        
+
+        # Skip single all-uppercase words (common non-product headers)
+        if re.fullmatch(r'[A-Z]+', line):
+            continue
+
         # Check if line looks like a product name (has alphanumeric content, reasonable length)
         if re.search(r'[A-Za-z0-9]', line) and 3 <= len(line) <= 100:
             # Avoid lines that are obviously not product names
