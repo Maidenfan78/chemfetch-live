@@ -1,9 +1,11 @@
 import re
 import os
 import tempfile
+import io
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
 import logging
+from PIL import Image
 
 # Configure logging for this module
 logger = logging.getLogger(__name__)
@@ -18,13 +20,20 @@ except ImportError:
     logger.info("[SDS_EXTRACTOR] PyMuPDF not available")
 
 try:
-    from pdf2image import convert_from_path
     import pytesseract
     OCR_AVAILABLE = True
-    logger.info("[SDS_EXTRACTOR] OCR libraries available")
+    logger.info("[SDS_EXTRACTOR] pytesseract available")
 except ImportError:
     OCR_AVAILABLE = False
-    logger.info("[SDS_EXTRACTOR] OCR libraries not available")
+    logger.info("[SDS_EXTRACTOR] pytesseract not available")
+
+try:
+    from pdf2image import convert_from_path
+    PDF2IMAGE_AVAILABLE = True
+    logger.info("[SDS_EXTRACTOR] pdf2image available")
+except ImportError:
+    PDF2IMAGE_AVAILABLE = False
+    logger.info("[SDS_EXTRACTOR] pdf2image not available")
 
 # Fallback to pdfplumber for text extraction
 try:
@@ -157,12 +166,32 @@ def extract_text(path: Path) -> Tuple[str, Optional[str]]:
     if text_length < MIN_TEXT_LENGTH and OCR_AVAILABLE:
         logger.warning(f"[SDS_EXTRACTOR] Text too short ({text_length} chars), falling back to OCR...")
         logger.info("[SDS_EXTRACTOR] Converting PDF to images for OCR...")
-        try:
-            images = convert_from_path(str(path), dpi=300, first_page=1, last_page=10)
-            logger.info(f"[SDS_EXTRACTOR] Converted to {len(images)} images for OCR")
-        except Exception as e:
-            ocr_error = f"convert_from_path failed: {e}"
-            logger.exception(f"[SDS_EXTRACTOR] {ocr_error}")
+
+        images = []
+        if PDF2IMAGE_AVAILABLE:
+            try:
+                images = convert_from_path(str(path), dpi=300, first_page=1, last_page=10)
+                logger.info(f"[SDS_EXTRACTOR] Converted to {len(images)} images for OCR using pdf2image")
+            except Exception as e:
+                ocr_error = f"convert_from_path failed: {e}"
+                logger.exception(f"[SDS_EXTRACTOR] {ocr_error}")
+                return best_text, ocr_error
+        elif PYMUPDF_AVAILABLE:
+            try:
+                doc = fitz.open(str(path))
+                for i, page in enumerate(doc):
+                    pix = page.get_pixmap(dpi=300)
+                    img = Image.open(io.BytesIO(pix.tobytes("png")))
+                    images.append(img)
+                doc.close()
+                logger.info(f"[SDS_EXTRACTOR] Converted to {len(images)} images for OCR using PyMuPDF")
+            except Exception as e:
+                ocr_error = f"PyMuPDF image conversion failed: {e}"
+                logger.exception(f"[SDS_EXTRACTOR] {ocr_error}")
+                return best_text, ocr_error
+        else:
+            ocr_error = "No PDF to image converter available"
+            logger.error(f"[SDS_EXTRACTOR] {ocr_error}")
             return best_text, ocr_error
 
         ocr_text = ""
