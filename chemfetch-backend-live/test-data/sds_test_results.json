@@ -1,275 +1,55 @@
 {
-  "test_timestamp": "1756556258.2719846",
-  "total_files": 14,
-  "successful": 14,
+  "test_timestamp": "1756554652.871841",
+  "total_files": 15,
+  "successful": 15,
   "failed": 0,
   "results": {
-    "sds_13.pdf": {
-      "success": true,
-      "fields_extracted": 2,
-      "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "UK, NPIS - 0344 8920111 (Healthcare Professionals only)",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "safety data sheet",
-          "confidence": 1.0
-        }
-      },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 26254,
-          "available_methods": {
-            "pymupdf": false,
-            "pdfplumber": true,
-            "ocr": false
-          },
-          "extraction_mode": "text-only"
-        },
-        "product_name": {
-          "value": "UK, NPIS - 0344 8920111 (Healthcare Professionals only)",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "safety data sheet",
-          "confidence": 1.0
-        },
-        "product_use": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "subsidiary_risk": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "issue_date": {
-          "value": null,
-          "confidence": 0.0
-        }
-      },
-      "file_size_mb": 0.36
-    },
-    "sds_5.pdf": {
-      "success": true,
-      "fields_extracted": 3,
-      "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "WD-40 Aerosol",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "WD-40",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "2.1",
-          "confidence": 1.0
-        }
-      },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 17125,
-          "available_methods": {
-            "pymupdf": false,
-            "pdfplumber": true,
-            "ocr": false
-          },
-          "extraction_mode": "text-only"
-        },
-        "product_name": {
-          "value": "WD-40 Aerosol",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "WD-40",
-          "confidence": 1.0
-        },
-        "product_use": {
-          "value": "Lubricant, Penetrant, Drives Out",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "2.1",
-          "confidence": 1.0
-        },
-        "subsidiary_risk": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "issue_date": {
-          "value": null,
-          "confidence": 0.0
-        }
-      },
-      "file_size_mb": 2.08
-    },
-    "sds_7.pdf": {
-      "success": true,
-      "fields_extracted": 2,
-      "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "Full Synthetic 5W-30",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2021-07-01",
-          "confidence": 1.0
-        }
-      },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 17350,
-          "available_methods": {
-            "pymupdf": false,
-            "pdfplumber": true,
-            "ocr": false
-          },
-          "extraction_mode": "text-only"
-        },
-        "product_name": {
-          "value": "Full Synthetic 5W-30",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "product_use": {
-          "value": "Petrol engine oil.",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "subsidiary_risk": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "issue_date": {
-          "value": "2021-07-01",
-          "confidence": 1.0
-        }
-      },
-      "file_size_mb": 0.15
-    },
-    "sds_12.pdf": {
-      "success": true,
-      "fields_extracted": 1,
-      "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "MSDS Date",
-          "confidence": 1.0
-        }
-      },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 12477,
-          "available_methods": {
-            "pymupdf": false,
-            "pdfplumber": true,
-            "ocr": false
-          },
-          "extraction_mode": "text-only"
-        },
-        "product_name": {
-          "value": "MSDS Date",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "product_use": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "subsidiary_risk": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "issue_date": {
-          "value": null,
-          "confidence": 0.0
-        }
-      },
-      "file_size_mb": 0.06
-    },
-    "sds_8.pdf": {
+    "sds_1.PDF": {
       "success": true,
       "fields_extracted": 4,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
-          "value": "Australia - 13 11 26",
+          "value": "SUPER GLUE FAST 20G",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Glen 20 All in One Spray Disinfectant Original",
+          "value": "Würth Chile Ltda.",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2023-04-13",
+          "value": "2025-06-26",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "2.1",
+          "value": "Not regulated as a dangerous good",
           "confidence": 1.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 27207,
+          "text_length": 23963,
           "available_methods": {
-            "pymupdf": false,
+            "pymupdf": true,
             "pdfplumber": true,
-            "ocr": false
+            "ocr": true
           },
-          "extraction_mode": "text-only"
+          "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Australia - 13 11 26",
+          "value": "SUPER GLUE FAST 20G",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Glen 20 All in One Spray Disinfectant Original",
+          "value": "Würth Chile Ltda.",
           "confidence": 1.0
         },
         "product_use": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Adhesives",
+          "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "2.1",
+          "value": "Not regulated as a dangerous good",
           "confidence": 1.0
         },
         "subsidiary_risk": {
@@ -277,133 +57,15 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "2",
+          "value": "III",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2023-04-13",
+          "value": "2025-06-26",
           "confidence": 1.0
         }
       },
-      "file_size_mb": 0.16
-    },
-    "sds_6.pdf": {
-      "success": true,
-      "fields_extracted": 3,
-      "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "ACETONE",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2022-02-08",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "3",
-          "confidence": 1.0
-        }
-      },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 14280,
-          "available_methods": {
-            "pymupdf": false,
-            "pdfplumber": true,
-            "ocr": false
-          },
-          "extraction_mode": "text-only"
-        },
-        "product_name": {
-          "value": "ACETONE",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "product_use": {
-          "value": "Solvent",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "3",
-          "confidence": 1.0
-        },
-        "subsidiary_risk": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": "II",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2022-02-08",
-          "confidence": 1.0
-        }
-      },
-      "file_size_mb": 0.19
-    },
-    "sds_11.pdf": {
-      "success": true,
-      "fields_extracted": 3,
-      "total_fields": 4,
-      "extracted_values": {
-        "product_name": {
-          "value": "Chemical Name Not Applicable",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2023-05-08",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "3",
-          "confidence": 1.0
-        }
-      },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 52612,
-          "available_methods": {
-            "pymupdf": false,
-            "pdfplumber": true,
-            "ocr": false
-          },
-          "extraction_mode": "text-only"
-        },
-        "product_name": {
-          "value": "Chemical Name Not Applicable",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "product_use": {
-          "value": "Association / Organisation Poisons Information Centre National Poisons Centre",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": "3",
-          "confidence": 1.0
-        },
-        "subsidiary_risk": {
-          "value": "Not Applicable",
-          "confidence": 1.0
-        },
-        "packing_group": {
-          "value": "II",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2023-05-08",
-          "confidence": 1.0
-        }
-      },
-      "file_size_mb": 0.18
+      "file_size_mb": 0.23
     },
     "sds_10.pdf": {
       "success": true,
@@ -427,11 +89,11 @@
         "extraction_info": {
           "text_length": 16793,
           "available_methods": {
-            "pymupdf": false,
+            "pymupdf": true,
             "pdfplumber": true,
-            "ocr": false
+            "ocr": true
           },
-          "extraction_mode": "text-only"
+          "extraction_mode": "full"
         },
         "product_name": {
           "value": "JET POWER FUEL – 100GM/230GM/450GM",
@@ -464,6 +126,171 @@
       },
       "file_size_mb": 0.24
     },
+    "sds_11.pdf": {
+      "success": true,
+      "fields_extracted": 3,
+      "total_fields": 4,
+      "extracted_values": {
+        "product_name": {
+          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2023-05-08",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "3",
+          "confidence": 1.0
+        }
+      },
+      "full_data": {
+        "extraction_info": {
+          "text_length": 52684,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "ocr": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "product_use": {
+          "value": "industrial solvent: Cleaning and degreasing.",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "3",
+          "confidence": 1.0
+        },
+        "subsidiary_risk": {
+          "value": "Not Applicable",
+          "confidence": 1.0
+        },
+        "packing_group": {
+          "value": "II",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2023-05-08",
+          "confidence": 1.0
+        }
+      },
+      "file_size_mb": 0.18
+    },
+    "sds_12.pdf": {
+      "success": true,
+      "fields_extracted": 1,
+      "total_fields": 4,
+      "extracted_values": {
+        "product_name": {
+          "value": "MSDS Date",
+          "confidence": 1.0
+        }
+      },
+      "full_data": {
+        "extraction_info": {
+          "text_length": 12477,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "ocr": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "MSDS Date",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "product_use": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "dangerous_goods_class": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "subsidiary_risk": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "issue_date": {
+          "value": null,
+          "confidence": 0.0
+        }
+      },
+      "file_size_mb": 0.06
+    },
+    "sds_13.pdf": {
+      "success": true,
+      "fields_extracted": 2,
+      "total_fields": 4,
+      "extracted_values": {
+        "product_name": {
+          "value": "UK, NPIS - 0344 8920111 (Healthcare Professionals only)",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "safety data sheet",
+          "confidence": 1.0
+        }
+      },
+      "full_data": {
+        "extraction_info": {
+          "text_length": 26254,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "ocr": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "UK, NPIS - 0344 8920111 (Healthcare Professionals only)",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "safety data sheet",
+          "confidence": 1.0
+        },
+        "product_use": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "dangerous_goods_class": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "subsidiary_risk": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "issue_date": {
+          "value": null,
+          "confidence": 0.0
+        }
+      },
+      "file_size_mb": 0.36
+    },
     "sds_14.pdf": {
       "success": true,
       "fields_extracted": 2,
@@ -482,11 +309,11 @@
         "extraction_info": {
           "text_length": 23263,
           "available_methods": {
-            "pymupdf": false,
+            "pymupdf": true,
             "pdfplumber": true,
-            "ocr": false
+            "ocr": true
           },
-          "extraction_mode": "text-only"
+          "extraction_mode": "full"
         },
         "product_name": {
           "value": "SELLEYS KWIK GRIP SPRAY",
@@ -519,6 +346,69 @@
       },
       "file_size_mb": 0.46
     },
+    "sds_15.pdf": {
+      "success": true,
+      "fields_extracted": 4,
+      "total_fields": 4,
+      "extracted_values": {
+        "product_name": {
+          "value": "Dy-Mark Spray & Mark - All colours (LPG new formula)",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Registered company name",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2021-11-03",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "2.1",
+          "confidence": 1.0
+        }
+      },
+      "full_data": {
+        "extraction_info": {
+          "text_length": 168876,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "ocr": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "Dy-Mark Spray & Mark - All colours (LPG new formula)",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Registered company name",
+          "confidence": 1.0
+        },
+        "product_use": {
+          "value": "Aerosol spray paint.",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "2.1",
+          "confidence": 1.0
+        },
+        "subsidiary_risk": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": "Not Applicable",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2021-11-03",
+          "confidence": 1.0
+        }
+      },
+      "file_size_mb": 0.58
+    },
     "sds_2.pdf": {
       "success": true,
       "fields_extracted": 2,
@@ -537,11 +427,11 @@
         "extraction_info": {
           "text_length": 13440,
           "available_methods": {
-            "pymupdf": false,
+            "pymupdf": true,
             "pdfplumber": true,
-            "ocr": false
+            "ocr": true
           },
-          "extraction_mode": "text-only"
+          "extraction_mode": "full"
         },
         "product_name": {
           "value": "ISOCOL Rubbing Alcohol",
@@ -596,11 +486,11 @@
         "extraction_info": {
           "text_length": 17105,
           "available_methods": {
-            "pymupdf": false,
+            "pymupdf": true,
             "pdfplumber": true,
-            "ocr": false
+            "ocr": true
           },
-          "extraction_mode": "text-only"
+          "extraction_mode": "full"
         },
         "product_name": {
           "value": "Alternative number(s)",
@@ -643,30 +533,26 @@
         "text_length": 0,
         "text_sample": "",
         "available_methods": {
-          "pymupdf": false,
+          "pymupdf": true,
           "pdfplumber": true,
-          "ocr": false
+          "ocr": true
         },
-        "extraction_mode": "text-only",
+        "extraction_mode": "full",
         "debug_info": "OCR fallback should have triggered but didn't"
       },
       "file_size_mb": 1.98
     },
-    "sds_15.pdf": {
+    "sds_5.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 3,
       "total_fields": 4,
       "extracted_values": {
         "product_name": {
-          "value": "Chemical Name Not Applicable",
+          "value": "WD-40 Aerosol",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Registered company name Dy-Mark",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2021-11-03",
+          "value": "WD-40",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
@@ -676,24 +562,24 @@
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 168146,
+          "text_length": 17125,
           "available_methods": {
-            "pymupdf": false,
+            "pymupdf": true,
             "pdfplumber": true,
-            "ocr": false
+            "ocr": true
           },
-          "extraction_mode": "text-only"
+          "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Chemical Name Not Applicable",
+          "value": "WD-40 Aerosol",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Registered company name Dy-Mark",
+          "value": "WD-40",
           "confidence": 1.0
         },
         "product_use": {
-          "value": "Association / Organisation Dy-Mark",
+          "value": "Lubricant, Penetrant, Drives Out",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
@@ -705,15 +591,192 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "Not Applicable",
+          "value": null,
+          "confidence": 0.0
+        },
+        "issue_date": {
+          "value": null,
+          "confidence": 0.0
+        }
+      },
+      "file_size_mb": 2.08
+    },
+    "sds_6.pdf": {
+      "success": true,
+      "fields_extracted": 3,
+      "total_fields": 4,
+      "extracted_values": {
+        "product_name": {
+          "value": "ACETONE",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2021-11-03",
+          "value": "2022-02-08",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "3",
           "confidence": 1.0
         }
       },
-      "file_size_mb": 0.58
+      "full_data": {
+        "extraction_info": {
+          "text_length": 14280,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "ocr": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "ACETONE",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "product_use": {
+          "value": "Solvent",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "3",
+          "confidence": 1.0
+        },
+        "subsidiary_risk": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": "II",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2022-02-08",
+          "confidence": 1.0
+        }
+      },
+      "file_size_mb": 0.19
+    },
+    "sds_7.pdf": {
+      "success": true,
+      "fields_extracted": 2,
+      "total_fields": 4,
+      "extracted_values": {
+        "product_name": {
+          "value": "Full Synthetic 5W-30",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2021-07-01",
+          "confidence": 1.0
+        }
+      },
+      "full_data": {
+        "extraction_info": {
+          "text_length": 17350,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "ocr": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "Full Synthetic 5W-30",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "product_use": {
+          "value": "Petrol engine oil.",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "subsidiary_risk": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "issue_date": {
+          "value": "2021-07-01",
+          "confidence": 1.0
+        }
+      },
+      "file_size_mb": 0.15
+    },
+    "sds_8.pdf": {
+      "success": true,
+      "fields_extracted": 4,
+      "total_fields": 4,
+      "extracted_values": {
+        "product_name": {
+          "value": "Australia - 13 11 26",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Glen 20 All in One Spray Disinfectant Original",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2023-04-13",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "2.1",
+          "confidence": 1.0
+        }
+      },
+      "full_data": {
+        "extraction_info": {
+          "text_length": 27207,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "ocr": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "Australia - 13 11 26",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Glen 20 All in One Spray Disinfectant Original",
+          "confidence": 1.0
+        },
+        "product_use": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "dangerous_goods_class": {
+          "value": "2.1",
+          "confidence": 1.0
+        },
+        "subsidiary_risk": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": "2",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2023-04-13",
+          "confidence": 1.0
+        }
+      },
+      "file_size_mb": 0.16
     },
     "sds_9.pdf": {
       "success": true,
@@ -737,11 +800,11 @@
         "extraction_info": {
           "text_length": 12514,
           "available_methods": {
-            "pymupdf": false,
+            "pymupdf": true,
             "pdfplumber": true,
-            "ocr": false
+            "ocr": true
           },
-          "extraction_mode": "text-only"
+          "extraction_mode": "full"
         },
         "product_name": {
           "value": "Barcode",
