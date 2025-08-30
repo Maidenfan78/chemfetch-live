@@ -2,7 +2,7 @@ import re
 import os
 import tempfile
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple
 import logging
 
 # Configure logging for this module
@@ -73,13 +73,20 @@ ALL_LABELS = [lab for labs in FIELD_LABELS.values() for lab in labs] + ['SDS no.
 # Precompiled regex for detecting labels within values
 LABEL_SPLIT_RE = re.compile(r"\b(?:" + "|".join(ALL_LABELS) + r")\b", re.IGNORECASE)
 
+# Minimum text length before triggering OCR fallback
+MIN_TEXT_LENGTH = 50
 
-def extract_text(path: Path) -> str:
-    """Extract text from PDF with multiple fallback methods and improved OCR triggering"""
+
+def extract_text(path: Path) -> Tuple[str, Optional[str]]:
+    """Extract text from PDF with multiple fallback methods and improved OCR triggering.
+
+    Returns a tuple of the extracted text and an optional OCR error message.
+    """
     logger.info(f"[SDS_EXTRACTOR] Starting text extraction from: {path}")
-    
+
     best_text = ""
     extraction_method = None
+    ocr_error: Optional[str] = None
     
     # Method 1: PyMuPDF (if available - fastest)
     if PYMUPDF_AVAILABLE:
@@ -145,59 +152,58 @@ def extract_text(path: Path) -> str:
     # Check if we need OCR (insufficient text from all methods)
     text_length = len(best_text.strip())
     logger.info(f"[SDS_EXTRACTOR] Best text extraction: {text_length} chars using {extraction_method}")
-    
+
     # Method 4: OCR fallback (if text is insufficient AND OCR is available)
-    if text_length < 100 and OCR_AVAILABLE:
+    if text_length < MIN_TEXT_LENGTH and OCR_AVAILABLE:
+        logger.warning(f"[SDS_EXTRACTOR] Text too short ({text_length} chars), falling back to OCR...")
+        logger.info("[SDS_EXTRACTOR] Converting PDF to images for OCR...")
         try:
-            logger.warning(f"[SDS_EXTRACTOR] Text too short ({text_length} chars), falling back to OCR...")
-            logger.info("[SDS_EXTRACTOR] Converting PDF to images for OCR...")
-            
-            # Convert PDF to images
             images = convert_from_path(str(path), dpi=300, first_page=1, last_page=10)
             logger.info(f"[SDS_EXTRACTOR] Converted to {len(images)} images for OCR")
-            
-            ocr_text = ""
-            for i, img in enumerate(images):
-                try:
-                    logger.info(f"[SDS_EXTRACTOR] Running OCR on page {i+1}...")
-                    # Try different PSM modes for better results
-                    page_text = pytesseract.image_to_string(img, config='--psm 1 -l eng')
-                    ocr_text += f"\n--- Page {i+1} ---\n{page_text}"
-                    logger.info(f"[SDS_EXTRACTOR] OCR page {i+1}: {len(page_text)} chars extracted")
-                    
-                    # Show a sample of what was extracted
-                    if page_text.strip():
-                        sample = page_text.strip()[:100].replace('\n', ' ')
-                        logger.info(f"[SDS_EXTRACTOR] OCR page {i+1} sample: '{sample}...'")
-                    
-                except Exception as page_error:
-                    logger.error(f"[SDS_EXTRACTOR] OCR failed for page {i+1}: {page_error}")
-                    continue
-            
-            logger.info(f"[SDS_EXTRACTOR] OCR extracted {len(ocr_text)} characters total")
-            
-            if len(ocr_text.strip()) > text_length:
-                logger.info(f"[SDS_EXTRACTOR] OCR successful! Using OCR text ({len(ocr_text)} chars)")
-                return ocr_text
-            else:
-                logger.warning(f"[SDS_EXTRACTOR] OCR didn't improve results (OCR: {len(ocr_text)}, text: {text_length})")
-                
         except Exception as e:
-            logger.error(f"[SDS_EXTRACTOR] OCR extraction failed: {e}")
-            import traceback
-            logger.error(f"[SDS_EXTRACTOR] OCR traceback: {traceback.format_exc()}")
-    
-    elif text_length < 100 and not OCR_AVAILABLE:
+            ocr_error = f"convert_from_path failed: {e}"
+            logger.exception(f"[SDS_EXTRACTOR] {ocr_error}")
+            return best_text, ocr_error
+
+        ocr_text = ""
+        page_errors = []
+        for i, img in enumerate(images):
+            try:
+                logger.info(f"[SDS_EXTRACTOR] Running OCR on page {i+1}...")
+                page_text = pytesseract.image_to_string(img, config='--psm 1 -l eng')
+                ocr_text += f"\n--- Page {i+1} ---\n{page_text}"
+                logger.info(f"[SDS_EXTRACTOR] OCR page {i+1}: {len(page_text)} chars extracted")
+                if page_text.strip():
+                    sample = page_text.strip()[:100].replace('\n', ' ')
+                    logger.info(f"[SDS_EXTRACTOR] OCR page {i+1} sample: '{sample}...'")
+            except Exception as page_error:
+                err = f"pytesseract failed for page {i+1}: {page_error}"
+                logger.exception(f"[SDS_EXTRACTOR] {err}")
+                page_errors.append(err)
+                continue
+
+        logger.info(f"[SDS_EXTRACTOR] OCR extracted {len(ocr_text)} characters total")
+
+        if ocr_text.strip():
+            logger.info(f"[SDS_EXTRACTOR] OCR successful! Using OCR text ({len(ocr_text)} chars)")
+            return ocr_text, None
+
+        ocr_error = "; ".join(page_errors) if page_errors else "OCR produced no text"
+        logger.error(f"[SDS_EXTRACTOR] {ocr_error}")
+
+    elif text_length < MIN_TEXT_LENGTH and not OCR_AVAILABLE:
+        ocr_error = "OCR not available"
         logger.error(f"[SDS_EXTRACTOR] Insufficient text ({text_length} chars) and OCR not available")
-    elif text_length >= 100:
+    else:
         logger.info(f"[SDS_EXTRACTOR] Sufficient text extracted ({text_length} chars), no OCR needed")
-    
+
     if not best_text.strip():
-        logger.error("[SDS_EXTRACTOR] All text extraction methods failed")
-        return ""
-    
+        err_msg = ocr_error or "All text extraction methods failed"
+        logger.error(f"[SDS_EXTRACTOR] {err_msg}")
+        return "", ocr_error
+
     logger.info(f"[SDS_EXTRACTOR] Final text: {len(best_text)} chars using {extraction_method}")
-    return best_text
+    return best_text, ocr_error
 
 
 def get_section(text: str, number: int) -> str:
@@ -311,32 +317,39 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     # Step 1: Extract text
     logger.info("[SDS_EXTRACTOR] Step 1: Extracting text from PDF...")
     try:
-        text = extract_text(path)
+        text, ocr_error = extract_text(path)
         text_length = len(text.strip())
         logger.info(f"[SDS_EXTRACTOR] Text extraction complete, total length: {text_length}")
-        
+
+        if text_length == 0:
+            logger.error("[SDS_EXTRACTOR] No text extracted from PDF")
+            return {
+                "error": ocr_error or "No text extracted from PDF",
+                "text_length": text_length,
+                "available_methods": {
+                    "pymupdf": PYMUPDF_AVAILABLE,
+                    "pdfplumber": PDFPLUMBER_AVAILABLE,
+                    "ocr": OCR_AVAILABLE
+                },
+                "extraction_mode": "text-only" if not OCR_AVAILABLE else "full",
+                "debug_info": ocr_error or ""
+            }
+
         # Enhanced debugging for short text
         if text_length < 100:
             logger.warning(f"[SDS_EXTRACTOR] Very short text extracted ({text_length} chars)")
             logger.info(f"[SDS_EXTRACTOR] Text sample: '{text.strip()[:200]}'")
-            
-            # If we have OCR available, this should have been handled in extract_text()
-            if OCR_AVAILABLE:
-                logger.error("[SDS_EXTRACTOR] OCR was available but insufficient text still extracted")
-            else:
-                logger.error("[SDS_EXTRACTOR] OCR not available and insufficient text extracted")
-            
             return {
                 "error": "Insufficient text extracted from PDF",
                 "text_length": text_length,
                 "text_sample": text.strip()[:200] if text.strip() else "",
                 "available_methods": {
                     "pymupdf": PYMUPDF_AVAILABLE,
-                    "pdfplumber": PDFPLUMBER_AVAILABLE, 
+                    "pdfplumber": PDFPLUMBER_AVAILABLE,
                     "ocr": OCR_AVAILABLE
                 },
                 "extraction_mode": "text-only" if not OCR_AVAILABLE else "full",
-                "debug_info": "OCR fallback should have triggered but didn't"
+                "debug_info": ocr_error or "OCR produced too little text"
             }
     except Exception as e:
         logger.error(f"[SDS_EXTRACTOR] Text extraction failed: {e}")
