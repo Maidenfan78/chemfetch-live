@@ -28,12 +28,24 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
             logger.debug(f"[SDS_EXTRACTOR] Checking label '{label}' in line: '{clean[:50]}...'")
             
             # Case 1: label and value on same line
-            same_line_pattern = rf"^{label}\s*[:\-]?\s*(.+)$"
+            same_line_pattern = rf"^{label}\s*[:\-]\s*(.+)$"
             same = re.search(same_line_pattern, clean, re.IGNORECASE)
+            if not same:
+                # Handle case with whitespace but no colon/hyphen
+                same = re.search(rf"^{label}\b\s+(.+)$", clean, re.IGNORECASE)
             if same:
                 value = same.group(1).strip()
+
+                # Remove leading possessive artifacts like "'s" or "’s"
+                value = re.sub(r"^[\"'’`]+s\b\s*", "", value)
+
+                # Skip if the value clearly refers to a product code or similar non-name data
+                if re.search(r"product\s+code", value, re.IGNORECASE):
+                    logger.debug(f"[SDS_EXTRACTOR] Skipping value containing product code: '{value}'")
+                    continue
+
                 logger.debug(f"[SDS_EXTRACTOR] Found same-line match: '{value}'")
-                
+
                 # Clean up the value - remove trailing noise
                 # Split on common separators that indicate end of value
                 for separator in [r'\s+Tel:', r'\s+Phone:', r'\s+Fax:', r'\s+Email:', r'\s+Website:',
@@ -42,11 +54,11 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
                     if len(split_match) > 1:
                         value = split_match[0].strip()
                         break
-                
+
                 # Remove common trailing noise patterns
                 value = re.sub(r'\s*[:\-]\s*$', '', value)  # Remove trailing colons/dashes
                 value = re.sub(r'\s+Page\s+\d+.*$', '', value, flags=re.IGNORECASE)  # Remove page numbers
-                
+
                 if value and not is_noise_text(value):
                     logger.debug(f"[SDS_EXTRACTOR] Accepting value: '{value}'")
                     return value
@@ -103,28 +115,34 @@ def extract_product_name(section_text: str) -> Optional[str]:
         # Skip obvious header/label lines
         if re.match(r'^\s*(?:section\s*)?1\b', clean, re.IGNORECASE):
             continue
-        if re.search(r'identification|supplier|emergency|contact|telephone|details', clean, re.IGNORECASE):
+        if re.search(r'identification|supplier|manufacturer|emergency|contact|telephone|details', clean, re.IGNORECASE):
             continue
         if is_noise_text(clean):
             continue
         if re.match(r'^[:\-\s]*$', clean):
             continue
-        
-        # Skip lines that are clearly labels
+
+        # Skip lines that are clearly labels (optionally followed by punctuation)
         is_label = False
         for label_group in FIELD_LABELS.values():
             for label in label_group:
-                if re.fullmatch(label, clean, re.IGNORECASE):
+                if re.fullmatch(rf"{label}\s*[:\-]?", clean, re.IGNORECASE):
                     is_label = True
                     break
             if is_label:
                 break
-        
+
         if not is_label:
             meaningful_lines.append(clean)
     
     # Take the first meaningful line that looks like a product name
     for line in meaningful_lines:
+        # Skip lines that are still generic labels or section headers
+        if re.search(r'^(?:product\s+name|product\s+identifier|sds\s+no\.?|sds\s+number)', line, re.IGNORECASE):
+            continue
+        if re.match(r'^\d+\s*[\-–]', line):
+            continue
+
         # Product names typically contain alphanumeric characters and common symbols
         if re.search(r'[A-Za-z0-9]', line) and len(line) > 3:
             # Avoid lines that look like contact info
