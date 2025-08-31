@@ -33,6 +33,7 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
             if not same:
                 # Handle case with whitespace but no colon/hyphen
                 same = re.search(rf"^{label}\b\s+(.+)$", clean, re.IGNORECASE)
+            search_next = False
             if same:
                 value = same.group(1).strip()
 
@@ -64,26 +65,27 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
                     return value
                 else:
                     logger.debug(f"[SDS_EXTRACTOR] Rejecting value as noise: '{value}'")
+                    search_next = True
 
-            # Case 2: label alone on this line, value on subsequent lines
-            if re.fullmatch(label, clean, re.IGNORECASE):
-                logger.debug(f"[SDS_EXTRACTOR] Found label-only line, looking for value on next lines")
+            # Case 2: label alone on this line or previous value rejected as noise, look for value on subsequent lines
+            if search_next or re.fullmatch(label, clean, re.IGNORECASE):
+                logger.debug(f"[SDS_EXTRACTOR] Looking for value on next lines")
                 j = i + 1
                 while j < len(lines) and j < i + 5:  # Limit search to next 5 lines
                     candidate_line = lines[j].strip()
                     if not candidate_line:
                         j += 1
                         continue
-                    
+
                     # Handle colon prefix
                     candidate = candidate_line
                     if candidate.startswith(':'):
                         candidate = candidate[1:].strip()
-                    
+
                     # Stop if we hit another label
                     if any(re.search(lab, candidate, re.IGNORECASE) for lab in [l for labs in FIELD_LABELS.values() for l in labs]):
                         break
-                    
+
                     if candidate and not is_noise_text(candidate):
                         logger.debug(f"[SDS_EXTRACTOR] Found value on next line: '{candidate}'")
                         return candidate

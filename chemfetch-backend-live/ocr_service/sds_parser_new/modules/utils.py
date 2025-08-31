@@ -31,7 +31,12 @@ def is_noise_text(text: str) -> bool:
         return True
     if text_clean.lower() in ['name', 'date', 'address', 'contact', 'details', 'information']:
         return True
-    
+    if text_clean.lower() in {
+        'australia', 'new zealand', 'united states', 'united kingdom',
+        'usa', 'uk', 'canada'
+    }:
+        return True
+
     return False
 
 
