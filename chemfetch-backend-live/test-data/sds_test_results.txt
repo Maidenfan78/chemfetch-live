@@ -1,12 +1,12 @@
 🧪 ChemFetch SDS Parser Test Results
 ==================================================
-Generated: 2025-08-31 21:37:34
+Generated: 2025-08-31 21:43:37
 Total Files Tested: 30
 
 [1/30] sds_1.PDF
 ----------------------------------------
 ✅ product_name: SUPER GLUE FAST
-✅ manufacturer: WÃ¼rth Chile Ltda.
+✅ manufacturer: Würth Chile Ltda.
 ✅ description: Adhesives
 ✅ issue_date: 2025-06-26
 ✅ dangerous_goods_class: 9
@@ -104,7 +104,7 @@ Total Files Tested: 30
 
 [10/30] sds_10.pdf
 ----------------------------------------
-✅ product_name: JET POWER FUEL â€“
+✅ product_name: JET POWER FUEL –
 ✅ manufacturer: Company TAEYANG CORPORATION
 ✅ description: Fuel etc.
 ⚠️ issue_date: None
@@ -115,7 +115,7 @@ Total Files Tested: 30
 
 [11/30] sds_11.pdf
 ----------------------------------------
-✅ product_name: AutoChemâ„¢ Heavy Duty Brake & Parts Cleaner
+✅ product_name: AutoChem™ Heavy Duty Brake & Parts Cleaner
 ✅ manufacturer: Chemtools Pty Ltd
 ✅ description: industrial solvent: Cleaning and degreasing.
 ✅ issue_date: 2023-05-18
@@ -137,7 +137,7 @@ Total Files Tested: 30
 
 [13/30] sds_13.pdf
 ----------------------------------------
-✅ product_name: SC Johnson Professional Mr. MuscleÂ® Floor Cleaner
+✅ product_name: SC Johnson Professional Mr. Muscle® Floor Cleaner
 ⚠️ manufacturer: None
 ⚠️ description: None
 ✅ issue_date: 2020-10-14

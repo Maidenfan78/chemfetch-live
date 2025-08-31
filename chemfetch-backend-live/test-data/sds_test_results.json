@@ -1,5 +1,5 @@
 {
-  "test_timestamp": "2025-08-31T21:37:34.765071",
+  "test_timestamp": "2025-08-31T21:43:37.134719",
   "total_files": 30,
   "successful": 15,
   "failed": 0,
@@ -14,7 +14,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "WÃ¼rth Chile Ltda.",
+          "value": "Würth Chile Ltda.",
           "confidence": 1.0
         },
         "description": {
@@ -49,7 +49,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "WÃ¼rth Chile Ltda.",
+          "value": "Würth Chile Ltda.",
           "confidence": 1.0
         },
         "description": {
@@ -654,7 +654,7 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "JET POWER FUEL â€“",
+          "value": "JET POWER FUEL –",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -689,7 +689,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "JET POWER FUEL â€“",
+          "value": "JET POWER FUEL –",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -729,7 +729,7 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "AutoChemâ„¢ Heavy Duty Brake & Parts Cleaner",
+          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -764,7 +764,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "AutoChemâ„¢ Heavy Duty Brake & Parts Cleaner",
+          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -879,7 +879,7 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "SC Johnson Professional Mr. MuscleÂ® Floor Cleaner",
+          "value": "SC Johnson Professional Mr. Muscle® Floor Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -914,7 +914,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "SC Johnson Professional Mr. MuscleÂ® Floor Cleaner",
+          "value": "SC Johnson Professional Mr. Muscle® Floor Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
