@@ -24,6 +24,7 @@ test-data/
 ## What the Test Script Does
 
 The `test_sds.py` script:
+
 - ✅ Automatically finds all PDF files in `test-data/sds-pdfs/`
 - ✅ Tests each PDF with the current SDS parser
 - ✅ Shows real-time parsing results in the terminal
@@ -32,13 +33,16 @@ The `test_sds.py` script:
 ## Test Output
 
 ### Console Output
+
 - Progress indicator for each PDF
 - Key extracted fields (product name, manufacturer, issue date, etc.)
 - Success/failure status
 - Summary statistics
 
 ### JSON Results File
+
 The `sds_test_results.json` contains:
+
 ```json
 {
   "test_timestamp": "...",
@@ -51,10 +55,12 @@ The `sds_test_results.json` contains:
       "fields_extracted": 4,
       "total_fields": 4,
       "extracted_values": {
-        "product_name": {"value": "Chemical X", "confidence": 1.0},
-        "manufacturer": {"value": "Company Y", "confidence": 0.9}
+        "product_name": { "value": "Chemical X", "confidence": 1.0 },
+        "manufacturer": { "value": "Company Y", "confidence": 0.9 }
       },
-      "full_data": { /* complete parser output */ },
+      "full_data": {
+        /* complete parser output */
+      },
       "file_size_mb": 2.5
     }
   }
@@ -64,16 +70,18 @@ The `sds_test_results.json` contains:
 ## Parser Information
 
 ### Current Parser: `sds_parser_new/sds_extractor.py`
+
 - **Text extraction methods**: PyMuPDF, pdfplumber, pdfminer.six, OCR fallback
 - **Key fields extracted**:
   - Product name
   - Manufacturer
-  - Issue date  
+  - Issue date
   - Dangerous goods class
   - Packing group
   - Subsidiary risks
 
 ### Extraction Methods (with fallback)
+
 1. **PyMuPDF** (fastest, if available)
 2. **pdfplumber** (reliable for text-based PDFs)
 3. **pdfminer.six** (always available fallback)
@@ -82,18 +90,21 @@ The `sds_test_results.json` contains:
 ## Testing Tips
 
 ### Good Test Files
+
 - Mix of different SDS formats (different manufacturers)
 - Various PDF types (text-based vs image-based)
 - Different file sizes
 - Both simple and complex layouts
 
 ### Analyzing Results
+
 - Check `confidence` scores for extracted fields
 - Low confidence may indicate parsing issues
 - Compare `text_length` to identify extraction problems
 - Review `full_data` for detailed parser output
 
 ### Common Issues
+
 - **Low text extraction**: May indicate image-based PDF needing OCR
 - **Missing fields**: Parser regex patterns may need adjustment
 - **Date parsing failures**: Date format not recognized
@@ -111,6 +122,7 @@ Use the test results to identify patterns in parsing failures:
 ## Manual Testing
 
 You can also test individual files directly:
+
 ```bash
 python ocr_service/sds_parser_new/sds_extractor.py "test-data/sds-pdfs/your-file.pdf"
 ```

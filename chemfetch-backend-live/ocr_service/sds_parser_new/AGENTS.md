@@ -1,9 +1,11 @@
 # SDS Parser Enhancement - Agent Instructions
 
 ## Parser Overview
+
 Advanced Safety Data Sheet (SDS) parsing system focused on accurate extraction of chemical data, hazard information, and regulatory compliance details from PDF documents.
 
 ## Setup Commands
+
 - Install dependencies: `pip install -r requirements.txt` (from ocr_service directory)
 - Test primary parser: `python sds_parser_new/sds_extractor.py <pdf_path>`
 - Test quick parser: `python quick_parser.py <pdf_path>`
@@ -11,6 +13,7 @@ Advanced Safety Data Sheet (SDS) parsing system focused on accurate extraction o
 - Run parser improvements: `python analyze_improvements.py`
 
 ## Parser Architecture
+
 ```
 sds_parser_new/
 ├── sds_extractor.py     # Primary advanced extraction engine
@@ -24,6 +27,7 @@ Root level parsers:
 ```
 
 ## Parsing Strategy (Layered Approach)
+
 1. **Primary Parser**: `sds_parser_new/sds_extractor.py` - Advanced extraction with high accuracy
 2. **Verification Parser**: Extract from `/verify-sds` endpoint text output
 3. **Quick Parser**: `quick_parser.py` - Regex-based fallback for basic data
@@ -32,6 +36,7 @@ Root level parsers:
 ## Key Extraction Targets
 
 ### Product Information
+
 - **Product Name**: Official chemical product name
 - **Manufacturer**: Company name, address, contact information
 - **Product Code**: Internal product codes, batch numbers
@@ -40,6 +45,7 @@ Root level parsers:
 - **Chemical Formula**: Molecular formula and structure identifiers
 
 ### Hazard Classification
+
 - **GHS Symbols**: Pictogram identification and meanings
 - **Hazard Statements**: H-codes (H200-H499) with descriptions
 - **Precautionary Statements**: P-codes (P100-P500) with safety instructions
@@ -48,6 +54,7 @@ Root level parsers:
 - **Dangerous Goods Class**: UN classification (Class 1-9)
 
 ### Physical/Chemical Properties
+
 - **Physical State**: Solid, liquid, gas at standard conditions
 - **Appearance**: Color, odor, transparency
 - **pH Value**: Acidity/alkalinity measurements
@@ -58,6 +65,7 @@ Root level parsers:
 - **Vapor Pressure**: Volatility measurements
 
 ### Regulatory Information
+
 - **Issue Date**: Document creation or last revision date
 - **Version Number**: Document version for tracking updates
 - **Regulatory Standards**: OSHA, EPA, DOT compliance references
@@ -67,14 +75,15 @@ Root level parsers:
 ## Text Extraction Optimization
 
 ### Primary Extraction Methods
+
 ```python
 # pdfplumber - best for digital PDFs
 import pdfplumber
 with pdfplumber.open(pdf_path) as pdf:
     for page in pdf.pages:
         text = page.extract_text()
-        
-# PyMuPDF - alternative for complex layouts  
+
+# PyMuPDF - alternative for complex layouts
 import fitz
 doc = fitz.open(pdf_path)
 for page in doc:
@@ -82,6 +91,7 @@ for page in doc:
 ```
 
 ### OCR Integration
+
 ```python
 # Tesseract OCR for scanned documents
 import pytesseract
@@ -95,6 +105,7 @@ for image in images:
 ## Pattern Matching & Regex
 
 ### Chemical Identification Patterns
+
 ```python
 # CAS number pattern (XXX-XX-X or XXXXXXX-XX-X format)
 cas_pattern = r'\b\d{2,7}-\d{2}-\d\b'
@@ -109,11 +120,12 @@ product_patterns = [
 # H-code pattern (H200-H499)
 hazard_pattern = r'\bH[2-4]\d{2}\b'
 
-# P-code pattern (P100-P500)  
+# P-code pattern (P100-P500)
 precaution_pattern = r'\bP[1-5]\d{2}\b'
 ```
 
 ### Structured Data Extraction
+
 ```python
 # Extract sections using headers
 def extract_sections(text):
@@ -127,12 +139,14 @@ def extract_sections(text):
 ```
 
 ## Confidence Scoring System
+
 - **High Confidence (90-100%)**: Exact pattern matches, structured data found
 - **Medium Confidence (70-89%)**: Partial matches, inferred data
 - **Low Confidence (50-69%)**: Weak patterns, uncertain extraction
 - **No Confidence (<50%)**: Failed extraction, return null/empty
 
 ## Error Handling & Recovery
+
 ```python
 def safe_extract(extraction_func, default_value=None):
     try:
@@ -144,6 +158,7 @@ def safe_extract(extraction_func, default_value=None):
 ```
 
 ## Performance Optimization
+
 - **Memory Management**: Clean up PDF objects after processing
 - **Processing Speed**: Target <5 seconds per SDS document
 - **Batch Processing**: Handle multiple PDFs efficiently
@@ -151,6 +166,7 @@ def safe_extract(extraction_func, default_value=None):
 - **Resource Limits**: Stay within 512MB memory constraint
 
 ## Testing & Validation
+
 ```python
 # Test different SDS formats
 test_files = [
@@ -163,8 +179,9 @@ test_files = [
 ```
 
 ## Common SDS Formats & Variations
+
 - **Standard GHS Format**: 16-section internationally standardized format
-- **OSHA Format**: US-specific variations with additional requirements  
+- **OSHA Format**: US-specific variations with additional requirements
 - **Abbreviated SDS**: Shortened versions for low-hazard materials
 - **Multi-language**: PDFs with multiple language sections
 - **Legacy Formats**: Older MSDS (Material Safety Data Sheet) formats
@@ -172,6 +189,7 @@ test_files = [
 ## Improvement Strategies
 
 ### Accuracy Enhancement
+
 1. **Train on More Samples**: Test with diverse SDS document types
 2. **Pattern Refinement**: Improve regex patterns based on extraction failures
 3. **Context Analysis**: Use surrounding text to validate extracted data
@@ -179,6 +197,7 @@ test_files = [
 5. **Machine Learning**: Consider ML models for complex extraction tasks
 
 ### Performance Optimization
+
 1. **Preprocessing**: Optimize PDF text extraction methods
 2. **Parallel Processing**: Process multiple sections simultaneously
 3. **Smart Fallbacks**: Efficient cascading between parsing methods
@@ -186,6 +205,7 @@ test_files = [
 5. **Caching**: Cache successful extraction patterns
 
 ### Robustness Improvement
+
 1. **Error Recovery**: Better handling of malformed PDFs
 2. **Format Detection**: Automatically detect SDS format type
 3. **Language Support**: Multi-language extraction capabilities
@@ -193,6 +213,7 @@ test_files = [
 5. **Validation**: Cross-validate extracted data for consistency
 
 ## Development Workflow
+
 1. **Identify Issues**: Use test cases to find parsing failures
 2. **Pattern Analysis**: Examine failed extractions to understand patterns
 3. **Code Enhancement**: Improve extraction methods and patterns
@@ -201,6 +222,7 @@ test_files = [
 6. **Integration**: Update Flask endpoints to use improved parser
 
 ## Debugging Tools
+
 - **Debug Images**: Save processed images for OCR troubleshooting
 - **Text Dumps**: Output extracted text for pattern analysis
 - **Confidence Logs**: Track confidence scores for different extraction methods
