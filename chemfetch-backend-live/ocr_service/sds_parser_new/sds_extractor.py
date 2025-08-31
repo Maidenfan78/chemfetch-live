@@ -8,6 +8,15 @@ import logging
 import json
 from pathlib import Path
 from typing import Dict, Any, Optional
+import sys
+
+# Ensure local modules are importable when run as script
+CURRENT_DIR = Path(__file__).resolve().parent
+if str(CURRENT_DIR) not in sys.path:
+    sys.path.insert(0, str(CURRENT_DIR))
+
+# Use modular field extraction helpers
+from modules.field_extractor import extract_product_name, extract_manufacturer
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -198,83 +207,6 @@ def extract_field_value(text: str, field_labels: list, section_text: str = None)
     return None
 
 
-def extract_product_name(section1_text: str) -> Optional[str]:
-    """Extract product name with multiple strategies."""
-    
-    # Strategy 1: Look for explicit labels
-    labels = [
-        r'Product\s+identifier',
-        r'Product\s+name',
-        r'Trade\s+name',
-        r'Commercial\s+product\s+name'
-    ]
-    
-    result = extract_field_value("", labels, section1_text)
-    if result:
-        return result
-    
-    # Strategy 2: Look for meaningful product-like text in early lines
-    lines = section1_text.split('\n')
-    
-    for line in lines[:15]:  # Check first 15 lines
-        line = line.strip()
-        if not line:
-            continue
-
-        # Skip obvious headers and labels
-        if re.match(r'^\d+\.|\bsection\b|\bidentification\b', line, re.IGNORECASE):
-            continue
-        if any(x in line.lower() for x in ['supplier', 'emergency', 'telephone', 'contact', 'details']):
-            continue
-        if is_noise_text(line):
-            continue
-
-        # Skip single all-uppercase words (common non-product headers)
-        if re.fullmatch(r'[A-Z]+', line):
-            continue
-
-        # Check if line looks like a product name (has alphanumeric content, reasonable length)
-        if re.search(r'[A-Za-z0-9]', line) and 3 <= len(line) <= 100:
-            # Avoid lines that are obviously not product names
-            if not re.search(r'@|www\.|\.com|\.org', line, re.IGNORECASE):
-                if not re.match(r'^[:\-\s]+$', line):
-                    logger.info(f"Found potential product name: '{line}'")
-                    return line
-    
-    return None
-
-
-def extract_manufacturer(section1_text: str) -> Optional[str]:
-    """Extract manufacturer with multiple strategies."""
-    
-    # Strategy 1: Look for explicit labels
-    labels = [
-        r'Manufacturer',
-        r'Supplier', 
-        r'Company\s+name\s+of\s+supplier',
-        r'Producer',
-        r'Company\s+name'
-    ]
-    
-    result = extract_field_value("", labels, section1_text)
-    if result and not is_noise_text(result):
-        return result
-    
-    # Strategy 2: Look in "Details of the supplier" section
-    supplier_match = re.search(r'Details\s+of\s+the\s+supplier[^\n]*\n(.{1,500}?)(?:\n\s*[A-Z][a-z]|\n\s*\d|$)', 
-                              section1_text, re.IGNORECASE | re.DOTALL)
-    if supplier_match:
-        supplier_section = supplier_match.group(1)
-        lines = supplier_section.split('\n')
-        
-        for line in lines:
-            line = line.strip()
-            if line and not is_noise_text(line) and len(line) > 3:
-                # Skip phone numbers
-                if not re.search(r'\b\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}\b', line):
-                    return line
-    
-    return None
 
 
 def extract_date(text: str) -> Optional[str]:
