@@ -112,10 +112,21 @@ def validate_dangerous_goods_class(value: str) -> bool:
 
 
 def extract_text_from_pdf(pdf_path: Path) -> str:
-    """Extract text using available PDF libraries."""
+    """Extract text using available PDF libraries, preferring the most complete output."""
+
     text = ""
-    
-    # Try PyMuPDF first (fastest)
+
+    if PDFPLUMBER_AVAILABLE:
+        try:
+            with pdfplumber.open(pdf_path) as pdf:
+                for page in pdf.pages:
+                    text += page.extract_text() or ""
+            if text.strip():
+                logger.info(f"Extracted {len(text)} chars using pdfplumber")
+                return text
+        except Exception as e:
+            logger.warning(f"pdfplumber failed: {e}")
+
     if PYMUPDF_AVAILABLE:
         try:
             doc = fitz.open(str(pdf_path))
@@ -127,21 +138,7 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
                 return text
         except Exception as e:
             logger.warning(f"PyMuPDF failed: {e}")
-    
-    # Try pdfplumber
-    if PDFPLUMBER_AVAILABLE:
-        try:
-            with pdfplumber.open(pdf_path) as pdf:
-                for page in pdf.pages:
-                    page_text = page.extract_text() or ""
-                    text += page_text
-            if text.strip():
-                logger.info(f"Extracted {len(text)} chars using pdfplumber")
-                return text
-        except Exception as e:
-            logger.warning(f"pdfplumber failed: {e}")
-    
-    # Try pdfminer as fallback
+
     if PDFMINER_AVAILABLE:
         try:
             with open(pdf_path, 'rb') as f:
@@ -151,7 +148,7 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
                 return text
         except Exception as e:
             logger.warning(f"pdfminer failed: {e}")
-    
+
     logger.error("All text extraction methods failed")
     return ""
 
@@ -159,7 +156,7 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
 def get_section(text: str, section_num: int) -> str:
     """Extract a specific section from SDS text."""
     # Look for section headers
-    pattern = rf'(?:^|\n)\s*(?:section\s*)?{section_num}(?!\s*/)(?:\s|:|\.).*?(?=\n\s*(?:section\s*)?\d{{1,2}}(?!\s*/)(?:\s|:|\.)|$)'
+    pattern = rf'(?:^|\n)\s*(?:section\s*)?{section_num}(?!\s*/)(?:\s|:|\.).*?(?=\n\s*(?:section\s*)?\d{{1,2}}(?!\.\d)(?!\s*/)(?:\s|:|\.)|$)'
     match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
     return match.group(0) if match else ""
 
@@ -214,8 +211,9 @@ def extract_date(text: str) -> Optional[str]:
     
     # Look for date patterns with labels
     date_pattern = re.compile(
-        r'(?:Issue\s+Date|Revision\s+Date|Date\s+of\s+issue|Version\s+date|Date\s+Prepared|Issued)[^\n]{0,30}?[:\-]?\s*'
-        r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}-\d{2}-\d{2}|[A-Za-z]+\s+\d{1,2},?\s*\d{4})',
+        r'(?:Issue\s+Date|Revision\s+Date|Date\s+of\s+issue|Version\s+date|Date\s+Prepared|Issued|MSDS\s+Date)'
+        r'[^\n]{0,30}?[:\-]?\s*(\d{1,2}[\-\/\.]+\d{1,2}[\-\/\.]+\d{2,4}|\d{4}-\d{2}-\d{2}|[A-Za-z]+\s+\d{1,2},?\s*\d{4}'
+        r'|\d{1,2}\s+[A-Za-z]+\s+\d{4})',
         re.IGNORECASE
     )
     
@@ -228,7 +226,7 @@ def extract_date(text: str) -> Optional[str]:
             for date_str in matches:
                 try:
                     # Try different formats
-                    for fmt in ['%d/%m/%Y', '%m/%d/%Y', '%Y-%m-%d', '%d-%m-%Y']:
+                    for fmt in ['%d/%m/%Y', '%m/%d/%Y', '%Y-%m-%d', '%d-%m-%Y', '%d.%m.%Y', '%d %b %Y', '%d %B %Y']:
                         try:
                             parsed_date = datetime.strptime(date_str, fmt).date()
                             if parsed_date <= date.today():  # Must be in the past
@@ -286,6 +284,9 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     
     # Product name
     product_name = extract_product_name(section1)
+    if not product_name:
+        prefix = '\n'.join(text.splitlines()[:15])
+        product_name = extract_product_name(prefix)
     result['product_name'] = {'value': product_name, 'confidence': 1.0 if product_name else 0.0}
     
     # Manufacturer
