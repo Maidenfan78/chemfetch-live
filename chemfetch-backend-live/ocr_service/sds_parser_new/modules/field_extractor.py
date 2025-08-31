@@ -115,9 +115,11 @@ def extract_product_name(section_text: str) -> Optional[str]:
             continue
         
         # Skip obvious header/label lines
-        if re.match(r'^\s*(?:section\s*)?1\b', clean, re.IGNORECASE):
+        if re.match(r'^\s*(?:section\s*)?1(?:\s|$)', clean, re.IGNORECASE):
             continue
-        if re.search(r'identification|supplier|manufacturer|emergency|contact|telephone|details', clean, re.IGNORECASE):
+        if re.search(r'identification|supplier|manufacturer|emergency|contact|telephone|fax|email|web\s*site|details|address|synonym|regulation', clean, re.IGNORECASE):
+            continue
+        if clean.startswith('(') or re.search(r'safety\s+data\s+sheet|according\s+to', clean, re.IGNORECASE):
             continue
         if is_noise_text(clean):
             continue
@@ -139,19 +141,19 @@ def extract_product_name(section_text: str) -> Optional[str]:
     
     # Take the first meaningful line that looks like a product name
     for line in meaningful_lines:
-        # Skip lines that are still generic labels or section headers
-        if re.search(r'^(?:product\s+name|product\s+identifier|sds\s+no\.?|sds\s+number)', line, re.IGNORECASE):
+        candidate = re.sub(r'^\d+(?:\.\d+)?\s*', '', line)
+        candidate = re.sub(r'^(?:product\s+identifier\s*[:\-]?\s*)', '', candidate, flags=re.IGNORECASE)
+
+        if re.search(r'^(?:product\s+name|sds\s+no\.?|sds\s+number)', candidate, re.IGNORECASE):
             continue
-        if re.match(r'^\d+\s*[\-–]', line):
+        if re.match(r'^\d+\s*[\-–]', candidate):
             continue
 
-        # Product names typically contain alphanumeric characters and common symbols
-        if re.search(r'[A-Za-z0-9]', line) and len(line) > 3:
-            # Avoid lines that look like contact info
-            if not re.search(r'\b\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}\b', line):  # Phone pattern
-                if not re.search(r'@|www\.|\.com|\.org', line, re.IGNORECASE):  # Email/web pattern
-                    logger.info(f"[SDS_EXTRACTOR] Product name from meaningful line: '{line}'")
-                    return line
+        if re.search(r'[A-Za-z0-9]', candidate) and len(candidate) > 3:
+            if not re.search(r'\b\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}\b', candidate):
+                if not re.search(r'@|www\.|\.com|\.org', candidate, re.IGNORECASE):
+                    logger.info(f"[SDS_EXTRACTOR] Product name from meaningful line: '{candidate}'")
+                    return candidate
     
     logger.warning("[SDS_EXTRACTOR] Could not extract product name")
     return None
@@ -169,6 +171,14 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
         if len(manufacturer) > 2 and not re.match(r'^[:\-\s]*$', manufacturer):
             logger.info(f"[SDS_EXTRACTOR] Manufacturer from label: '{manufacturer}'")
             return manufacturer
+
+    # Strategy 1b: handle inline 'Details of the supplier' patterns
+    details_match = re.search(r'Details\s+of\s+the\s+supplier[^\n]*?:\s*(.+)', section_text, re.IGNORECASE)
+    if details_match:
+        candidate = details_match.group(1).splitlines()[0].strip()
+        if candidate and not is_noise_text(candidate):
+            logger.info(f"[SDS_EXTRACTOR] Manufacturer from inline supplier details: '{candidate}'")
+            return candidate
     
     # Strategy 2: Look in "Details of the supplier" section
     supplier_section = re.search(r'Details\s+of\s+the\s+supplier[^\n]*\n([^:]+?)(?:\n\s*[A-Z]|\n\s*\d|$)', 
