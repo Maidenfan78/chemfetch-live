@@ -50,12 +50,21 @@ except Exception:
     OCR_AVAILABLE = False
 
 try:
+    # Prefer modular field extractors for better maintainability
     from .modules.field_extractor import (
-        extract_description as extract_section1_description,
+        extract_description as fe_extract_description,
+        extract_product_name as fe_extract_product_name,
+        extract_manufacturer as fe_extract_manufacturer,
+        extract_section14_field as fe_extract_section14_field,
+        extract_date_from_header as fe_extract_date_from_header,
     )
 except ImportError:  # pragma: no cover - fallback when run as script
     from modules.field_extractor import (
-        extract_description as extract_section1_description,
+        extract_description as fe_extract_description,
+        extract_product_name as fe_extract_product_name,
+        extract_manufacturer as fe_extract_manufacturer,
+        extract_section14_field as fe_extract_section14_field,
+        extract_date_from_header as fe_extract_date_from_header,
     )
 
 # Common field labels used to trim values when multiple labels appear on one line
@@ -409,6 +418,14 @@ def extract_packing_group_from_table(section_text: str) -> Optional[str]:
 def extract_product_name(section1_text: str) -> Optional[str]:
     """Extract product name with multiple strategies - FIXED to avoid labels."""
     
+    # Strategy 0: Use modular extractor first
+    try:
+        mod_val = fe_extract_product_name(section1_text)
+        if mod_val:
+            return mod_val
+    except Exception:
+        pass
+
     # Strategy 1: Look for explicit labels
     labels = [
         r'Product\s+identifier',
@@ -478,6 +495,14 @@ def extract_product_name(section1_text: str) -> Optional[str]:
 def extract_manufacturer(section1_text: str) -> Optional[str]:
     """Extract manufacturer with multiple strategies - FIXED to avoid labels."""
     
+    # Strategy 0: Use modular extractor first
+    try:
+        mod_val = fe_extract_manufacturer(section1_text)
+        if mod_val:
+            return mod_val
+    except Exception:
+        pass
+
     # Strategy 1: Look for explicit labels
     labels = [
         r'Manufacturer',
@@ -525,7 +550,49 @@ def extract_manufacturer(section1_text: str) -> Optional[str]:
 
 def extract_description(section1_text: str) -> Optional[str]:
     """Extract product description/use information from Section 1."""
-    return extract_section1_description(section1_text)
+    try:
+        return fe_extract_description(section1_text)
+    except Exception:
+        # Fall back to legacy inline label extraction
+        return extract_field_value(
+            section1_text,
+            [
+                r'Product\s+description',
+                r'Description',
+                r'Use\s+of\s+the\s+substance',
+                r'Recommended\s+use',
+                r'Intended\s+use',
+                r'Product\s+use',
+                r'Relevant\s+identified\s+uses',
+                r'Identified\s+uses',
+                r'Application',
+            ],
+            section1_text,
+        )
+
+def extract_manufacturer_global(full_text: str) -> Optional[str]:
+    """Fallback manufacturer search across the first page/lines of the document.
+    Avoids section scoping issues when details are outside Section 1.
+    """
+    if not full_text:
+        return None
+    head = "\n".join(full_text.splitlines()[:60])
+    labels = [
+        r'Manufacturer',
+        r'Supplier\s+Name',
+        r'Supplier',
+        r'Company\s+name\s+of\s+supplier',
+        r'Producer',
+        r'Company\s+name',
+        r'Registered\s+company\s+name',
+        r'Distributor',
+        r'Manufacturer\s*/\s*Supplier',
+        r'Details\s+of\s+the\s+supplier',
+    ]
+    val = extract_field_value(head, labels, head)
+    if val and not is_noise_text(val):
+        return strip_leading_label_prefix(dedup_repeated_phrase(val))
+    return None
 
 
 def extract_date(text: str) -> Optional[str]:
@@ -543,6 +610,14 @@ def extract_date(text: str) -> Optional[str]:
         r'REVISION\s+DATE[:\s]*(\d{1,2}[\-\/]\d{1,2}[\-\/]\d{4})',
     ]
     
+    # Try modular header-based extraction first (handles some header-only formats)
+    try:
+        hdr = fe_extract_date_from_header(text)
+        if hdr:
+            return hdr
+    except Exception:
+        pass
+
     for pattern in date_patterns:
         matches = re.findall(pattern, text, re.IGNORECASE)
         if matches:
@@ -622,6 +697,14 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     
     # Manufacturer
     manufacturer = extract_manufacturer(section1)
+    if not manufacturer:
+        # Fallback to global scan in case supplier/manufacturer details sit outside Section 1
+        manufacturer = extract_manufacturer_global(text)
+    # Final cleanup to remove any leaked labels or concatenated fields
+    if manufacturer:
+        # Trim anything after Product Name/Trade name label fragments
+        manufacturer = re.split(r'\b(Product\s+Name|Trade\s+name)\b', manufacturer, flags=re.IGNORECASE)[0].strip()
+        manufacturer = strip_leading_label_prefix(dedup_repeated_phrase(manufacturer))
     result['manufacturer'] = {'value': manufacturer, 'confidence': 1.0 if manufacturer else 0.0}
     
     # Product description (NEW FIELD - from Section 1 only)
@@ -639,19 +722,24 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     result['product_use'] = {'value': product_use, 'confidence': 1.0 if product_use else 0.0}
     
     # Dangerous goods class (from Section 14) - RESTORE WORKING LOGIC
-    dg_class = extract_field_value(
-        text,
-        [
-            r'DG\s*Class',
-            r'Class',
-            r'Transport\s*hazard\s*class(?:\(es\))?',
-            r'(?:IMDG|IATA|ADG)?\s*Hazard\s*Class(?:\(es\))?',
-            r'Hazard\s*class(?:\(es\))?',
-            r'Dangerous\s*goods\s*class',
-        ],
-        section14,
-    )
-
+    # Prefer modular Section 14 extractor; fallback to legacy patterns
+    dg_labels = [
+        r'DG\s*Class',
+        r'Class',
+        r'Class/Division',
+        r'Transport\s*hazard\s*class(?:\(es\))?',
+        r'(?:IMDG|IATA|ADG)?\s*Hazard\s*Class(?:\(es\))?',
+        r'Hazard\s*class(?:\(es\))?',
+        r'Dangerous\s*goods\s*class',
+        r'UN\s*Class',
+    ]
+    dg_class = None
+    try:
+        dg_class = fe_extract_section14_field(section14, dg_labels, 'dangerous_goods_class')
+    except Exception:
+        dg_class = None
+    if not dg_class:
+        dg_class = extract_field_value(text, dg_labels, section14)
     if not dg_class:
         dg_class = extract_dg_class_from_table(section14)
 
@@ -667,12 +755,19 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     result['subsidiary_risk'] = {'value': subsidiary_risk, 'confidence': 1.0 if subsidiary_risk else 0.0}
     
     # Packing group - RESTORE WORKING LOGIC + ADD TABLE SUPPORT
-    packing_group = extract_field_value(text, [
+    # Packing group via modular extractor, with fallbacks
+    pg_labels = [
         r'Packing\s*group(?:\(s\))?',
         r'Packing\s*group\s*\(if\s*applicable\)',
-        r'PG'
-    ], section14)
-    
+        r'PG',
+    ]
+    packing_group = None
+    try:
+        packing_group = fe_extract_section14_field(section14, pg_labels, 'packing_group')
+    except Exception:
+        packing_group = None
+    if not packing_group:
+        packing_group = extract_field_value(text, pg_labels, section14)
     if not packing_group:
         packing_group = extract_packing_group_from_table(section14)
     

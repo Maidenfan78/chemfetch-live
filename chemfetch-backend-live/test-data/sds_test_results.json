@@ -1,16 +1,16 @@
 {
-  "test_timestamp": "2025-08-31T22:06:00.760234",
-  "total_files": 15,
-  "successful": 15,
+  "test_timestamp": "2025-08-31T23:43:39.766092",
+  "total_files": 16,
+  "successful": 16,
   "failed": 0,
   "results": {
     "sds_1.PDF": {
       "success": true,
-      "fields_extracted": 5,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "SUPER GLUE FAST",
+          "value": "SUPER GLUE FAST 20G",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -30,8 +30,8 @@
           "confidence": 1.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "III",
+          "confidence": 1.0
         }
       },
       "full_data": {
@@ -45,7 +45,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "SUPER GLUE FAST",
+          "value": "SUPER GLUE FAST 20G",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -69,8 +69,8 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "III",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2025-06-26",
@@ -350,7 +350,7 @@
     },
     "sds_6.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -358,8 +358,8 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Recochem Inc. ABN",
+          "confidence": 1.0
         },
         "description": {
           "value": "Solvent",
@@ -393,8 +393,8 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Recochem Inc. ABN",
+          "confidence": 1.0
         },
         "description": {
           "value": "Solvent",
@@ -425,12 +425,12 @@
     },
     "sds_7.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 3,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "Full Synthetic 5W-30",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "manufacturer": {
           "value": "Penrite Oil Company Pty Ltd",
@@ -464,8 +464,8 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Full Synthetic 5W-30",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "manufacturer": {
           "value": "Penrite Oil Company Pty Ltd",
@@ -500,7 +500,7 @@
     },
     "sds_8.pdf": {
       "success": true,
-      "fields_extracted": 2,
+      "fields_extracted": 3,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -508,8 +508,8 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "RB (Hygiene Home) Australia Pty Ltd",
+          "confidence": 1.0
         },
         "description": {
           "value": null,
@@ -543,8 +543,8 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "RB (Hygiene Home) Australia Pty Ltd",
+          "confidence": 1.0
         },
         "description": {
           "value": null,
@@ -654,7 +654,7 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "JET POWER FUEL –",
+          "value": "Registration no. – US: JETPWR-100, JETPWR-230, JETPWR-450, JF100, JF230, JF450",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -689,7 +689,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "JET POWER FUEL –",
+          "value": "Registration no. – US: JETPWR-100, JETPWR-230, JETPWR-450, JF100, JF230, JF450",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -725,7 +725,7 @@
     },
     "sds_11.pdf": {
       "success": true,
-      "fields_extracted": 5,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -749,8 +749,8 @@
           "confidence": 1.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "II",
+          "confidence": 1.0
         }
       },
       "full_data": {
@@ -788,8 +788,8 @@
           "confidence": 1.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "II",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2023-05-18",
@@ -800,15 +800,15 @@
     },
     "sds_12.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Use(s) CLEANING AGENT • DISINFECTANT",
+          "confidence": 1.0
         },
         "manufacturer": {
-          "value": "JOHNSONDIVERSEY AUSTRALIA PTY",
+          "value": "JOHNSONDIVERSEY AUSTRALIA PTY LTD",
           "confidence": 1.0
         },
         "description": {
@@ -839,11 +839,11 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Use(s) CLEANING AGENT • DISINFECTANT",
+          "confidence": 1.0
         },
         "manufacturer": {
-          "value": "JOHNSONDIVERSEY AUSTRALIA PTY",
+          "value": "JOHNSONDIVERSEY AUSTRALIA PTY LTD",
           "confidence": 1.0
         },
         "description": {
@@ -875,7 +875,7 @@
     },
     "sds_13.pdf": {
       "success": true,
-      "fields_extracted": 2,
+      "fields_extracted": 3,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -883,8 +883,8 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "SC Johnson Professional Ltd.",
+          "confidence": 1.0
         },
         "description": {
           "value": null,
@@ -918,8 +918,8 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "SC Johnson Professional Ltd.",
+          "confidence": 1.0
         },
         "description": {
           "value": null,
@@ -954,8 +954,8 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "Kwik Grip Spray Adhesive 150G 100050",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "manufacturer": {
           "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
@@ -970,8 +970,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": "None",
@@ -989,8 +989,8 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Kwik Grip Spray Adhesive 150G 100050",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "manufacturer": {
           "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
@@ -1005,8 +1005,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
@@ -1097,6 +1097,81 @@
         }
       },
       "file_size_mb": 0.58
+    },
+    "sds_16.PDF": {
+      "success": true,
+      "fields_extracted": 6,
+      "total_fields": 6,
+      "extracted_values": {
+        "product_name": {
+          "value": "ACTIVE GLASS CLEANER",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "or supplier's details",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "of the chemical and restrictions on use",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2025-06-24",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "2.1",
+          "confidence": 1.0
+        },
+        "packing_group": {
+          "value": "Not assigned by regulation",
+          "confidence": 1.0
+        }
+      },
+      "full_data": {
+        "extraction_info": {
+          "text_length": 34882,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "pdfminer": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "ACTIVE GLASS CLEANER",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "or supplier's details",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "of the chemical and restrictions on use",
+          "confidence": 1.0
+        },
+        "product_use": {
+          "value": "of the chemical and restrictions on use",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "2.1",
+          "confidence": 1.0
+        },
+        "subsidiary_risk": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": "Not assigned by regulation",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2025-06-24",
+          "confidence": 1.0
+        }
+      },
+      "file_size_mb": 0.42
     }
   }
 }
