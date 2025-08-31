@@ -39,8 +39,16 @@ def main():
         return 0
     
     print(f"📄 Found {len(pdf_files)} PDF files")
-    
-    # Test each PDF and collect results
+
+    # Define fields to extract and prepare results container
+    fields = [
+        "product_name",
+        "manufacturer",
+        "issue_date",
+        "dangerous_goods_class",
+        "packing_group",
+    ]
+    total_fields = len(fields)
     results = {}
     
     for i, pdf_path in enumerate(pdf_files, 1):
@@ -73,31 +81,39 @@ def main():
                         # Fallback: try parsing the whole output
                         data = json.loads(result.stdout)
                     # Show key extracted fields
-                    fields = ['product_name', 'manufacturer', 'issue_date', 'dangerous_goods_class']
                     found = 0
                     extracted_values = {}
-                    
+
                     for field in fields:
-                        field_data = data.get(field, {})
+                        field_data = data.get(field)
+                        value = None
+                        confidence = 0
+
                         if isinstance(field_data, dict):
-                            value = field_data.get('value')
-                            confidence = field_data.get('confidence', 0)
-                            if value:
-                                print(f"✅ {field}: {value}")
-                                found += 1
-                                extracted_values[field] = {'value': value, 'confidence': confidence}
-                        elif field_data:
-                            print(f"✅ {field}: {field_data}")
+                            value = field_data.get("value")
+                            confidence = field_data.get("confidence", 0)
+                        elif field_data is not None:
+                            value = field_data
+                            confidence = 1.0
+
+                        if value is not None:
+                            print(f"✅ {field}: {value}")
                             found += 1
-                            extracted_values[field] = {'value': field_data, 'confidence': 1.0}
-                    
-                    print(f"📊 Extracted {found}/{len(fields)} key fields")
+                        else:
+                            print(f"⚠️ {field}: None")
+
+                        extracted_values[field] = {
+                            "value": value,
+                            "confidence": confidence,
+                        }
+
+                    print(f"📊 Extracted {found}/{total_fields} key fields")
                     
                     # Store successful result
                     results[pdf_path.name] = {
                         'success': True,
                         'fields_extracted': found,
-                        'total_fields': len(fields),
+                        'total_fields': total_fields,
                         'extracted_values': extracted_values,
                         'full_data': data,
                         'file_size_mb': round(pdf_path.stat().st_size / (1024 * 1024), 2)
@@ -164,8 +180,11 @@ def main():
     print(f"📄 Total: {len(pdf_files)}")
     
     if successful > 0:
-        avg_fields = sum(r.get('fields_extracted', 0) for r in results.values() if r.get('success')) / successful
-        print(f"📈 Avg fields: {avg_fields:.1f}/4")
+        avg_fields = (
+            sum(r.get('fields_extracted', 0) for r in results.values() if r.get('success'))
+            / successful
+        )
+        print(f"📈 Avg fields: {avg_fields:.1f}/{total_fields}")
     
     print(f"\n🎉 Testing complete!")
 
