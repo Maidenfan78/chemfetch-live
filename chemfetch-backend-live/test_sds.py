@@ -98,8 +98,8 @@ def main():
         print(f"📁 Creating: {test_dir}")
         test_dir.mkdir(parents=True, exist_ok=True)
     
-    # Find PDF files and sort them numerically
-    pdf_files = list(test_dir.glob("*.pdf"))
+    # Find PDF files (case-insensitive extension) and sort them numerically
+    pdf_files = list(test_dir.glob("*.pdf")) + list(test_dir.glob("*.PDF"))
     
     # Sort PDFs numerically by extracting numbers from filenames
     def extract_number_from_filename(path):

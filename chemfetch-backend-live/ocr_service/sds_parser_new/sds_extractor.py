@@ -84,6 +84,10 @@ COMMON_FIELD_LABELS = [
     r'Chemical\s+Name',
     r'Product\s+code',
     r'Synonyms?',
+    r'Proper\s+shipping\s+name',
+    r'UN\s+number',
+    r'Hazchem',
+    r'EPG',
 ]
 
 
@@ -109,7 +113,7 @@ def is_noise_text(text: str) -> bool:
         r'^Name$',
         r'^Registered\s+company\s+name$',
         r'^\:$',
-        r"^\'s$",
+        r"^[’'`´]s$",
         r'^UK,?\s+NPIS.*\d{2,4}\s+\d{2,4}\s+\d{2,4}',
         r'^Australia\s+-\s+\d{2,4}\s+\d{2,4}\s+\d{2,4}',
         r'^\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}',
@@ -259,6 +263,9 @@ def extract_field_value(text: str, field_labels: list, section_text: str = None)
             if match:
                 value = match.group(1).strip()
 
+                # Remove leading possessive artifacts like various apostrophes followed by s
+                value = re.sub(r"^[’'`´]+s\b\s*", "", value)
+
                 value = re.sub(r'\s*[:\-]\s*$', '', value)
                 value = re.sub(r'\s+(Tel|Phone|Fax|Email|Emergency).*$', '', value, re.IGNORECASE)
 
@@ -294,6 +301,9 @@ def extract_field_value(text: str, field_labels: list, section_text: str = None)
                             value = value[:other_match.start()].strip()
                             break
                     value = re.sub(r'\b[A-Z0-9]{2,}[/A-Z0-9\-]*$', '', value).strip()
+
+                    # Remove leading possessive artifacts like various apostrophes followed by s
+                    value = re.sub(r"^[’'`´]+s\b\s*", "", value)
 
                     if value and not is_noise_text(value):
                         return value
@@ -379,8 +389,16 @@ def extract_product_name(section1_text: str) -> Optional[str]:
     if result and not is_noise_text(result):
         # Additional validation - reject obvious labels and company suffixes
         if not re.match(r'^(Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Alternative\s+number\(s\)|Other\s+Name\(s\)|Formulation\s+#|Registration\s+no\.?\s*–?\s*US:?|Group)$', result, re.IGNORECASE):
-            logger.info(f"[SDS_EXTRACTOR] Product name from label: '{result}'")
-            return result
+            # Reject transport/composition phrases sometimes picked up as values
+            lowered = result.lower()
+            # Also reject if the result is itself a generic label like 'Product Identifier'
+            if re.fullmatch(r'(product\s+identifier|product\s+name|trade\s+name|commercial\s+product\s+name)', lowered):
+                pass
+            elif any(tok in lowered for tok in ['proper shipping name', 'chemical formula', 'un number']) or lowered in ['not applicable', 'n/a', 'na']:
+                pass
+            else:
+                logger.info(f"[SDS_EXTRACTOR] Product name from label: '{result}'")
+                return result
     
     # Strategy 2: Look for meaningful product-like text in early lines (RESTORE WORKING LOGIC)
     lines = section1_text.split('\n')
@@ -405,6 +423,10 @@ def extract_product_name(section1_text: str) -> Optional[str]:
                 if not re.match(r'^[:\-\s]+$', line):
                     # Additional check to avoid obvious label patterns
                     if not re.match(r'^(Alternative\s+number\(s\)|Other\s+Name\(s\)|Formulation\s+#|Registration\s+no\.?\s*–?\s*US:?|Group)$', line, re.IGNORECASE):
+                        # Skip common transport-related labels
+                        lowered = line.lower()
+                        if any(tok in lowered for tok in ['proper shipping name', 'shipping name', 'un number', 'transport', 'hazchem', 'epg', 'chemical formula', 'not applicable']):
+                            continue
                         logger.info(f"Found potential product name: '{line}'")
                         return line
     
@@ -446,6 +468,9 @@ def extract_manufacturer(section1_text: str) -> Optional[str]:
                 # Skip phone numbers and obvious noise
                 if not re.search(r'\b\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}\b', line):
                     if not re.match(r'^(Emergency\s+Telephone\s+Number|Company[:.]?\s*$)', line, re.IGNORECASE):
+                        # Skip generic SDS headers if they slipped through
+                        if re.search(r'safety\s+data\s+sheet|^section\b|^page\b', line, re.IGNORECASE):
+                            continue
                         logger.info(f"[SDS_EXTRACTOR] Manufacturer from supplier details: '{line}'")
                         return line
     
@@ -610,9 +635,11 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     result['issue_date'] = {'value': issue_date, 'confidence': 1.0 if issue_date else 0.0}
     
     # Final validation - remove any remaining noise (BE MORE CONSERVATIVE)
+    label_like_pattern = re.compile(r'(product\s+identifier|product\s+name|trade\s+name|commercial\s+product\s+name)\s*$', re.IGNORECASE)
     for field_name in ['product_name', 'manufacturer']:
-        if result[field_name]['value'] and is_noise_text(result[field_name]['value']):
-            logger.warning(f"Final validation rejected {field_name}: '{result[field_name]['value']}'")
+        val = result[field_name]['value']
+        if val and (is_noise_text(val) or label_like_pattern.fullmatch(str(val).strip() or '')):
+            logger.warning(f"Final validation rejected {field_name}: '{val}'")
             result[field_name] = {'value': None, 'confidence': 0.0}
     
     # Log results

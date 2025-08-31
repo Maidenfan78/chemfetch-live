@@ -39,6 +39,7 @@ Root level parsers:
 
 - **Product Name**: Official chemical product name
 - **Manufacturer**: Company name, address, contact information
+- **Description**: Product use
 - **Product Code**: Internal product codes, batch numbers
 - **Synonyms**: Alternative names and trade names
 - **CAS Numbers**: Chemical Abstract Service registry numbers
