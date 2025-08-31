@@ -2,13 +2,13 @@
 
 ## Project Overview
 
-Node.js/Express API server serving the ChemFetch platform with integrated Python OCR microservice.
-Core responsibilities: product discovery, web scraping, SDS management, and chemical data processing.
+Node.js/Express API server for the ChemFetch platform with an integrated Python OCR microservice.
+Core responsibilities: barcode/manual scanning, product discovery, SDS verification/parsing, and chemical data processing persisted to Supabase.
 
 ## Setup Commands
 
 - Install dependencies: `npm install`
-- Start development server: `npm run dev` (uses tsx for TypeScript execution)
+- Start development server: `npm run dev` (tsx + ESM)
 - Build for production: `npm run build`
 - Start production: `npm start`
 - Run tests: `npm test`
@@ -19,7 +19,7 @@ Core responsibilities: product discovery, web scraping, SDS management, and chem
 - **Runtime**: Node.js with Express 5
 - **TypeScript**: Strict mode with ES modules
 - **Database**: Supabase PostgreSQL client
-- **OCR Service**: Python Flask microservice (port 5000)
+- **OCR Service**: Python Flask microservice (default port 5001)
 - **Web Scraping**: Puppeteer with stealth plugin
 - **Logging**: Pino with structured JSON logging
 
@@ -27,20 +27,26 @@ Core responsibilities: product discovery, web scraping, SDS management, and chem
 
 ```
 server/
-├── index.ts          # Main application entry point
-├── app.ts           # Express app configuration
-├── routes/          # API endpoint handlers
-│   ├── verifySds.ts    # SDS verification proxy
-│   ├── parseSds.ts     # SDS parsing with metadata
+├── index.ts              # Server bootstrap + health endpoints
+├── app.ts                # Express app config and route registration
+├── routes/               # API endpoint handlers
+│   ├── health.ts         # Basic health check
+│   ├── scan.ts           # Barcode/URL scanning
+│   ├── manualScan.ts     # Manual entry scanning
+│   ├── sdsTrigger.ts     # Triggers SDS processing for products
+│   ├── sdsByName.ts      # SDS lookup by name
+│   ├── confirm.ts        # Confirmation flows for client
+│   ├── verifySds.ts      # Proxy: forwards to Python /verify-sds
+│   ├── parseSds.ts       # Parsing pipeline (verification/quick/primary)
 │   ├── parseSDSEnhanced.ts # Enhanced SDS processing
-│   └── [other routes]
-└── utils/           # Shared utilities
+│   └── batchSds.ts       # Batch SDS processing
+└── utils/                # Logger and helpers
 
-ocr_service/         # Python microservice
-├── ocr_service.py   # Flask app with PDF processing
-├── parse_sds.py     # CLI parser for metadata extraction
-├── quick_parser.py  # Lightweight regex-based parser
-└── sds_parser_new/  # Primary SDS extraction system
+ocr_service/              # Python microservice
+├── ocr_service.py        # Flask app + endpoints (/health, /verify-sds, /parse-sds, /parse-pdf-direct)
+├── parse_sds.py          # CLI/primary parser wrapper
+├── quick_parser.py       # Lightweight regex-based parser
+└── sds_parser_new/       # Advanced SDS extraction system
 ```
 
 ## API Design Patterns
@@ -63,11 +69,25 @@ ocr_service/         # Python microservice
 
 ## SDS Processing Workflow
 
-1. **Verification**: `/verify-sds` endpoint checks if PDF is valid SDS
+1. **Verification**: `/verify-sds` proxies to Python to verify SDS and extract text
 2. **Text Extraction**: Multi-method approach (direct text, OCR fallback)
 3. **Parsing**: Layered parsing system with primary/fallback parsers
 4. **Metadata Extraction**: Chemical properties, hazard classifications
 5. **Database Storage**: Structured SDS data with user associations
+
+## HTTP Endpoints (Express)
+
+- `GET /health`: Backend health info
+- `GET /ocr/health`: Quick check of OCR proxy target
+- `POST /scan`: Scan a product/barcode to discover SDS
+- `POST /manual-scan`: Manual entry scanning
+- `POST /sds-trigger`: Trigger SDS acquisition/parsing for a product
+- `POST /confirm`: Client confirmation flow
+- `GET /sds-by-name`: Search SDS by name
+- `POST /verify-sds`: Forwards to Python OCR service `/verify-sds`
+- `POST /parse-sds`: Parsing pipeline (verification → quick → primary)
+- `POST /parse-sds-enhanced`: Enhanced parsing route
+- `POST /batch-sds`: Batch SDS processing
 
 ## Web Scraping Guidelines
 
@@ -117,6 +137,11 @@ ocr_service/         # Python microservice
 - **Process Management**: PM2 or equivalent for production
 - **Log Management**: Structured logging for production monitoring
 
+Key env vars (backend):
+- `PORT` (default 3001)
+- `OCR_SERVICE_URL` (default `http://localhost:5001`)
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+
 ## Security Best Practices
 
 - **Input Validation**: Validate all user inputs and file uploads
@@ -132,3 +157,33 @@ ocr_service/         # Python microservice
 - **Web Scraping**: Extend Puppeteer scripts in appropriate route files
 - **Database Changes**: Update types and queries after schema changes
 - **OCR Improvements**: Modify Python service in `ocr_service/`
+
+## Documentation Update Policy
+
+When code changes, update the accompanying docs/readme/instructions in the same PR to keep behavior in sync.
+
+Primary documentation locations for this service:
+- Backend overview: `chemfetch-backend-live/README.md`
+- Backend agent guide (this file): `chemfetch-backend-live/AGENTS.md`
+- Server specifics: `chemfetch-backend-live/server/AGENTS.md`
+- OCR service docs: `chemfetch-backend-live/ocr_service/README.md`
+- OCR agent guide: `chemfetch-backend-live/ocr_service/AGENTS.md`
+- SDS parser guide: `chemfetch-backend-live/ocr_service/sds_parser_new/AGENTS.md`
+- Deployment notes: `chemfetch-backend-live/fix_deployment.md`, `chemfetch-backend-live/render.yaml`
+- Improvements summary: `chemfetch-backend-live/IMPROVEMENT_SUMMARY.md`
+- OCR fix notes: `chemfetch-backend-live/OCR_FIX_APPLIED.md`
+- Test data/results: `chemfetch-backend-live/test-data/`, `chemfetch-backend-live/test-data/sds_test_results.txt`
+
+Cross‑service references you may also need to update:
+- Root overview: `README.md`
+- Database: `chemfetch-supabase-live/` (schema/migrations and docs within)
+- Web client: `chemfetch-client-hub-live/README.md`
+- Mobile app: `chemfetch-mobile-live/README.md`
+
+## Conventions
+
+- TypeScript strict: keep types accurate; avoid `any`.
+- Linting: `npm run lint` (auto-fix: `npm run lint:fix`).
+- Formatting: `npm run format:check` / `npm run format`.
+- Type checks: `npm run type-check` before pushing.
+- Logging: use `pino`/`pino-http` for structured logs; avoid `console.log` in routes and prefer the shared logger.

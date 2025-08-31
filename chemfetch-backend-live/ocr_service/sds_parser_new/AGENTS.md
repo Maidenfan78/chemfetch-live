@@ -2,7 +2,7 @@
 
 ## Parser Overview
 
-Advanced Safety Data Sheet (SDS) parsing system focused on accurate extraction of chemical data, hazard information, and regulatory compliance details from PDF documents.
+Advanced Safety Data Sheet (SDS) parsing system focused on accurate extraction of chemical data, hazard information, and regulatory compliance details from PDF documents. This module is called directly by the Flask service (`/parse-pdf-direct`) and indirectly via the unified `/parse-sds` pipeline.
 
 ## Setup Commands
 
@@ -16,19 +16,25 @@ Advanced Safety Data Sheet (SDS) parsing system focused on accurate extraction o
 
 ```
 sds_parser_new/
-├── sds_extractor.py     # Primary advanced extraction engine
-├── __init__.py         # Package initialization
-└── [additional modules] # Supporting extraction components
+├── sds_extractor.py     # Primary advanced extraction engine (exports parse_pdf)
+├── __init__.py          # Package initialization
+└── modules/             # Supporting extraction components
+    ├── config.py        # Parsing configuration, thresholds
+    ├── text_extractor.py# Text extraction helpers
+    ├── field_extractor.py# Field-level parsing (CAS, DG class, etc.)
+    ├── date_parser.py   # Date normalization helpers
+    ├── dependencies.py  # Optional deps and guards
+    └── utils.py         # Utilities and confidence helpers
 
-Root level parsers:
-├── parse_sds.py        # Main CLI parser with metadata extraction
-├── quick_parser.py     # Lightweight regex-based fallback
-└── working_parser.py   # Reference implementation
+Root-level (in ocr_service/):
+├── parse_sds.py         # CLI/unified parser wrapper
+├── quick_parser.py      # Lightweight regex-based fallback
+└── ocr_service.py       # Flask app using this module
 ```
 
 ## Parsing Strategy (Layered Approach)
 
-1. **Primary Parser**: `sds_parser_new/sds_extractor.py` - Advanced extraction with high accuracy
+1. **Primary Parser**: `sds_parser_new/sds_extractor.py` (`parse_pdf`) - Advanced extraction with high accuracy
 2. **Verification Parser**: Extract from `/verify-sds` endpoint text output
 3. **Quick Parser**: `quick_parser.py` - Regex-based fallback for basic data
 4. **Error Recovery**: Return partial results with confidence indicators
@@ -198,6 +204,27 @@ test_files = [
 5. **Machine Learning**: Consider ML models for complex extraction tasks
 
 ### Performance Optimization
+
+## Integration & Environment
+
+- Default OCR service port: `5001` (Node backend proxies via `OCR_SERVICE_URL`)
+- Ensure `ocr_service/requirements.txt` dependencies remain aligned with memory limits (Render free tier, ~512MB)
+- The Flask endpoints using this module: `/parse-pdf-direct` and `/parse-sds`
+
+## Documentation Update Policy
+
+When code changes in this module, update the related docs/readmes in the same PR to keep behavior aligned.
+
+Relevant documentation locations:
+- Parser guide (this file): `chemfetch-backend-live/ocr_service/sds_parser_new/AGENTS.md`
+- OCR service agent guide: `chemfetch-backend-live/ocr_service/AGENTS.md`
+- OCR service overview: `chemfetch-backend-live/ocr_service/README.md`
+- Backend agent guide (integration notes): `chemfetch-backend-live/AGENTS.md`
+- Test data/results: `chemfetch-backend-live/test-data/`
+
+If changes affect API shapes or behavior, also review:
+- Backend routes: `chemfetch-backend-live/server/routes/`
+- Root overview: `README.md`
 
 1. **Preprocessing**: Optimize PDF text extraction methods
 2. **Parallel Processing**: Process multiple sections simultaneously

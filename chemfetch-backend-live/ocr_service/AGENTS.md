@@ -8,8 +8,8 @@ Provides HTTP endpoints consumed by the Node.js backend for PDF processing and c
 ## Setup Commands
 
 - Install dependencies: `pip install -r requirements.txt`
-- Start development server: `python ocr_service.py` (Flask dev server)
-- Start production: `gunicorn -w 2 -b 0.0.0.0:5000 ocr_service:app`
+- Start development server: `python ocr_service.py` (Flask dev server, default port 5001)
+- Start production: `gunicorn -w 2 -b 0.0.0.0:5001 ocr_service:app` (or `-b 0.0.0.0:${PORT}`)
 - Test parsing: `python parse_sds.py <pdf_path>`
 - Quick parser test: `python quick_parser.py <pdf_path>`
 
@@ -156,3 +156,24 @@ regex==2024.5.15       # Advanced regex patterns
 - **Input Sanitization**: Clean extracted text before processing
 - **Resource Limits**: Prevent resource exhaustion attacks
 - **Sandboxing**: Service isolation for security
+
+## Documentation Update Policy
+
+When code changes in this service, update the related docs/readmes in the same PR so instructions and behavior stay aligned.
+
+Relevant documentation locations:
+- OCR agent guide (this file): `chemfetch-backend-live/ocr_service/AGENTS.md`
+- OCR service overview: `chemfetch-backend-live/ocr_service/README.md`
+- SDS parser guide: `chemfetch-backend-live/ocr_service/sds_parser_new/AGENTS.md`
+- Backend integration notes: `chemfetch-backend-live/AGENTS.md`, `chemfetch-backend-live/server/AGENTS.md`
+- Test data/results: `chemfetch-backend-live/test-data/`
+
+If changes affect API shapes, also review backend routes in `chemfetch-backend-live/server/routes/` and the root `README.md`.
+
+## Conventions
+
+- Type hints where helpful; follow PEP 8 naming (`snake_case`).
+- Use `logging` (structured messages) instead of `print`.
+- Keep memory footprint low; clean up temp files promptly.
+- Prefer `pdfplumber`/`PyMuPDF` before OCR; OCR only as fallback.
+- Small, focused modules under `sds_parser_new/modules/` for new parsing logic.
