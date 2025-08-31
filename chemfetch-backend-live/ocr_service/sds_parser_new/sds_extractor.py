@@ -52,21 +52,27 @@ except ImportError:
 
 def is_noise_text(text: str) -> bool:
     """Check if text is likely noise that shouldn't be extracted as field values."""
-    if not text or len(text.strip()) < 2:
+    if not text:
         return True
-    
+
     text = text.strip()
-    
+    if not text:
+        return True
+
+    # Allow short numeric values like "9" for DG class
+    if len(text) < 2 and not re.match(r"^\d(?:\.\d)?$", text):
+        return True
+
     # Specific noise patterns found in test results
     noise_patterns = [
         r'^MSDS\s+Date$',
-        r'^Alternative\s+number\(s\)$', 
+        r'^Alternative\s+number\(s\)$',
         r'^Facsimile\s+Number$',
         r'^safety\s+data\s+sheet$',
         r'^Name$',
         r'^Registered\s+company\s+name$',
         r'^\:$',
-        r'^\'s$',
+        r"^\'s$",
         r'^UK,?\s+NPIS.*\d{2,4}\s+\d{2,4}\s+\d{2,4}',
         r'^Australia\s+-\s+\d{2,4}\s+\d{2,4}\s+\d{2,4}',
         r'^\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}',
@@ -80,13 +86,38 @@ def is_noise_text(text: str) -> bool:
         r'^Address',
         r'^Website',
     ]
-    
+
     for pattern in noise_patterns:
         if re.match(pattern, text, re.IGNORECASE):
-            logger.debug(f"Rejecting noise text: '{text}' (matched: {pattern})")
+            logger.debug("Rejecting noise text: '%s' (matched: %s)", text, pattern)
             return True
-    
+
     return False
+
+
+def extract_dg_class_from_table(section_text: str) -> Optional[str]:
+    """Extract DG class from tabular section 14 layouts."""
+    if not section_text:
+        return None
+
+    lines = [line.strip() for line in section_text.splitlines() if line.strip()]
+    header_index = None
+    for idx, line in enumerate(lines):
+        if re.search(r'DG\s+Class', line, re.IGNORECASE):
+            header_index = idx
+            break
+
+    if header_index is None:
+        return None
+
+    for line in lines[header_index + 1: header_index + 6]:
+        tokens = re.split(r'\s+', line.replace('|', ' '))
+        for token in tokens:
+            token = token.strip(',;')
+            if validate_dangerous_goods_class(token):
+                return token
+
+    return None
 
 
 def validate_dangerous_goods_class(value: str) -> bool:
@@ -313,17 +344,24 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     result['product_use'] = {'value': product_use, 'confidence': 1.0 if product_use else 0.0}
     
     # Dangerous goods class (from Section 14)
-    dg_class = extract_field_value(text, [
-        r'DG\s+Class',
-        r'Class',
-        r'Transport\s+hazard\s+class',
-        r'(?:IMDG|IATA|ADG)?\s*Hazard\s+Class',
-        r'Dangerous\s+goods\s+class'
-    ], section14)
-    
+    dg_class = extract_field_value(
+        text,
+        [
+            r'DG\s+Class',
+            r'Class',
+            r'Transport\s+hazard\s+class',
+            r'(?:IMDG|IATA|ADG)?\s*Hazard\s+Class',
+            r'Dangerous\s+goods\s+class',
+        ],
+        section14,
+    )
+
+    if not dg_class:
+        dg_class = extract_dg_class_from_table(section14)
+
     # Validate dangerous goods class
     if dg_class and not validate_dangerous_goods_class(dg_class):
-        logger.warning(f"Invalid DG class rejected: '{dg_class}'")
+        logger.warning("Invalid DG class rejected: '%s'", dg_class)
         dg_class = None
     
     result['dangerous_goods_class'] = {'value': dg_class, 'confidence': 1.0 if dg_class else 0.0}

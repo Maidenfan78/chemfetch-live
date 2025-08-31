@@ -1,24 +1,91 @@
 {
-  "test_timestamp": "1756602499.729957",
-  "total_files": 15,
-  "successful": 15,
+  "test_timestamp": "1756610071.8253505",
+  "total_files": 14,
+  "successful": 14,
   "failed": 0,
   "results": {
-    "sds_1.PDF": {
+    "sds_9.pdf": {
+      "success": true,
+      "fields_extracted": 3,
+      "total_fields": 5,
+      "extracted_values": {
+        "product_name": {
+          "value": "Earth Choice Dishwashing Liquid",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Natures Organics Pty Ltd",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2021-05-03",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": null,
+          "confidence": 0.0
+        }
+      },
+      "full_data": {
+        "extraction_info": {
+          "text_length": 11520,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "pdfminer": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "Earth Choice Dishwashing Liquid",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Natures Organics Pty Ltd",
+          "confidence": 1.0
+        },
+        "product_use": {
+          "value": "Manual dishwashing liquid",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "subsidiary_risk": {
+          "value": "None",
+          "confidence": 1.0
+        },
+        "packing_group": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "issue_date": {
+          "value": "2021-05-03",
+          "confidence": 1.0
+        }
+      },
+      "file_size_mb": 0.19
+    },
+    "sds_8.pdf": {
       "success": true,
       "fields_extracted": 4,
       "total_fields": 5,
       "extracted_values": {
         "product_name": {
-          "value": "SUPER GLUE FAST 20G",
+          "value": "Glen 20 All in One Spray Disinfectant Original",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "of the safety data sheet",
+          "value": "RB (Hygiene Home) Australia Pty Ltd",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2025-06-26",
+          "value": "2023-04-13",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
@@ -26,13 +93,13 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "III",
+          "value": "- -",
           "confidence": 1.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 21907,
+          "text_length": 26327,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
@@ -41,78 +108,11 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "SUPER GLUE FAST 20G",
+          "value": "Glen 20 All in One Spray Disinfectant Original",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "of the safety data sheet",
-          "confidence": 1.0
-        },
-        "product_use": {
-          "value": "of the substance or mixture and uses advised against",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "subsidiary_risk": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": "III",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2025-06-26",
-          "confidence": 1.0
-        }
-      },
-      "file_size_mb": 0.23
-    },
-    "sds_10.pdf": {
-      "success": true,
-      "fields_extracted": 2,
-      "total_fields": 5,
-      "extracted_values": {
-        "product_name": {
-          "value": "Registration no. – US: JETPWR-100, JETPWR-230, JETPWR-450, JF100, JF230, JF450",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Company TAEYANG CORPORATION",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": null,
-          "confidence": 0.0
-        }
-      },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 15217,
-          "available_methods": {
-            "pymupdf": true,
-            "pdfplumber": true,
-            "pdfminer": true
-          },
-          "extraction_mode": "full"
-        },
-        "product_name": {
-          "value": "Registration no. – US: JETPWR-100, JETPWR-230, JETPWR-450, JF100, JF230, JF450",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Company TAEYANG CORPORATION",
+          "value": "RB (Hygiene Home) Australia Pty Ltd",
           "confidence": 1.0
         },
         "product_use": {
@@ -128,86 +128,19 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "issue_date": {
-          "value": null,
-          "confidence": 0.0
-        }
-      },
-      "file_size_mb": 0.24
-    },
-    "sds_11.pdf": {
-      "success": true,
-      "fields_extracted": 4,
-      "total_fields": 5,
-      "extracted_values": {
-        "product_name": {
-          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Chemtools Pty Ltd Chemtools Pty Ltd",
+          "value": "- -",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2023-05-18",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": "II",
+          "value": "2023-04-13",
           "confidence": 1.0
         }
       },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 52612,
-          "available_methods": {
-            "pymupdf": true,
-            "pdfplumber": true,
-            "pdfminer": true
-          },
-          "extraction_mode": "full"
-        },
-        "product_name": {
-          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Chemtools Pty Ltd Chemtools Pty Ltd",
-          "confidence": 1.0
-        },
-        "product_use": {
-          "value": "of the substance or mixture and uses advised against",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "subsidiary_risk": {
-          "value": "Not Applicable",
-          "confidence": 1.0
-        },
-        "packing_group": {
-          "value": "II",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2023-05-18",
-          "confidence": 1.0
-        }
-      },
-      "file_size_mb": 0.18
+      "file_size_mb": 0.16
     },
     "sds_12.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 5,
       "total_fields": 5,
       "extracted_values": {
         "product_name": {
@@ -223,8 +156,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "None",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": "None Allocated Hazchem Code None Allocated EPG None Allocated",
@@ -254,8 +187,8 @@
           "confidence": 0.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "None",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
@@ -339,35 +272,35 @@
       },
       "file_size_mb": 0.36
     },
-    "sds_14.pdf": {
+    "sds_2.pdf": {
       "success": true,
       "fields_extracted": 4,
       "total_fields": 5,
       "extracted_values": {
         "product_name": {
-          "value": "SELLEYS KWIK GRIP SPRAY",
+          "value": "ISOCOL Rubbing Alcohol",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
+          "value": "Nicepak Products",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2021-04-15",
+          "value": "2022-03-29",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "3",
+          "confidence": 1.0
         },
         "packing_group": {
-          "value": "None",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 21838,
+          "text_length": 12765,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
@@ -376,35 +309,75 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "SELLEYS KWIK GRIP SPRAY",
+          "value": "ISOCOL Rubbing Alcohol",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
+          "value": "Nicepak Products",
           "confidence": 1.0
         },
         "product_use": {
-          "value": "Contact adhesive spray",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
           "value": null,
           "confidence": 0.0
+        },
+        "dangerous_goods_class": {
+          "value": "3",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "None",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
-          "value": "2021-04-15",
+          "value": "2022-03-29",
           "confidence": 1.0
         }
       },
-      "file_size_mb": 0.46
+      "file_size_mb": 0.31
+    },
+    "sds_4.pdf": {
+      "success": true,
+      "fields_extracted": 0,
+      "total_fields": 5,
+      "extracted_values": {
+        "product_name": {
+          "value": null,
+          "confidence": 0
+        },
+        "manufacturer": {
+          "value": null,
+          "confidence": 0
+        },
+        "issue_date": {
+          "value": null,
+          "confidence": 0
+        },
+        "dangerous_goods_class": {
+          "value": null,
+          "confidence": 0
+        },
+        "packing_group": {
+          "value": null,
+          "confidence": 0
+        }
+      },
+      "full_data": {
+        "error": "Could not extract text from PDF",
+        "extraction_info": {
+          "text_length": 0,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "pdfminer": true
+          },
+          "extraction_mode": "full"
+        }
+      },
+      "file_size_mb": 1.98
     },
     "sds_15.pdf": {
       "success": true,
@@ -473,35 +446,35 @@
       },
       "file_size_mb": 0.58
     },
-    "sds_2.pdf": {
+    "sds_11.pdf": {
       "success": true,
-      "fields_extracted": 3,
+      "fields_extracted": 5,
       "total_fields": 5,
       "extracted_values": {
         "product_name": {
-          "value": "ISOCOL Rubbing Alcohol",
+          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Nicepak Products",
+          "value": "Chemtools Pty Ltd Chemtools Pty Ltd",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2022-03-29",
+          "value": "2023-05-18",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "3",
+          "confidence": 1.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "II",
+          "confidence": 1.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 12765,
+          "text_length": 52612,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
@@ -510,16 +483,83 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "ISOCOL Rubbing Alcohol",
+          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Nicepak Products",
+          "value": "Chemtools Pty Ltd Chemtools Pty Ltd",
           "confidence": 1.0
         },
         "product_use": {
+          "value": "of the substance or mixture and uses advised against",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "3",
+          "confidence": 1.0
+        },
+        "subsidiary_risk": {
+          "value": "Not Applicable",
+          "confidence": 1.0
+        },
+        "packing_group": {
+          "value": "II",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2023-05-18",
+          "confidence": 1.0
+        }
+      },
+      "file_size_mb": 0.18
+    },
+    "sds_14.pdf": {
+      "success": true,
+      "fields_extracted": 4,
+      "total_fields": 5,
+      "extracted_values": {
+        "product_name": {
+          "value": "SELLEYS KWIK GRIP SPRAY",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
+          "confidence": 1.0
+        },
+        "issue_date": {
+          "value": "2021-04-15",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
           "value": null,
           "confidence": 0.0
+        },
+        "packing_group": {
+          "value": "None",
+          "confidence": 1.0
+        }
+      },
+      "full_data": {
+        "extraction_info": {
+          "text_length": 21838,
+          "available_methods": {
+            "pymupdf": true,
+            "pdfplumber": true,
+            "pdfminer": true
+          },
+          "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "SELLEYS KWIK GRIP SPRAY",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
+          "confidence": 1.0
+        },
+        "product_use": {
+          "value": "Contact adhesive spray",
+          "confidence": 1.0
         },
         "dangerous_goods_class": {
           "value": null,
@@ -530,15 +570,15 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "None",
+          "confidence": 1.0
         },
         "issue_date": {
-          "value": "2022-03-29",
+          "value": "2021-04-15",
           "confidence": 1.0
         }
       },
-      "file_size_mb": 0.31
+      "file_size_mb": 0.46
     },
     "sds_3.pdf": {
       "success": true,
@@ -607,45 +647,72 @@
       },
       "file_size_mb": 0.09
     },
-    "sds_4.pdf": {
+    "sds_6.pdf": {
       "success": true,
-      "fields_extracted": 0,
+      "fields_extracted": 2,
       "total_fields": 5,
       "extracted_values": {
         "product_name": {
-          "value": null,
-          "confidence": 0
+          "value": "ACETONE",
+          "confidence": 1.0
         },
         "manufacturer": {
           "value": null,
-          "confidence": 0
+          "confidence": 0.0
         },
         "issue_date": {
-          "value": null,
-          "confidence": 0
+          "value": "2022-02-28",
+          "confidence": 1.0
         },
         "dangerous_goods_class": {
           "value": null,
-          "confidence": 0
+          "confidence": 0.0
         },
         "packing_group": {
           "value": null,
-          "confidence": 0
+          "confidence": 0.0
         }
       },
       "full_data": {
-        "error": "Could not extract text from PDF",
         "extraction_info": {
-          "text_length": 0,
+          "text_length": 13213,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
             "pdfminer": true
           },
           "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "ACETONE",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "product_use": {
+          "value": "Solvent",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "subsidiary_risk": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "issue_date": {
+          "value": "2022-02-28",
+          "confidence": 1.0
         }
       },
-      "file_size_mb": 1.98
+      "file_size_mb": 0.19
     },
     "sds_5.pdf": {
       "success": true,
@@ -714,73 +781,6 @@
       },
       "file_size_mb": 2.08
     },
-    "sds_6.pdf": {
-      "success": true,
-      "fields_extracted": 2,
-      "total_fields": 5,
-      "extracted_values": {
-        "product_name": {
-          "value": "ACETONE",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "issue_date": {
-          "value": "2022-02-28",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": null,
-          "confidence": 0.0
-        }
-      },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 13213,
-          "available_methods": {
-            "pymupdf": true,
-            "pdfplumber": true,
-            "pdfminer": true
-          },
-          "extraction_mode": "full"
-        },
-        "product_name": {
-          "value": "ACETONE",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "product_use": {
-          "value": "Solvent",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "subsidiary_risk": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "issue_date": {
-          "value": "2022-02-28",
-          "confidence": 1.0
-        }
-      },
-      "file_size_mb": 0.19
-    },
     "sds_7.pdf": {
       "success": true,
       "fields_extracted": 3,
@@ -848,35 +848,35 @@
       },
       "file_size_mb": 0.15
     },
-    "sds_8.pdf": {
+    "sds_10.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 2,
       "total_fields": 5,
       "extracted_values": {
         "product_name": {
-          "value": "Glen 20 All in One Spray Disinfectant Original",
+          "value": "Registration no. – US: JETPWR-100, JETPWR-230, JETPWR-450, JF100, JF230, JF450",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "RB (Hygiene Home) Australia Pty Ltd",
+          "value": "Company TAEYANG CORPORATION",
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2023-04-13",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "dangerous_goods_class": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "- -",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         }
       },
       "full_data": {
         "extraction_info": {
-          "text_length": 26327,
+          "text_length": 15217,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
@@ -885,11 +885,11 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Glen 20 All in One Spray Disinfectant Original",
+          "value": "Registration no. – US: JETPWR-100, JETPWR-230, JETPWR-450, JF100, JF230, JF450",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "RB (Hygiene Home) Australia Pty Ltd",
+          "value": "Company TAEYANG CORPORATION",
           "confidence": 1.0
         },
         "product_use": {
@@ -905,82 +905,15 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "- -",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2023-04-13",
-          "confidence": 1.0
-        }
-      },
-      "file_size_mb": 0.16
-    },
-    "sds_9.pdf": {
-      "success": true,
-      "fields_extracted": 3,
-      "total_fields": 5,
-      "extracted_values": {
-        "product_name": {
-          "value": "Earth Choice Dishwashing Liquid",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Natures Organics Pty Ltd",
-          "confidence": 1.0
-        },
-        "issue_date": {
-          "value": "2021-05-03",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "packing_group": {
-          "value": null,
-          "confidence": 0.0
-        }
-      },
-      "full_data": {
-        "extraction_info": {
-          "text_length": 11520,
-          "available_methods": {
-            "pymupdf": true,
-            "pdfplumber": true,
-            "pdfminer": true
-          },
-          "extraction_mode": "full"
-        },
-        "product_name": {
-          "value": "Earth Choice Dishwashing Liquid",
-          "confidence": 1.0
-        },
-        "manufacturer": {
-          "value": "Natures Organics Pty Ltd",
-          "confidence": 1.0
-        },
-        "product_use": {
-          "value": "Manual dishwashing liquid",
-          "confidence": 1.0
-        },
-        "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
-        },
-        "subsidiary_risk": {
-          "value": "None",
-          "confidence": 1.0
-        },
-        "packing_group": {
           "value": null,
           "confidence": 0.0
         },
         "issue_date": {
-          "value": "2021-05-03",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         }
       },
-      "file_size_mb": 0.19
+      "file_size_mb": 0.24
     }
   }
 }
