@@ -40,6 +40,43 @@ except ImportError:
     pdfminer_extract = None
     PDFMINER_AVAILABLE = False
 
+try:
+    from pdf2image import convert_from_path
+    import pytesseract
+    OCR_AVAILABLE = True
+except Exception:
+    convert_from_path = None
+    pytesseract = None
+    OCR_AVAILABLE = False
+
+# Common field labels used to trim values when multiple labels appear on one line
+COMMON_FIELD_LABELS = [
+    r'Product\s+identifier',
+    r'Product\s+name',
+    r'Trade\s+name',
+    r'Commercial\s+product\s+name',
+    r'Manufacturer',
+    r'Supplier\s+Name',
+    r'Supplier',
+    r'Company\s+name\s+of\s+supplier',
+    r'Producer',
+    r'Company\s+name',
+    r'Registered\s+company\s+name',
+    r'Distributor',
+    r'Product\s+description',
+    r'Description',
+    r'Use\s+of\s+the\s+substance',
+    r'Recommended\s+use',
+    r'Intended\s+use',
+    r'Product\s+use',
+    r'Relevant\s+identified\s+uses',
+    r'Identified\s+uses',
+    r'Application',
+    r'Chemical\s+Name',
+    r'Product\s+code',
+    r'Synonyms?',
+]
+
 
 def is_noise_text(text: str) -> bool:
     """Check if text is likely noise that shouldn't be extracted as field values."""
@@ -82,7 +119,11 @@ def is_noise_text(text: str) -> bool:
         r'^Other\s+Name\(s\)$',
         r'^Formulation\s+#$',
         r'^Registration\s+no\.?\s*–?\s*US:?\s*$',
-        r'^Group$'
+        r'^Group$',
+        r'^Synonyms',
+        r'^Product\s+Code',
+        r'^HS\s+Code',
+        r'^-\s*-$'
     ]
 
     for pattern in noise_patterns:
@@ -161,6 +202,17 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
         except Exception as e:
             logger.warning(f"pdfminer failed: {e}")
 
+    if OCR_AVAILABLE and convert_from_path and pytesseract:
+        try:
+            images = convert_from_path(str(pdf_path))
+            for image in images:
+                text += pytesseract.image_to_string(image)
+            if text.strip():
+                logger.info(f"Extracted {len(text)} chars using OCR")
+                return text
+        except Exception as e:
+            logger.warning(f"OCR failed: {e}")
+
     logger.error("All text extraction methods failed")
     return ""
 
@@ -190,33 +242,52 @@ def extract_field_value(text: str, field_labels: list, section_text: str = None)
             continue
             
         for label in field_labels:
-            # Pattern: "Label: value" on same line
             pattern = rf'^{label}\s*[:\-]?\s*(.+)$'
             match = re.search(pattern, line, re.IGNORECASE)
+            if not match:
+                pattern = rf'{label}\s*[:\-]\s*(.+)'
+                match = re.search(pattern, line, re.IGNORECASE)
             if match:
                 value = match.group(1).strip()
-                
-                # Clean up common trailing noise
-                value = re.sub(r'\s*[:\-]\s*$', '', value)  # Remove trailing punctuation
-                value = re.sub(r'\s+(Tel|Phone|Fax|Email|Emergency).*$', '', value, re.IGNORECASE)  # Remove contact info
-                
-                # Special cleaning for manufacturer field to fix specific issues
+
+                value = re.sub(r'\s*[:\-]\s*$', '', value)
+                value = re.sub(r'\s+(Tel|Phone|Fax|Email|Emergency).*$', '', value, re.IGNORECASE)
+
+                for other in COMMON_FIELD_LABELS:
+                    other_match = re.search(other + r'\s*[:\-]?', value, re.IGNORECASE)
+                    if other_match:
+                        value = value[:other_match.start()].strip()
+                        break
+
+                value = re.sub(r'\b[A-Z0-9]{2,}[/A-Z0-9\-]*$', '', value).strip()
+
                 if any('manufacturer' in str(label).lower() or 'supplier' in str(label).lower() for label in field_labels):
                     if re.match(r'^of\s+the\s+safety\s+data\s+sheet\s*$', value, re.IGNORECASE):
-                        continue  # Skip this obvious noise pattern
-                
+                        continue
+
                 if value and not is_noise_text(value):
                     return value
             
             # Pattern: Label on one line, value on next
             if re.match(rf'^{label}\s*[:\-]?\s*$', line, re.IGNORECASE):
-                # Look at next few lines for the value
                 for j in range(i + 1, min(i + 6, len(lines))):
                     candidate = lines[j].strip()
                     if not candidate or candidate == ':':
                         continue
-                    if not candidate.startswith(':') and not is_noise_text(candidate):
-                        return candidate
+                    if candidate.startswith(':'):
+                        continue
+
+                    value = re.sub(r'\s*[:\-]\s*$', '', candidate)
+                    value = re.sub(r'\s+(Tel|Phone|Fax|Email|Emergency).*$', '', value, re.IGNORECASE)
+                    for other in COMMON_FIELD_LABELS:
+                        other_match = re.search(other + r'\s*[:\-]?', value, re.IGNORECASE)
+                        if other_match:
+                            value = value[:other_match.start()].strip()
+                            break
+                    value = re.sub(r'\b[A-Z0-9]{2,}[/A-Z0-9\-]*$', '', value).strip()
+
+                    if value and not is_noise_text(value):
+                        return value
     
     return None
 
