@@ -1,0 +1,177 @@
+🧪 ChemFetch SDS Parser Test Results
+==================================================
+Generated: 2025-08-31 21:37:34
+Total Files Tested: 30
+
+[1/30] sds_1.PDF
+----------------------------------------
+✅ product_name: SUPER GLUE FAST
+✅ manufacturer: WÃ¼rth Chile Ltda.
+✅ description: Adhesives
+✅ issue_date: 2025-06-26
+✅ dangerous_goods_class: 9
+⚠️ packing_group: None
+📊 Extracted 5/6 key fields
+📁 File size: 0.23 MB
+
+[2/30] sds_2.pdf
+----------------------------------------
+✅ product_name: ISOCOL Rubbing Alcohol
+✅ manufacturer: Nicepak Products
+⚠️ description: None
+✅ issue_date: 2022-03-29
+✅ dangerous_goods_class: 3
+⚠️ packing_group: None
+📊 Extracted 4/6 key fields
+📁 File size: 0.31 MB
+
+[3/30] sds_3.pdf
+----------------------------------------
+✅ product_name: Armor All Original Protectant - Spray
+✅ manufacturer: Energizer Manufacturing, Inc.
+✅ description: General use
+✅ issue_date: 2024-01-19
+⚠️ dangerous_goods_class: None
+⚠️ packing_group: None
+📊 Extracted 4/6 key fields
+📁 File size: 0.09 MB
+
+[4/30] sds_4.pdf
+----------------------------------------
+⚠️ product_name: None
+⚠️ manufacturer: None
+⚠️ description: None
+⚠️ issue_date: None
+⚠️ dangerous_goods_class: None
+⚠️ packing_group: None
+📊 Extracted 0/6 key fields
+📁 File size: 1.98 MB
+
+[5/30] sds_5.pdf
+----------------------------------------
+✅ product_name: WD-40 Aerosol
+✅ manufacturer: WD-40 Company Australia
+⚠️ description: None
+✅ issue_date: 2021-08-03
+✅ dangerous_goods_class: 2.1
+⚠️ packing_group: None
+📊 Extracted 4/6 key fields
+📁 File size: 2.08 MB
+
+[6/30] sds_6.pdf
+----------------------------------------
+✅ product_name: ACETONE
+⚠️ manufacturer: None
+✅ description: Solvent
+✅ issue_date: 2022-02-28
+✅ dangerous_goods_class: 3
+⚠️ packing_group: None
+📊 Extracted 4/6 key fields
+📁 File size: 0.19 MB
+
+[7/30] sds_7.pdf
+----------------------------------------
+✅ product_name: Full Synthetic 5W-30
+✅ manufacturer: Penrite Oil Company Pty Ltd
+✅ description: Petrol engine oil.
+✅ issue_date: 2021-07-21
+⚠️ dangerous_goods_class: None
+⚠️ packing_group: None
+📊 Extracted 4/6 key fields
+📁 File size: 0.15 MB
+
+[8/30] sds_8.pdf
+----------------------------------------
+✅ product_name: Glen 20 All in One Spray Disinfectant Original
+⚠️ manufacturer: None
+⚠️ description: None
+✅ issue_date: 2023-04-13
+⚠️ dangerous_goods_class: None
+⚠️ packing_group: None
+📊 Extracted 2/6 key fields
+📁 File size: 0.16 MB
+
+[9/30] sds_9.pdf
+----------------------------------------
+✅ product_name: Earth Choice Dishwashing Liquid
+✅ manufacturer: Natures Organics Pty Ltd
+✅ description: Manual dishwashing liquid
+✅ issue_date: 2021-05-03
+⚠️ dangerous_goods_class: None
+⚠️ packing_group: None
+📊 Extracted 4/6 key fields
+📁 File size: 0.19 MB
+
+[10/30] sds_10.pdf
+----------------------------------------
+✅ product_name: JET POWER FUEL â€“
+✅ manufacturer: Company TAEYANG CORPORATION
+✅ description: Fuel etc.
+⚠️ issue_date: None
+⚠️ dangerous_goods_class: None
+⚠️ packing_group: None
+📊 Extracted 3/6 key fields
+📁 File size: 0.24 MB
+
+[11/30] sds_11.pdf
+----------------------------------------
+✅ product_name: AutoChemâ„¢ Heavy Duty Brake & Parts Cleaner
+✅ manufacturer: Chemtools Pty Ltd
+✅ description: industrial solvent: Cleaning and degreasing.
+✅ issue_date: 2023-05-18
+✅ dangerous_goods_class: 3
+⚠️ packing_group: None
+📊 Extracted 5/6 key fields
+📁 File size: 0.18 MB
+
+[12/30] sds_12.pdf
+----------------------------------------
+⚠️ product_name: None
+✅ manufacturer: JOHNSONDIVERSEY AUSTRALIA PTY
+⚠️ description: None
+✅ issue_date: 2007-03-06
+✅ dangerous_goods_class: None
+✅ packing_group: None Allocated
+📊 Extracted 4/6 key fields
+📁 File size: 0.06 MB
+
+[13/30] sds_13.pdf
+----------------------------------------
+✅ product_name: SC Johnson Professional Mr. MuscleÂ® Floor Cleaner
+⚠️ manufacturer: None
+⚠️ description: None
+✅ issue_date: 2020-10-14
+⚠️ dangerous_goods_class: None
+⚠️ packing_group: None
+📊 Extracted 2/6 key fields
+📁 File size: 0.36 MB
+
+[14/30] sds_14.pdf
+----------------------------------------
+✅ product_name: Kwik Grip Spray Adhesive 150G 100050
+✅ manufacturer: Selleys, a division of DuluxGroup (New Zealand) Pty Ltd
+✅ description: Contact adhesive spray
+✅ issue_date: 2021-04-15
+⚠️ dangerous_goods_class: None
+✅ packing_group: None
+📊 Extracted 5/6 key fields
+📁 File size: 0.46 MB
+
+[15/30] sds_15.pdf
+----------------------------------------
+✅ product_name: Dy-Mark Spray & Mark - All colours (LPG new formula)
+✅ manufacturer: Dy-Mark
+✅ description: Aerosol spray paint.
+✅ issue_date: 2021-11-23
+✅ dangerous_goods_class: 2.1
+✅ packing_group: Not Applicable
+📊 Extracted 6/6 key fields
+📁 File size: 0.58 MB
+
+📊 **SUMMARY**
+✅ Successful: 15
+❌ Failed: 15
+📄 Total: 30
+📈 Avg fields: 3.7/6
+
+🎉 Testing complete!

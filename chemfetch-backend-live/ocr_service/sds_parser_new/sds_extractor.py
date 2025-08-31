@@ -88,6 +88,8 @@ COMMON_FIELD_LABELS = [
     r'UN\s+number',
     r'Hazchem',
     r'EPG',
+    r'Packing\s*Group(?:\(s\))?',
+    r'Hazard\s*class(?:\(es\))?',
 ]
 
 
@@ -145,6 +147,36 @@ def is_noise_text(text: str) -> bool:
             return True
 
     return False
+
+
+def dedup_repeated_phrase(value: str) -> str:
+    """Collapse exact duplicated phrases like 'Chemtools Pty Ltd Chemtools Pty Ltd'."""
+    if not value:
+        return value
+    # Trim excessive whitespace
+    cleaned = re.sub(r"\s+", " ", value).strip()
+    # If the whole phrase is repeated twice, collapse
+    m = re.match(r"^(?P<p>.+?)\s+(?P=p)$", cleaned)
+    if m:
+        return m.group('p')
+    return cleaned
+
+
+def strip_leading_label_prefix(value: str) -> str:
+    """Remove leading field labels that may have leaked into values."""
+    if not value:
+        return value
+    patterns = [
+        r"^(?:product\s+identifier)\s*[:\-]?\s*",
+        r"^(?:product\s+name)\s*[:\-]?\s*",
+        r"^(?:trade\s+name)\s*[:\-]?\s*",
+        r"^(?:commercial\s+product\s+name)\s*[:\-]?\s*",
+        r"^(?:manufacturer|supplier\s+name|supplier|company\s+name\s+of\s+supplier|producer|company\s+name|registered\s+company\s+name|distributor)\s*[:\-]?\s*",
+    ]
+    out = value
+    for pat in patterns:
+        out = re.sub(pat, "", out, flags=re.IGNORECASE).strip()
+    return out
 
 
 def validate_dangerous_goods_class(value: str) -> bool:
@@ -397,8 +429,10 @@ def extract_product_name(section1_text: str) -> Optional[str]:
             elif any(tok in lowered for tok in ['proper shipping name', 'chemical formula', 'un number']) or lowered in ['not applicable', 'n/a', 'na']:
                 pass
             else:
-                logger.info(f"[SDS_EXTRACTOR] Product name from label: '{result}'")
-                return result
+                cleaned = strip_leading_label_prefix(result)
+                cleaned = dedup_repeated_phrase(cleaned)
+                logger.info(f"[SDS_EXTRACTOR] Product name from label: '{cleaned}'")
+                return cleaned or None
     
     # Strategy 2: Look for meaningful product-like text in early lines (RESTORE WORKING LOGIC)
     lines = section1_text.split('\n')
@@ -412,6 +446,12 @@ def extract_product_name(section1_text: str) -> Optional[str]:
         if re.match(r'^\d+\.|\bsection\b|\bidentification\b', line, re.IGNORECASE):
             continue
         if any(x in line.lower() for x in ['supplier', 'emergency', 'telephone', 'contact', 'details']):
+            continue
+        if re.match(r'^synonym\(s\)', line, re.IGNORECASE):
+            continue
+        if re.match(r'^(use\(s\)|use of the substance|recommended use)', line, re.IGNORECASE):
+            continue
+        if re.match(r'^(msds|sds)\s+date\b', line, re.IGNORECASE):
             continue
         if is_noise_text(line):
             continue
@@ -427,8 +467,10 @@ def extract_product_name(section1_text: str) -> Optional[str]:
                         lowered = line.lower()
                         if any(tok in lowered for tok in ['proper shipping name', 'shipping name', 'un number', 'transport', 'hazchem', 'epg', 'chemical formula', 'not applicable']):
                             continue
-                        logger.info(f"Found potential product name: '{line}'")
-                        return line
+                        candidate = strip_leading_label_prefix(line)
+                        candidate = dedup_repeated_phrase(candidate)
+                        logger.info(f"Found potential product name: '{candidate}'")
+                        return candidate or None
     
     return None
 
@@ -452,8 +494,10 @@ def extract_manufacturer(section1_text: str) -> Optional[str]:
     if result and not is_noise_text(result):
         # Additional validation - reject obvious noise fragments
         if not re.match(r'^(of\s+the\s+safety\s+data\s+sheet|Emergency\s+Telephone\s+Number|Company[:.]?\s*$|Company\s+No\.?[:.]?\s*$)$', result, re.IGNORECASE):
-            logger.info(f"[SDS_EXTRACTOR] Manufacturer from label: '{result}'")
-            return result
+            cleaned = strip_leading_label_prefix(result)
+            cleaned = dedup_repeated_phrase(cleaned)
+            logger.info(f"[SDS_EXTRACTOR] Manufacturer from label: '{cleaned}'")
+            return cleaned or None
     
     # Strategy 2: Look in "Details of the supplier" section (RESTORE WORKING LOGIC)
     supplier_match = re.search(r'Details\s+of\s+the\s+supplier[^\n]*\n(.{1,500}?)(?:\n\s*[A-Z][a-z]|\n\s*\d|$)', 
@@ -471,8 +515,10 @@ def extract_manufacturer(section1_text: str) -> Optional[str]:
                         # Skip generic SDS headers if they slipped through
                         if re.search(r'safety\s+data\s+sheet|^section\b|^page\b', line, re.IGNORECASE):
                             continue
-                        logger.info(f"[SDS_EXTRACTOR] Manufacturer from supplier details: '{line}'")
-                        return line
+                        cleaned = strip_leading_label_prefix(line)
+                        cleaned = dedup_repeated_phrase(cleaned)
+                        logger.info(f"[SDS_EXTRACTOR] Manufacturer from supplier details: '{cleaned}'")
+                        return cleaned or None
     
     return None
 
@@ -596,11 +642,12 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     dg_class = extract_field_value(
         text,
         [
-            r'DG\s+Class',
+            r'DG\s*Class',
             r'Class',
-            r'Transport\s+hazard\s+class',
-            r'(?:IMDG|IATA|ADG)?\s*Hazard\s+Class',
-            r'Dangerous\s+goods\s+class',
+            r'Transport\s*hazard\s*class(?:\(es\))?',
+            r'(?:IMDG|IATA|ADG)?\s*Hazard\s*Class(?:\(es\))?',
+            r'Hazard\s*class(?:\(es\))?',
+            r'Dangerous\s*goods\s*class',
         ],
         section14,
     )
@@ -621,7 +668,8 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     
     # Packing group - RESTORE WORKING LOGIC + ADD TABLE SUPPORT
     packing_group = extract_field_value(text, [
-        r'Packing\s+group',
+        r'Packing\s*group(?:\(s\))?',
+        r'Packing\s*group\s*\(if\s*applicable\)',
         r'PG'
     ], section14)
     
@@ -636,9 +684,10 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     
     # Final validation - remove any remaining noise (BE MORE CONSERVATIVE)
     label_like_pattern = re.compile(r'(product\s+identifier|product\s+name|trade\s+name|commercial\s+product\s+name)\s*$', re.IGNORECASE)
+    header_like_pattern = re.compile(r'^\s*\d+\.?\s*(identification|hazard)\b', re.IGNORECASE)
     for field_name in ['product_name', 'manufacturer']:
         val = result[field_name]['value']
-        if val and (is_noise_text(val) or label_like_pattern.fullmatch(str(val).strip() or '')):
+        if val and (is_noise_text(val) or label_like_pattern.fullmatch(str(val).strip() or '') or (field_name == 'product_name' and header_like_pattern.match(str(val)))):
             logger.warning(f"Final validation rejected {field_name}: '{val}'")
             result[field_name] = {'value': None, 'confidence': 0.0}
     
