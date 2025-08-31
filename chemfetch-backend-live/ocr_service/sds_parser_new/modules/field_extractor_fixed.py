@@ -1,5 +1,5 @@
 """
-Improved Field extraction module - fixes for specific SDS parsing issues
+FIXED Field extraction module - addresses regressions while keeping improvements
 """
 import re
 import logging
@@ -41,8 +41,15 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
                 value = re.sub(r"^[\"''`]+s\b\s*", "", value)
                 
                 # Special cleaning for common noise patterns that were causing issues
-                value = re.sub(r"^of\s+the\s+safety\s+data\s+sheet\s*", "", value, re.IGNORECASE)
-                value = re.sub(r"^of\s+the\s+substance\s+or\s+mixture\s+and\s+uses\s+advised\s+against\s*", "", value, re.IGNORECASE)
+                # BUT BE MORE CAREFUL - only clean obvious noise, not valid content
+                if re.match(r"^of\s+the\s+safety\s+data\s+sheet\s*$", value, re.IGNORECASE):
+                    logger.debug(f"[SDS_EXTRACTOR] Removing noise pattern: '{value}'")
+                    search_next = True
+                    continue
+                elif re.match(r"^of\s+the\s+substance\s+or\s+mixture\s+and\s+uses\s+advised\s+against\s*$", value, re.IGNORECASE):
+                    logger.debug(f"[SDS_EXTRACTOR] Removing noise pattern: '{value}'")
+                    search_next = True
+                    continue
 
                 # Skip if the value clearly refers to a product code or similar non-name data
                 if re.search(r"product\s+code", value, re.IGNORECASE):
@@ -163,15 +170,24 @@ def extract_from_table_structure(text: str, field_name: str) -> Optional[str]:
 
 
 def extract_product_name(section_text: str) -> Optional[str]:
-    """Enhanced product name extraction with multiple strategies to fix sds_5.pdf issue."""
+    """FIXED product name extraction - restore working logic with targeted improvements."""
     if not section_text:
         return None
     
     # Strategy 1: Look for explicit product name labels
-    product_name = extract_after_label(section_text, FIELD_LABELS['product_name'], 'product_name')
+    product_labels = FIELD_LABELS.get('product_name', [
+        r'Product\s+identifier',
+        r'Product\s+Name',
+        r'Trade\s+name',
+        r'Product\s+code',
+        r'Commercial\s+product\s+name',
+        r'Product\s+designation'
+    ])
+    
+    product_name = extract_after_label(section_text, product_labels, 'product_name')
     if product_name and not is_noise_text(product_name):
-        # Additional validation - reject if it looks like a company suffix
-        if not re.match(r'^(Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company)$', product_name, re.IGNORECASE):
+        # Additional validation - reject if it looks like a company suffix or obvious label
+        if not re.match(r'^(Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Alternative\s+number\(s\)|Other\s+Name\(s\)|Formulation\s+#|Registration\s+no\.?\s*–?\s*US:?)$', product_name, re.IGNORECASE):
             logger.info(f"[SDS_EXTRACTOR] Product name from label: '{product_name}'")
             return product_name
     
@@ -183,14 +199,15 @@ def extract_product_name(section_text: str) -> Optional[str]:
         # Clean up noise like trailing company info
         candidate = re.sub(r'\s+(?:Pty\s+Ltd|Ltd|Inc\.?|Corp\.?).*$', '', candidate, re.IGNORECASE)
         if candidate and not is_noise_text(candidate) and len(candidate) > 2:
-            logger.info(f"[SDS_EXTRACTOR] Product name from split table: '{candidate}'")
-            return candidate
+            if not re.match(r'^(Alternative\s+number\(s\)|Other\s+Name\(s\)|Formulation\s+#)$', candidate, re.IGNORECASE):
+                logger.info(f"[SDS_EXTRACTOR] Product name from split table: '{candidate}'")
+                return candidate
     
-    # Strategy 3: Look for product name in the first few meaningful lines
+    # Strategy 3: Look for product name in the first few meaningful lines (MORE CONSERVATIVE)
     lines = section_text.splitlines()
     meaningful_lines = []
     
-    for line in lines[:15]:  # Check first 15 lines only
+    for line in lines[:20]:  # Check first 20 lines, increased from 15
         clean = line.strip()
         if not clean:
             continue
@@ -217,6 +234,10 @@ def extract_product_name(section_text: str) -> Optional[str]:
             if is_label:
                 break
 
+        # Also reject obvious label patterns
+        if re.match(r'^(Alternative\s+number\(s\)|Other\s+Name\(s\)|Formulation\s+#|Registration\s+no\.?\s*–?\s*US:?)$', clean, re.IGNORECASE):
+            continue
+
         if not is_label:
             meaningful_lines.append(clean)
     
@@ -233,8 +254,8 @@ def extract_product_name(section_text: str) -> Optional[str]:
         if re.search(r'[A-Za-z0-9]', candidate) and len(candidate) > 3:
             if not re.search(r'\b\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}\b', candidate):
                 if not re.search(r'@|www\.|\.com|\.org', candidate, re.IGNORECASE):
-                    # Additional check to reject company suffixes
-                    if not re.match(r'^(Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company)$', candidate, re.IGNORECASE):
+                    # Additional check to reject company suffixes and obvious labels
+                    if not re.match(r'^(Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Alternative\s+number\(s\)|Other\s+Name\(s\)|Formulation\s+#)$', candidate, re.IGNORECASE):
                         logger.info(f"[SDS_EXTRACTOR] Product name from meaningful line: '{candidate}'")
                         return candidate
     
@@ -243,15 +264,28 @@ def extract_product_name(section_text: str) -> Optional[str]:
 
 
 def extract_manufacturer(section_text: str) -> Optional[str]:
-    """Enhanced manufacturer extraction with validation to fix sds_1.pdf and sds_15.pdf issues."""
+    """FIXED manufacturer extraction - restore working logic while keeping improvements."""
     if not section_text:
         return None
     
     # Strategy 1: Look for explicit manufacturer labels
-    manufacturer = extract_after_label(section_text, FIELD_LABELS['manufacturer'], 'manufacturer')
+    manufacturer_labels = FIELD_LABELS.get('manufacturer', [
+        r'Manufacturer',
+        r'Supplier\s+Name',
+        r'Supplier',
+        r'Company\s+name\s+of\s+supplier',
+        r'Details\s+of\s+the\s+supplier',
+        r'Producer',
+        r'Company\s+name',
+        r'Registered\s+company\s+name',
+        r'Distributor',
+        r'Manufacturer\s*/\s*Supplier'
+    ])
+    
+    manufacturer = extract_after_label(section_text, manufacturer_labels, 'manufacturer')
     if manufacturer and not is_noise_text(manufacturer):
-        # Additional validation for manufacturer - reject obvious noise fragments
-        if not re.match(r'^of\s+the\s+safety\s+data\s+sheet', manufacturer, re.IGNORECASE):
+        # Additional validation for manufacturer - reject obvious noise fragments and labels
+        if not re.match(r'^(of\s+the\s+safety\s+data\s+sheet|Emergency\s+Telephone\s+Number|Company[:.]?\s*$|Company\s+No\.?[:.]?\s*$)', manufacturer, re.IGNORECASE):
             if len(manufacturer) > 2 and not re.match(r'^[:\-\s]*$', manufacturer):
                 logger.info(f"[SDS_EXTRACTOR] Manufacturer from label: '{manufacturer}'")
                 return manufacturer
@@ -261,8 +295,9 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
     if details_match:
         candidate = details_match.group(1).splitlines()[0].strip()
         if candidate and not is_noise_text(candidate):
-            logger.info(f"[SDS_EXTRACTOR] Manufacturer from inline supplier details: '{candidate}'")
-            return candidate
+            if not re.match(r'^(Emergency\s+Telephone\s+Number|Company[:.]?\s*$)', candidate, re.IGNORECASE):
+                logger.info(f"[SDS_EXTRACTOR] Manufacturer from inline supplier details: '{candidate}'")
+                return candidate
     
     # Strategy 2: Look in "Details of the supplier" section
     supplier_section = re.search(r'Details\s+of\s+the\s+supplier[^\n]*\n([^:]+?)(?:\n\s*[A-Z]|\n\s*\d|$)', 
@@ -274,13 +309,13 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
             clean = line.strip()
             if clean and not is_noise_text(clean) and len(clean) > 3:
                 if not re.search(r'\b\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}\b', clean):  # Not phone
-                    logger.info(f"[SDS_EXTRACTOR] Manufacturer from supplier details: '{clean}'")
-                    return clean
+                    if not re.match(r'^(Emergency\s+Telephone\s+Number|Company[:.]?\s*$)', clean, re.IGNORECASE):
+                        logger.info(f"[SDS_EXTRACTOR] Manufacturer from supplier details: '{clean}'")
+                        return clean
     
-    # Strategy 3: Look for company names that appear before product names
-    # This helps with cases where layout is: "Company Name" followed by "Product Name: actual product"
+    # Strategy 3: Look for company names that appear in meaningful lines
     lines = section_text.splitlines()
-    for i, line in enumerate(lines):
+    for i, line in enumerate(lines[:15]):  # Check first 15 lines
         clean = line.strip()
         if not clean:
             continue
@@ -289,24 +324,18 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
         if re.search(r'\b(?:Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Corporation)\b', clean, re.IGNORECASE):
             # Check if this looks like a company name (not just "Product Name: Pty Ltd")
             if not re.search(r'Product\s+Name\s*:', clean, re.IGNORECASE):
-                # Clean up the company name
-                company_name = re.sub(r'^.*?([A-Z][^:\n]*(?:Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Corporation)[^:\n]*).*$', 
-                                    r'\1', clean, re.IGNORECASE)
-                if company_name != clean and company_name:  # If regex matched and extracted something
-                    company_name = company_name.strip()
-                    if not is_noise_text(company_name):
-                        logger.info(f"[SDS_EXTRACTOR] Manufacturer from company pattern: '{company_name}'")
-                        return company_name
-                elif not is_noise_text(clean):
-                    logger.info(f"[SDS_EXTRACTOR] Manufacturer from company line: '{clean}'")
-                    return clean
+                # Skip obvious label patterns
+                if not re.match(r'^(Emergency\s+Telephone\s+Number|Company[:.]?\s*$|Company\s+No\.?[:.]?\s*$)', clean, re.IGNORECASE):
+                    if not is_noise_text(clean):
+                        logger.info(f"[SDS_EXTRACTOR] Manufacturer from company line: '{clean}'")
+                        return clean
     
     logger.warning("[SDS_EXTRACTOR] Could not extract manufacturer")
     return None
 
 
 def extract_description(section_text: str) -> Optional[str]:
-    """Extract product description/use information."""
+    """Extract product description/use information - ENSURE it comes from Section 1."""
     if not section_text:
         return None
     
@@ -325,7 +354,7 @@ def extract_description(section_text: str) -> Optional[str]:
     
     description = extract_after_label(section_text, description_labels, 'description')
     if description and not is_noise_text(description):
-        # Clean up common noise in descriptions
+        # Clean up common noise in descriptions but be more conservative
         description = re.sub(r'^of\s+the\s+substance\s+or\s+mixture\s+and\s+uses\s+advised\s+against\s*', '', description, re.IGNORECASE)
         description = re.sub(r'^/Mixture\s*:\s*', '', description, re.IGNORECASE)
         if description.strip():
@@ -349,7 +378,7 @@ def extract_date_from_header(text: str) -> Optional[str]:
         if not line:
             continue
         
-        # Look for revision date patterns in headers
+        # Look for revision date patterns in headers - MORE PATTERNS
         revision_patterns = [
             r'Revision[:\s]+(\d{4}-\d{2}-\d{2})',
             r'Revision[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{4})',
@@ -357,6 +386,9 @@ def extract_date_from_header(text: str) -> Optional[str]:
             r'Rev[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{4})',
             r'Date[:\s]+(\d{4}-\d{2}-\d{2})',
             r'Date[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{4})',
+            # Additional patterns for different formats
+            r'REVISION\s+DATE[:\s]*(\d{1,2}\s+\w+\s+\d{4})',  # "REVISION DATE: 3 August 2021"
+            r'Revision[:\s]*(\d{1,2}\s+\w+\s+\d{4})'  # "Revision: 19 January 2024"
         ]
         
         for pattern in revision_patterns:
@@ -366,7 +398,8 @@ def extract_date_from_header(text: str) -> Optional[str]:
                 try:
                     from datetime import datetime, date
                     # Try to parse and validate
-                    for fmt in ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y', '%d-%m-%Y']:
+                    formats = ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y', '%d-%m-%Y', '%d %B %Y', '%d %b %Y']
+                    for fmt in formats:
                         try:
                             parsed_date = datetime.strptime(date_str, fmt).date()
                             if parsed_date <= date.today():  # Must be in the past
@@ -406,5 +439,48 @@ def extract_section14_field(sec14: str, labels: List[str], field_name: str) -> O
     table_result = extract_from_table_structure(sec14, field_name)
     if table_result:
         return table_result
+    
+    return None
+
+
+# Legacy compatibility functions - restore original working extraction patterns
+def extract_field_value_legacy(text: str, field_labels: list, section_text: str = None) -> Optional[str]:
+    """Legacy field value extraction for backward compatibility."""
+    # Use section text if provided, otherwise full text
+    search_text = section_text if section_text else text
+    
+    if not search_text:
+        return None
+    
+    lines = search_text.split('\n')
+    
+    for i, line in enumerate(lines):
+        line = line.strip()
+        if not line:
+            continue
+            
+        for label in field_labels:
+            # Pattern: "Label: value" on same line
+            pattern = rf'^{label}\s*[:\-]?\s*(.+)$'
+            match = re.search(pattern, line, re.IGNORECASE)
+            if match:
+                value = match.group(1).strip()
+                
+                # Clean up common trailing noise
+                value = re.sub(r'\s*[:\-]\s*$', '', value)  # Remove trailing punctuation
+                value = re.sub(r'\s+(Tel|Phone|Fax|Email|Emergency).*$', '', value, re.IGNORECASE)  # Remove contact info
+                
+                if value and not is_noise_text(value):
+                    return value
+            
+            # Pattern: Label on one line, value on next
+            if re.match(rf'^{label}\s*[:\-]?\s*$', line, re.IGNORECASE):
+                # Look at next few lines for the value
+                for j in range(i + 1, min(i + 6, len(lines))):
+                    candidate = lines[j].strip()
+                    if not candidate or candidate == ':':
+                        continue
+                    if not candidate.startswith(':') and not is_noise_text(candidate):
+                        return candidate
     
     return None

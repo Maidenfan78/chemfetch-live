@@ -32,7 +32,7 @@ Total Files Tested: {len(pdf_files)}
             extracted_values = result.get('extracted_values', {})
             found = result.get('fields_extracted', 0)
             
-            for field in ['product_name', 'manufacturer', 'issue_date', 'dangerous_goods_class', 'packing_group']:
+            for field in ['product_name', 'manufacturer', 'description', 'issue_date', 'dangerous_goods_class', 'packing_group']:
                 field_data = extracted_values.get(field, {})
                 value = field_data.get('value')
                 if value is not None:
@@ -129,6 +129,7 @@ def main():
     fields = [
         "product_name",
         "manufacturer",
+        "description",
         "issue_date",
         "dangerous_goods_class",
         "packing_group",

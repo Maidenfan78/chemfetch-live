@@ -1,5 +1,5 @@
 {
-  "test_timestamp": "2025-08-31T16:59:59.256602",
+  "test_timestamp": "2025-08-31T20:23:08.558518",
   "total_files": 15,
   "successful": 15,
   "failed": 0,
@@ -7,15 +7,19 @@
     "sds_1.PDF": {
       "success": true,
       "fields_extracted": 5,
-      "total_fields": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
           "value": "SUPER GLUE FAST 20G",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "of the safety data sheet",
+          "value": "Würth Chile Ltda.",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": "2025-06-26",
@@ -45,8 +49,12 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "of the safety data sheet",
+          "value": "Würth Chile Ltda.",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
           "value": "of the substance or mixture and uses advised against",
@@ -74,7 +82,7 @@
     "sds_2.pdf": {
       "success": true,
       "fields_extracted": 4,
-      "total_fields": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
           "value": "ISOCOL Rubbing Alcohol",
@@ -83,6 +91,10 @@
         "manufacturer": {
           "value": "Nicepak Products",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": "2022-03-29",
@@ -115,6 +127,10 @@
           "value": "Nicepak Products",
           "confidence": 1.0
         },
+        "description": {
+          "value": null,
+          "confidence": 0.0
+        },
         "product_use": {
           "value": null,
           "confidence": 0.0
@@ -140,8 +156,8 @@
     },
     "sds_3.pdf": {
       "success": true,
-      "fields_extracted": 2,
-      "total_fields": 5,
+      "fields_extracted": 4,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
           "value": "Armor All Original Protectant - Spray",
@@ -151,9 +167,13 @@
           "value": "Energizer Manufacturing, Inc.",
           "confidence": 1.0
         },
+        "description": {
+          "value": "General use",
+          "confidence": 1.0
+        },
         "issue_date": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2024-01-19",
+          "confidence": 1.0
         },
         "dangerous_goods_class": {
           "value": null,
@@ -182,6 +202,10 @@
           "value": "Energizer Manufacturing, Inc.",
           "confidence": 1.0
         },
+        "description": {
+          "value": "General use",
+          "confidence": 1.0
+        },
         "product_use": {
           "value": "General use",
           "confidence": 1.0
@@ -199,8 +223,8 @@
           "confidence": 0.0
         },
         "issue_date": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2024-01-19",
+          "confidence": 1.0
         }
       },
       "file_size_mb": 0.09
@@ -208,13 +232,17 @@
     "sds_4.pdf": {
       "success": true,
       "fields_extracted": 0,
-      "total_fields": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
           "value": null,
           "confidence": 0
         },
         "manufacturer": {
+          "value": null,
+          "confidence": 0
+        },
+        "description": {
           "value": null,
           "confidence": 0
         },
@@ -248,15 +276,19 @@
     "sds_5.pdf": {
       "success": true,
       "fields_extracted": 4,
-      "total_fields": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "Pty Ltd",
+          "value": "1 – Product Identifier & Identity for the Chemical",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "WD-40 Company Australia Product Name: WD-40 Aerosol",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": "2021-08-03",
@@ -282,12 +314,16 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Pty Ltd",
+          "value": "1 – Product Identifier & Identity for the Chemical",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "WD-40 Company Australia Product Name: WD-40 Aerosol",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
           "value": null,
@@ -314,24 +350,28 @@
     },
     "sds_6.pdf": {
       "success": true,
-      "fields_extracted": 2,
-      "total_fields": 5,
+      "fields_extracted": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
           "value": "ACETONE",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "’s Product Code 16255",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Solvent",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2022-02-28",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "3",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": null,
@@ -353,16 +393,20 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "’s Product Code 16255",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Solvent",
+          "confidence": 1.0
         },
         "product_use": {
           "value": "Solvent",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "3",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
@@ -381,15 +425,19 @@
     },
     "sds_7.pdf": {
       "success": true,
-      "fields_extracted": 3,
-      "total_fields": 5,
+      "fields_extracted": 4,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "Full Synthetic 5W-30",
+          "value": "Synonyms Product Code",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "Penrite Oil Company Pty Ltd",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Petrol engine oil.",
           "confidence": 1.0
         },
         "issue_date": {
@@ -416,11 +464,15 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Full Synthetic 5W-30",
+          "value": "Synonyms Product Code",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "Penrite Oil Company Pty Ltd",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Petrol engine oil.",
           "confidence": 1.0
         },
         "product_use": {
@@ -449,15 +501,19 @@
     "sds_8.pdf": {
       "success": true,
       "fields_extracted": 4,
-      "total_fields": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
           "value": "Glen 20 All in One Spray Disinfectant Original",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "RB (Hygiene Home) Australia Pty Ltd",
+          "value": "AUSTRALIA",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": "2023-04-13",
@@ -487,8 +543,12 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "RB (Hygiene Home) Australia Pty Ltd",
+          "value": "AUSTRALIA",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
           "value": null,
@@ -515,8 +575,8 @@
     },
     "sds_9.pdf": {
       "success": true,
-      "fields_extracted": 3,
-      "total_fields": 5,
+      "fields_extracted": 4,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
           "value": "Earth Choice Dishwashing Liquid",
@@ -524,6 +584,10 @@
         },
         "manufacturer": {
           "value": "Natures Organics Pty Ltd",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Manual dishwashing liquid",
           "confidence": 1.0
         },
         "issue_date": {
@@ -557,6 +621,10 @@
           "value": "Natures Organics Pty Ltd",
           "confidence": 1.0
         },
+        "description": {
+          "value": "Manual dishwashing liquid",
+          "confidence": 1.0
+        },
         "product_use": {
           "value": "Manual dishwashing liquid",
           "confidence": 1.0
@@ -582,15 +650,19 @@
     },
     "sds_10.pdf": {
       "success": true,
-      "fields_extracted": 2,
-      "total_fields": 5,
+      "fields_extracted": 3,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "Registration no. – US: JETPWR-100, JETPWR-230, JETPWR-450, JF100, JF230, JF450",
+          "value": "JET POWER FUEL – 100GM/230GM/450GM",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "Company TAEYANG CORPORATION",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Fuel etc.",
           "confidence": 1.0
         },
         "issue_date": {
@@ -617,11 +689,15 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Registration no. – US: JETPWR-100, JETPWR-230, JETPWR-450, JF100, JF230, JF450",
+          "value": "JET POWER FUEL – 100GM/230GM/450GM",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "Company TAEYANG CORPORATION",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Fuel etc.",
           "confidence": 1.0
         },
         "product_use": {
@@ -650,15 +726,19 @@
     "sds_11.pdf": {
       "success": true,
       "fields_extracted": 5,
-      "total_fields": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
+          "value": "Product name AutoChem™ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "Chemtools Pty Ltd Chemtools Pty Ltd",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": "2023-05-18",
@@ -684,12 +764,16 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
+          "value": "Product name AutoChem™ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "Chemtools Pty Ltd Chemtools Pty Ltd",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
           "value": "of the substance or mixture and uses advised against",
@@ -717,15 +801,19 @@
     "sds_12.pdf": {
       "success": true,
       "fields_extracted": 5,
-      "total_fields": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "DOMESTOS - REGULAR",
+          "value": "Synonym(s) 4496411 DOMESTOS REGULAR 6X750ML • HH11355 DOMESTOS REGULAR 2X5L",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "JOHNSONDIVERSEY AUSTRALIA PTY LTD",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": "2007-03-06",
@@ -751,12 +839,16 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "DOMESTOS - REGULAR",
+          "value": "Synonym(s) 4496411 DOMESTOS REGULAR 6X750ML • HH11355 DOMESTOS REGULAR 2X5L",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "JOHNSONDIVERSEY AUSTRALIA PTY LTD",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
           "value": null,
@@ -783,15 +875,19 @@
     },
     "sds_13.pdf": {
       "success": true,
-      "fields_extracted": 3,
-      "total_fields": 5,
+      "fields_extracted": 4,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "SC Johnson Professional Mr. Muscle® Floor Cleaner",
+          "value": "UFI: UVSN-50P9-000H-477F",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "SC Johnson Professional Ltd.",
+          "value": "safety data sheet Denby",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Washing and cleaning products (including solvent based products)",
           "confidence": 1.0
         },
         "issue_date": {
@@ -818,11 +914,15 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "SC Johnson Professional Mr. Muscle® Floor Cleaner",
+          "value": "UFI: UVSN-50P9-000H-477F",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "SC Johnson Professional Ltd.",
+          "value": "safety data sheet Denby",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Washing and cleaning products (including solvent based products)",
           "confidence": 1.0
         },
         "product_use": {
@@ -850,15 +950,19 @@
     },
     "sds_14.pdf": {
       "success": true,
-      "fields_extracted": 4,
-      "total_fields": 5,
+      "fields_extracted": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "SELLEYS KWIK GRIP SPRAY",
+          "value": "Synonyms Product Code Bar Code",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Contact adhesive spray",
           "confidence": 1.0
         },
         "issue_date": {
@@ -885,11 +989,15 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "SELLEYS KWIK GRIP SPRAY",
+          "value": "Synonyms Product Code Bar Code",
           "confidence": 1.0
         },
         "manufacturer": {
           "value": "Selleys, a division of DuluxGroup (New Zealand) Pty Ltd",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "Contact adhesive spray",
           "confidence": 1.0
         },
         "product_use": {
@@ -918,15 +1026,19 @@
     "sds_15.pdf": {
       "success": true,
       "fields_extracted": 5,
-      "total_fields": 5,
+      "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "Dy-Mark Spray & Mark - All colours (LPG new formula)",
+          "value": "Product name Dy-Mark Spray & Mark - All colours (LPG new formula)",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "of the safety data sheet",
+          "value": "Dy-Mark",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": "2021-11-23",
@@ -952,12 +1064,16 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "Dy-Mark Spray & Mark - All colours (LPG new formula)",
+          "value": "Product name Dy-Mark Spray & Mark - All colours (LPG new formula)",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "of the safety data sheet",
+          "value": "Dy-Mark",
           "confidence": 1.0
+        },
+        "description": {
+          "value": null,
+          "confidence": 0.0
         },
         "product_use": {
           "value": "of the substance or mixture and uses advised against",

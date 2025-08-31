@@ -1,0 +1,51 @@
+Below are issues I have pointed with the sds parser. I will show the actual data versus the data the parser extracted, I will also add comment if needed.
+Also the sample pfd files are in chemfetch-backend-live\test-data\sds-pdfs. The test results are generated in chemfetch-backend-live\test-data
+if you want to check them, and also a README.md. I would like you to look at the files and the results I am having issues with fist before improving the code.
+Make any changes required to fix the code. Please do not remove any working code and do not brake any existing code
+
+=== LATEST ISSUES (Updated after improvements) ===
+
+sds_1.pdf
+Actual: 
+This is the description -> Use Antibacterial rub preparation for topical human use.
+Class   :  9
+Packing group   :  III
+Extracted:  
+dangerous_goods_class: None    
+packing_group: None
+Comment: Description was extracted from Section 2 which is wrong. The item description/use is always from what I can gather in section 1.
+
+sds_2.pdf
+Actual: 
+DG Class: 3
+Packing Group: III
+Extracted: 
+description: Contains Isopropyl Alcohol 64% which is hazardous according to Worksafe Australia.
+dangerous_goods_class: None
+packing_group: None
+Comment: The dangerous goods class and the Packing Group are in tables.
+
+sds_3.pdf
+Actual:
+Trade name Armor All Original Protectant - Spray
+Revision: 2024-01-19
+Extracted: 
+product_name: Alternative number(s)
+issue_date: 2019-01-04
+Comment: The issue date is on the header of every page. I think it hase the format wrong.
+
+sds_5.pdf
+Actual:
+REVISION DATE: 3 August 2021
+Extracted:
+issue_date: None
+
+=== FIXES APPLIED ===
+- Added enhanced noise filtering for manufacturer field
+- Added table parsing for DG class and packing group
+- Enhanced date extraction patterns
+- Added description field extraction from Section 1
+- Improved product name validation to reject labels
+
+
+

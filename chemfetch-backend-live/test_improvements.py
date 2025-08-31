@@ -1,129 +1,78 @@
 #!/usr/bin/env python3
 """
-Test the working parser on specific problem PDFs
+Quick test of the improved SDS parser on specific problematic PDFs
 """
+
 import sys
+import subprocess
 from pathlib import Path
-import json
 
-# Import our working parser
-sys.path.insert(0, str(Path(__file__).parent))
-from working_parser import parse_pdf
-
-def test_problem_pdfs():
-    """Test the parser on PDFs that had specific issues."""
+def test_specific_pdfs():
+    """Test the improved parser on the problematic PDFs mentioned in issues.txt"""
     
-    problem_cases = [
-        {
-            "file": "sds_12.pdf",
-            "expected_issues": [
-                "Product name should NOT be 'MSDS Date'",
-                "Manufacturer should NOT be 'Name'"
-            ]
-        },
-        {
-            "file": "sds_13.pdf", 
-            "expected_issues": [
-                "Product name should NOT be phone number",
-                "Manufacturer should NOT be 'safety data sheet'"
-            ]
-        },
-        {
-            "file": "sds_14.pdf",
-            "expected_issues": [
-                "Manufacturer should NOT be ':'",
-                "DG class should NOT be '1950' (UN number)"
-            ]
-        },
-        {
-            "file": "sds_8.pdf",
-            "expected_issues": [
-                "Product name should NOT be 'Australia - 13 11 26'",
-                "Product/manufacturer might be swapped"
-            ]
-        },
-        {
-            "file": "sds_3.pdf",
-            "expected_issues": [
-                "Product name should NOT be 'Alternative number(s)'",
-                "DG class should NOT be '14.5'"
-            ]
-        }
+    base_dir = Path(__file__).parent
+    parser_script = base_dir / "ocr_service" / "sds_parser_new" / "sds_extractor.py"
+    test_pdfs_dir = base_dir / "test-data" / "sds-pdfs"
+    
+    # Test specific problematic PDFs
+    problematic_pdfs = [
+        "sds_1.PDF",  # Manufacturer issue: should be "Würth Chile Ltda." not "of the safety data sheet"
+        "sds_2.pdf",  # Packing group issue: should be "III" not None
+        "sds_3.pdf",  # Issue date missing: should be "2024-01-19" not None  
+        "sds_5.pdf"   # Product name issue: should be "WD-40 Aerosol" not "Pty Ltd"
     ]
     
-    print("🧪 TESTING IMPROVED PARSER")
+    print("🔧 Testing Improved SDS Parser")
     print("=" * 50)
     
-    test_dir = Path("test-data/sds-pdfs")
-    
-    for case in problem_cases:
-        pdf_path = test_dir / case["file"]
-        
+    for pdf_name in problematic_pdfs:
+        pdf_path = test_pdfs_dir / pdf_name
         if not pdf_path.exists():
-            print(f"❌ {case['file']}: File not found")
+            print(f"❌ {pdf_name} not found")
             continue
             
-        print(f"\n📄 Testing: {case['file']}")
+        print(f"\n📄 Testing: {pdf_name}")
         print("-" * 30)
         
         try:
-            result = parse_pdf(pdf_path)
+            # Run the parser
+            result = subprocess.run(
+                [sys.executable, str(parser_script), str(pdf_path)],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                cwd=str(base_dir)
+            )
             
-            # Check the results
-            fields = ['product_name', 'manufacturer', 'dangerous_goods_class', 'issue_date']
-            improvements = []
-            remaining_issues = []
-            
-            for field in fields:
-                if field in result:
-                    value = result[field].get('value')
-                    if value:
-                        print(f"✅ {field}: '{value}'")
+            if result.returncode == 0:
+                import json
+                # Parse the JSON output
+                try:
+                    data = json.loads(result.stdout)
+                    
+                    # Show key extracted fields
+                    fields = ['product_name', 'manufacturer', 'description', 'issue_date', 'dangerous_goods_class', 'packing_group']
+                    
+                    for field in fields:
+                        field_data = data.get(field, {})
+                        if isinstance(field_data, dict):
+                            value = field_data.get('value')
+                        else:
+                            value = field_data
                         
-                        # Check specific improvements based on file
-                        if case["file"] == "sds_12.pdf":
-                            if field == "product_name" and value == "MSDS Date":
-                                remaining_issues.append(f"Still extracting 'MSDS Date' as product name")
-                            elif field == "manufacturer" and value == "Name":
-                                remaining_issues.append(f"Still extracting 'Name' as manufacturer")
-                        
-                        elif case["file"] == "sds_13.pdf":
-                            if field == "product_name" and "NPIS" in value:
-                                remaining_issues.append(f"Still extracting phone number as product name")
-                            elif field == "manufacturer" and value == "safety data sheet":
-                                remaining_issues.append(f"Still extracting 'safety data sheet' as manufacturer")
-                        
-                        elif case["file"] == "sds_14.pdf":
-                            if field == "manufacturer" and value == ":":
-                                remaining_issues.append(f"Still extracting ':' as manufacturer")
-                            elif field == "dangerous_goods_class" and value == "1950":
-                                remaining_issues.append(f"Still extracting '1950' as DG class")
-                        
-                        elif case["file"] == "sds_8.pdf":
-                            if field == "product_name" and "Australia - 13 11 26" in value:
-                                remaining_issues.append(f"Still extracting phone number as product name")
-                        
-                        elif case["file"] == "sds_3.pdf":
-                            if field == "product_name" and value == "Alternative number(s)":
-                                remaining_issues.append(f"Still extracting 'Alternative number(s)' as product name")
-                            elif field == "dangerous_goods_class" and value == "14.5":
-                                remaining_issues.append(f"Still extracting invalid DG class '14.5'")
-                    else:
-                        print(f"❌ {field}: Not extracted")
-                        
-            # Summary for this file
-            if remaining_issues:
-                print(f"\n🔴 Remaining issues:")
-                for issue in remaining_issues:
-                    print(f"  - {issue}")
+                        status = "✅" if value else "⚠️"
+                        print(f"{status} {field}: {value}")
+                    
+                except json.JSONDecodeError as e:
+                    print(f"❌ JSON parse error: {e}")
+                    print("Raw output:", result.stdout[:200] + "..." if len(result.stdout) > 200 else result.stdout)
             else:
-                print(f"\n🟢 All major issues appear to be fixed!")
-            
+                print(f"❌ Parser failed: {result.stderr}")
+                
+        except subprocess.TimeoutExpired:
+            print("⏰ Timeout (30s)")
         except Exception as e:
-            print(f"❌ Error parsing {case['file']}: {e}")
-            import traceback
-            traceback.print_exc()
-
+            print(f"❌ Error: {e}")
 
 if __name__ == '__main__':
-    test_problem_pdfs()
+    test_specific_pdfs()
