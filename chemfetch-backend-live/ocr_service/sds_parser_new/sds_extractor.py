@@ -50,19 +50,23 @@ except Exception:
     OCR_AVAILABLE = False
 
 try:
-    # Prefer modular field extractors for better maintainability
+    # Prefer modular extractors for better maintainability
+    from .modules.section_1 import (
+        description as fe_extract_description,
+        product_name as fe_extract_product_name,
+        manufacturer as fe_extract_manufacturer,
+    )
     from .modules.field_extractor import (
-        extract_description as fe_extract_description,
-        extract_product_name as fe_extract_product_name,
-        extract_manufacturer as fe_extract_manufacturer,
         extract_section14_field as fe_extract_section14_field,
         extract_date_from_header as fe_extract_date_from_header,
     )
 except ImportError:  # pragma: no cover - fallback when run as script
+    from modules.section_1 import (
+        description as fe_extract_description,
+        product_name as fe_extract_product_name,
+        manufacturer as fe_extract_manufacturer,
+    )
     from modules.field_extractor import (
-        extract_description as fe_extract_description,
-        extract_product_name as fe_extract_product_name,
-        extract_manufacturer as fe_extract_manufacturer,
         extract_section14_field as fe_extract_section14_field,
         extract_date_from_header as fe_extract_date_from_header,
     )
@@ -484,6 +488,9 @@ def extract_product_name(section1_text: str) -> Optional[str]:
                         lowered = line.lower()
                         if any(tok in lowered for tok in ['proper shipping name', 'shipping name', 'un number', 'transport', 'hazchem', 'epg', 'chemical formula', 'not applicable']):
                             continue
+                        # Skip date headers that sometimes appear as standalone lines
+                        if re.match(r'^(msds\s+date|date\s+of\s+issue|revision\s+date|version\s+date)\b', lowered, re.IGNORECASE):
+                            continue
                         candidate = strip_leading_label_prefix(line)
                         candidate = dedup_repeated_phrase(candidate)
                         logger.info(f"Found potential product name: '{candidate}'")
@@ -690,9 +697,14 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     
     # Product name
     product_name = extract_product_name(section1)
+    prefix = '\n'.join(text.splitlines()[:15])
     if not product_name:
-        prefix = '\n'.join(text.splitlines()[:15])
         product_name = extract_product_name(prefix)
+    # If the found name looks like a date label (e.g., "MSDS Date ..."), prefer header/prefix-derived name
+    if product_name and re.match(r'^(msds\s+date|date\s+of\s+issue|revision\s+date|version\s+date)\b', str(product_name), re.IGNORECASE):
+        alt = extract_product_name(prefix)
+        if alt and not re.match(r'^(msds\s+date|date\s+of\s+issue|revision\s+date|version\s+date)\b', alt, re.IGNORECASE):
+            product_name = alt
     result['product_name'] = {'value': product_name, 'confidence': 1.0 if product_name else 0.0}
     
     # Manufacturer

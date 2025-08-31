@@ -31,8 +31,22 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
             same_line_pattern = rf"^{label}\s*[:\-]\s*(.+)$"
             same = re.search(same_line_pattern, clean, re.IGNORECASE)
             if not same:
-                # Handle case with whitespace but no colon/hyphen
-                same = re.search(rf"^{label}\b\s+(.+)$", clean, re.IGNORECASE)
+                # Handle case with whitespace but no colon/hyphen, but avoid matching section headers like
+                # "Manufacturer or supplier's details" or "Recommended use of the chemical and restrictions on use"
+                tmp = re.search(rf"^{label}\b\s+(.+)$", clean, re.IGNORECASE)
+                if tmp:
+                    tail = tmp.group(1).strip()
+                    # Common continuation phrases that indicate this is still part of the label header, not a value
+                    continuation_noise = [
+                        r"^of\s+the\s+chemical\s+and\s+restrictions\s+on\s+use$",
+                        r"^of\s+the\s+safety\s+data\s+sheet$",
+                        r"^or\s+supplier'?s\s+details$",
+                        r"^of\s+the\s+company/undertaking$",
+                    ]
+                    if any(re.fullmatch(p, tail, re.IGNORECASE) for p in continuation_noise):
+                        same = None
+                    else:
+                        same = tmp
             search_next = False
             if same:
                 value = same.group(1).strip()
@@ -64,6 +78,18 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
                 value = re.sub(r'\s*[:\-]\s*$', '', value)  # Remove trailing colons/dashes
                 value = re.sub(r'\s+Page\s+\d+.*$', '', value, flags=re.IGNORECASE)  # Remove page numbers
 
+                # If value is actually a continuation of the label header, skip and search next lines
+                header_continuations = [
+                    r"^of\s+the\s+chemical\s+and\s+restrictions\s+on\s+use$",
+                    r"^of\s+the\s+safety\s+data\s+sheet$",
+                    r"^or\s+supplier'?s\s+details$",
+                    r"^of\s+the\s+company/undertaking$",
+                ]
+                if any(re.fullmatch(p, value, re.IGNORECASE) for p in header_continuations):
+                    logger.debug(f"[SDS_EXTRACTOR] Skipping header continuation value: '{value}'")
+                    search_next = True
+                    value = ''
+
                 if value and not is_noise_text(value):
                     logger.debug(f"[SDS_EXTRACTOR] Accepting value: '{value}'")
                     return value
@@ -89,6 +115,26 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
                     # Stop if we hit another label
                     if any(re.search(lab, candidate, re.IGNORECASE) for lab in [l for labs in FIELD_LABELS.values() for l in labs]):
                         break
+
+                    # Avoid registration numbers being treated as product name values
+                    if field_name == 'product_name' and re.match(r'^registration\s+no\.?', candidate, re.IGNORECASE):
+                        j += 1
+                        continue
+
+                    # Skip if candidate is a known header continuation fragment
+                    if any(re.fullmatch(p, candidate, re.IGNORECASE) for p in [
+                        r"^of\s+the\s+chemical\s+and\s+restrictions\s+on\s+use$",
+                        r"^of\s+the\s+safety\s+data\s+sheet$",
+                        r"^or\s+supplier'?s\s+details$",
+                        r"^of\s+the\s+company/undertaking$",
+                    ]):
+                        j += 1
+                        continue
+
+                    # Skip if the candidate is actually a section header
+                    if field_name == 'product_name' and re.match(r'^\s*(?:section\s*)?\d', candidate, re.IGNORECASE):
+                        j += 1
+                        continue
 
                     if candidate and not is_noise_text(candidate):
                         logger.debug(f"[SDS_EXTRACTOR] Found value on next line: '{candidate}'")
@@ -177,7 +223,8 @@ def extract_product_name(section_text: str) -> Optional[str]:
     
     # Strategy 2: Look for split-table format (addressing sds_5.pdf issue)
     # Pattern: "Product Name: WD-40 Aerosol" might be split across cells
-    product_name_match = re.search(r'Product\s+Name[:\s]*([^:\n]*)', section_text, re.IGNORECASE)
+    # Only allow spaces/tabs after label; do not cross newlines
+    product_name_match = re.search(r'Product\s+Name[:\t ]*([^:\n]*)', section_text, re.IGNORECASE)
     if product_name_match:
         candidate = product_name_match.group(1).strip()
         # Clean up noise like trailing company info
@@ -186,8 +233,23 @@ def extract_product_name(section_text: str) -> Optional[str]:
             logger.info(f"[SDS_EXTRACTOR] Product name from split table: '{candidate}'")
             return candidate
     
-    # Strategy 3: Look for product name in the first few meaningful lines
+    # Strategy 2b: If a bare "Product Name" label appears, use the previous non-empty line
     lines = section_text.splitlines()
+    for idx, line in enumerate(lines):
+        if re.fullmatch(r'\s*Product\s+Name\s*', line, re.IGNORECASE):
+            j = idx - 1
+            while j >= 0:
+                prev = lines[j].strip()
+                if prev:
+                    # Avoid section headers and boilerplate
+                    if not re.match(r'^\d+\.', prev) and not re.search(r'safety\s+data\s+sheet|version|msds\s+date|page\s+\d+', prev, re.IGNORECASE):
+                        if not is_noise_text(prev):
+                            logger.info(f"[SDS_EXTRACTOR] Product name from line above label: '{prev}'")
+                            return prev
+                    break
+                j -= 1
+
+    # Strategy 3: Look for product name in the first few meaningful lines
     meaningful_lines = []
     
     for line in lines[:15]:  # Check first 15 lines only
@@ -199,6 +261,12 @@ def extract_product_name(section_text: str) -> Optional[str]:
         if re.match(r'^\s*(?:section\s*)?1(?:\s|$)', clean, re.IGNORECASE):
             continue
         if re.search(r'identification|supplier|manufacturer|emergency|contact|telephone|fax|email|web\s*site|details|address|synonym|regulation', clean, re.IGNORECASE):
+            continue
+        # Skip common Section 1 label continuations and use headers
+        if re.search(r"^use\(s\)|^use\s+of\s+the\s+substance|uses\s+advised\s+against|of\s+the\s+chemical\s+and\s+restrictions\s+on\s+use", clean, re.IGNORECASE):
+            continue
+        # Skip registration identifiers often near headers
+        if re.search(r"^registration\s+no\.?|\bregistration\s+no\.\b", clean, re.IGNORECASE):
             continue
         if clean.startswith('(') or re.search(r'safety\s+data\s+sheet|according\s+to', clean, re.IGNORECASE):
             continue
@@ -251,7 +319,7 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
     manufacturer = extract_after_label(section_text, FIELD_LABELS['manufacturer'], 'manufacturer')
     if manufacturer and not is_noise_text(manufacturer):
         # Additional validation for manufacturer - reject obvious noise fragments
-        if not re.match(r'^of\s+the\s+safety\s+data\s+sheet', manufacturer, re.IGNORECASE):
+        if not re.match(r'^of\s+the\s+safety\s+data\s+sheet', manufacturer, re.IGNORECASE) and not re.match(r"^or\s+supplier'?s\s+details$", manufacturer, re.IGNORECASE):
             if len(manufacturer) > 2 and not re.match(r'^[:\-\s]*$', manufacturer):
                 logger.info(f"[SDS_EXTRACTOR] Manufacturer from label: '{manufacturer}'")
                 return manufacturer

@@ -25,7 +25,8 @@ def is_noise_text(text: str) -> bool:
         return True
     if re.match(r'^\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}$', text_clean):  # Phone number pattern
         return True
-    if re.match(r'^[A-Z]{2,3},?\s+[A-Z]{2,4}', text_clean):  # Country codes like "UK, NPIS"
+    # Country code headers like "UK, NPIS" (be conservative to avoid rejecting real product names)
+    if re.match(r'^(UK|US|USA|EU|AU|NZ|JP|CN),?\s+[A-Z]{2,4}\b', text_clean):
         return True
     if re.search(r'\b\d{2,4}\s+\d{2,4}\s+\d{2,4}\b', text_clean):  # Phone numbers
         return True

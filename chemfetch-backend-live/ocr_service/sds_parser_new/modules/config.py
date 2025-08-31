@@ -14,12 +14,13 @@ DATE_PATTERN = re.compile(
 # Improved field label patterns - more specific and comprehensive
 FIELD_LABELS = {
     'product_name': [
-        r'Product\s+identifier',
-        r'Product\s+Name',
+        # Prefer explicit trade/product name labels over generic identifier
         r'Trade\s+name',
-        r'Product\s+code',
+        r'Product\s+Name',
+        r'Product\s+identifier',
         r'Commercial\s+product\s+name',
-        r'Product\s+designation'
+        r'Product\s+designation',
+        r'Product\s+code',
     ],
     'manufacturer': [
         r'Manufacturer',
