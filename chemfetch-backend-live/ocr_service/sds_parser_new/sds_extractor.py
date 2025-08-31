@@ -49,6 +49,15 @@ except Exception:
     pytesseract = None
     OCR_AVAILABLE = False
 
+try:
+    from .modules.field_extractor import (
+        extract_description as extract_section1_description,
+    )
+except ImportError:  # pragma: no cover - fallback when run as script
+    from modules.field_extractor import (
+        extract_description as extract_section1_description,
+    )
+
 # Common field labels used to trim values when multiple labels appear on one line
 COMMON_FIELD_LABELS = [
     r'Product\s+identifier',
@@ -444,35 +453,8 @@ def extract_manufacturer(section1_text: str) -> Optional[str]:
 
 
 def extract_description(section1_text: str) -> Optional[str]:
-    """Extract product description/use information from Section 1 only."""
-    if not section1_text:
-        return None
-    
-    # Look for description-related labels in Section 1
-    description_labels = [
-        r'Product\s+description',
-        r'Description',
-        r'Use\s+of\s+the\s+substance',
-        r'Recommended\s+use',
-        r'Intended\s+use',
-        r'Product\s+use',
-        r'Relevant\s+identified\s+uses',
-        r'Identified\s+uses',
-        r'Application'
-    ]
-    
-    description = extract_field_value("", description_labels, section1_text)
-    if description and not is_noise_text(description):
-        # Clean up common noise in descriptions but be conservative
-        if re.match(r'^of\s+the\s+substance\s+or\s+mixture\s+and\s+uses\s+advised\s+against\s*$', description, re.IGNORECASE):
-            logger.debug(f"[SDS_EXTRACTOR] Skipping noisy description: '{description}'")
-            return None
-        description = re.sub(r'^/Mixture\s*:\s*', '', description, re.IGNORECASE)
-        if description.strip():
-            logger.info(f"[SDS_EXTRACTOR] Description from Section 1: '{description}'")
-            return description.strip()
-    
-    return None
+    """Extract product description/use information from Section 1."""
+    return extract_section1_description(section1_text)
 
 
 def extract_date(text: str) -> Optional[str]:
