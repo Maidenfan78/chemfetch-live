@@ -155,7 +155,7 @@ router.post('/', async (req, res) => {
     // 5. Store metadata in database
     logger.info(
       { parsedData, product_id },
-      `Storing enhanced SDS metadata for product ${product_id}`
+      `Storing enhanced SDS metadata for product ${product_id}`,
     );
 
     const { error: upsertError } = await supabase.from('sds_metadata').upsert({
@@ -224,7 +224,7 @@ router.post('/', async (req, res) => {
 function transformToChemfetchFormat(
   directParserResult: any,
   productId: number,
-  productName: string
+  productName: string,
 ): any {
   function getValue(fieldName: string): string | null {
     const field = directParserResult[fieldName];

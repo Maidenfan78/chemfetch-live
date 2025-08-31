@@ -18,7 +18,7 @@ function convertToISODate(dateString: string | null | undefined): string | null 
         const [, day, month, year] = match;
         const fullYear = year.length === 2 ? `20${year}` : year;
         const parsedDate = new Date(
-          `${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+          `${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,
         );
         if (!isNaN(parsedDate.getTime())) {
           return parsedDate.toISOString().split('T')[0]; // Return YYYY-MM-DD format
@@ -64,7 +64,7 @@ interface AutoParseOptions {
  */
 export async function triggerAutoSdsParsing(
   productId: number,
-  options: AutoParseOptions = {}
+  options: AutoParseOptions = {},
 ): Promise<boolean> {
   const { force = false, delay = 0 } = options;
 
@@ -110,7 +110,7 @@ export async function triggerAutoSdsParsing(
   } catch (error) {
     logger.error(
       { error, productId },
-      `Auto-SDS: Failed to trigger parsing for product ${productId}`
+      `Auto-SDS: Failed to trigger parsing for product ${productId}`,
     );
     return false;
   }
@@ -141,7 +141,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
           data: healthCheck.data,
           productId,
         },
-        `Auto-SDS: OCR health check response:`
+        `Auto-SDS: OCR health check response:`,
       );
 
       if (healthCheck.status === 404) {
@@ -165,7 +165,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
           url: OCR_SERVICE_URL,
           timeout: healthError.code === 'ECONNABORTED',
         },
-        `Auto-SDS: OCR service health check failed for product ${productId}:`
+        `Auto-SDS: OCR service health check failed for product ${productId}:`,
       );
       // Create basic metadata entry without OCR parsing
       await createBasicSdsMetadata(productId, sdsUrl);
@@ -184,7 +184,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     const duration = Date.now() - startTime;
@@ -192,7 +192,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
 
     if (response.status !== 200) {
       logger.error(
-        `Auto-SDS: HTTP parsing failed for product ${productId} with status ${response.status}`
+        `Auto-SDS: HTTP parsing failed for product ${productId} with status ${response.status}`,
       );
       logger.error(`Auto-SDS: Response data: ${JSON.stringify(response.data)}`);
       // Create basic metadata entry as fallback
@@ -205,7 +205,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
     if (parsedMetadata.error) {
       logger.error(
         { error: parsedMetadata.error, productId },
-        `Auto-SDS: Parse error for product ${productId}`
+        `Auto-SDS: Parse error for product ${productId}`,
       );
       // Create basic metadata entry as fallback
       await createBasicSdsMetadata(productId, sdsUrl);
@@ -214,7 +214,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
 
     logger.debug(
       { parsedMetadata, productId },
-      `Auto-SDS: Parsed metadata for product ${productId}`
+      `Auto-SDS: Parsed metadata for product ${productId}`,
     );
 
     // Store metadata in database
@@ -235,7 +235,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
     if (upsertError) {
       logger.error(
         { error: upsertError, productId },
-        `Auto-SDS: Failed to store metadata for product ${productId}`
+        `Auto-SDS: Failed to store metadata for product ${productId}`,
       );
       return;
     }
@@ -265,12 +265,12 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
         url: OCR_SERVICE_URL,
         timeout: error.code === 'ECONNABORTED',
       },
-      `Auto-SDS: Execution error for product ${productId}:`
+      `Auto-SDS: Execution error for product ${productId}:`,
     );
 
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
       logger.error(
-        `Auto-SDS: OCR service not reachable at ${OCR_SERVICE_URL} for product ${productId}`
+        `Auto-SDS: OCR service not reachable at ${OCR_SERVICE_URL} for product ${productId}`,
       );
     } else if (error.response?.status === 404) {
       logger.error(`Auto-SDS: OCR service endpoint not found - check service deployment`);
@@ -278,7 +278,7 @@ async function executeSdsParsing(productId: number, sdsUrl: string): Promise<voi
       logger.error(`Auto-SDS: OCR service timeout - PDF processing took too long`);
     } else if (error.response) {
       logger.error(
-        `Auto-SDS: HTTP error ${error.response.status}: ${JSON.stringify(error.response.data)}`
+        `Auto-SDS: HTTP error ${error.response.status}: ${JSON.stringify(error.response.data)}`,
       );
     }
 
@@ -339,13 +339,13 @@ async function createBasicSdsMetadata(productId: number, sdsUrl: string): Promis
     } else {
       logger.error(
         { error: upsertError, productId },
-        `Auto-SDS: Failed to create basic metadata for product ${productId}`
+        `Auto-SDS: Failed to create basic metadata for product ${productId}`,
       );
     }
   } catch (error) {
     logger.error(
       { error, productId },
-      `Auto-SDS: Failed to create basic metadata for product ${productId}`
+      `Auto-SDS: Failed to create basic metadata for product ${productId}`,
     );
   }
 }

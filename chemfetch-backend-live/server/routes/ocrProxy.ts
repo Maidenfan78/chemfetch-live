@@ -28,7 +28,7 @@ const proxyOptions = {
       'content-type:',
       proxyReq.getHeader('content-type'),
       'content-length:',
-      proxyReq.getHeader('content-length')
+      proxyReq.getHeader('content-length'),
     );
   },
 
@@ -39,7 +39,7 @@ const proxyOptions = {
       'status:',
       proxyRes.statusCode,
       'headers:',
-      proxyRes.headers
+      proxyRes.headers,
     );
   },
 

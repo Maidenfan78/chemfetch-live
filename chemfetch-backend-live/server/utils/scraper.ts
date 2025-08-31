@@ -44,7 +44,7 @@ function getGoogleSearchConfig() {
       console.log('[GOOGLE_SEARCH_CONFIG] API Key length:', GOOGLE_SEARCH_API_KEY.length);
       console.log(
         '[GOOGLE_SEARCH_CONFIG] API Key starts with:',
-        GOOGLE_SEARCH_API_KEY.substring(0, 10) + '...'
+        GOOGLE_SEARCH_API_KEY.substring(0, 10) + '...',
       );
     }
   }
@@ -53,7 +53,7 @@ function getGoogleSearchConfig() {
 }
 
 const BARCODE_CACHE = new TTLCache<string, { name: string; contents_size_weight?: string }>(
-  5 * 60 * 1000
+  5 * 60 * 1000,
 );
 const SDS_CACHE = new TTLCache<string, string | null>(10 * 60 * 1000);
 
@@ -74,7 +74,7 @@ const http = axios.create({
 async function verifySdsUrl(
   url: string,
   productName: string,
-  isManualEntry: boolean = false
+  isManualEntry: boolean = false,
 ): Promise<boolean> {
   try {
     console.log(`[SCRAPER] Verifying SDS URL: ${url} for product: ${productName}`);
@@ -113,7 +113,7 @@ async function verifySdsUrl(
     const resp = await axios.post(
       `${OCR_SERVICE_URL}/verify-sds`,
       { url, name: productName },
-      { timeout: 5000 } // Reduced timeout
+      { timeout: 5000 }, // Reduced timeout
     );
     console.log(`[SCRAPER] OCR verification response:`, resp.data);
     const isVerified = resp.data.verified === true;
@@ -192,7 +192,7 @@ async function fetchGoogleSearchResults(query: string): Promise<{ title: string;
         link =>
           !link.url.toLowerCase().endsWith('.pdf') &&
           !link.url.toLowerCase().includes('sds') &&
-          !link.url.toLowerCase().includes('msds')
+          !link.url.toLowerCase().includes('msds'),
       );
 
       allResults = [...allResults, ...productResults];
@@ -208,14 +208,14 @@ async function fetchGoogleSearchResults(query: string): Promise<{ title: string;
         link =>
           link.url.toLowerCase().endsWith('.pdf') ||
           link.url.toLowerCase().includes('sds') ||
-          link.url.toLowerCase().includes('msds')
+          link.url.toLowerCase().includes('msds'),
       );
       allResults = [...allResults, ...pdfResults];
     }
 
     // Remove duplicates while preserving order
     const uniqueResults = allResults.filter(
-      (item, index, self) => index === self.findIndex(other => other.url === item.url)
+      (item, index, self) => index === self.findIndex(other => other.url === item.url),
     );
 
     console.log(`[GOOGLE_SEARCH] Total unique results: ${uniqueResults.length}`);
@@ -254,7 +254,7 @@ async function fetchBingLinksRaw(query: string): Promise<{ title: string; url: s
     await page.goto(url, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('li.b_algo h2 a', { timeout: 10000 }).catch(() => {});
     const links = await page.$$eval('li.b_algo h2 a', els =>
-      els.map(el => ({ title: el.textContent?.trim() || '', url: el.getAttribute('href') || '' }))
+      els.map(el => ({ title: el.textContent?.trim() || '', url: el.getAttribute('href') || '' })),
     );
     console.log(`[BING_SEARCH] Found ${links.length} fallback results`);
     return links;
@@ -460,7 +460,7 @@ function isRelevantForAustralia(url: string, title: string): boolean {
 // Public: barcode → product name/size
 // -----------------------------------------------------------------------------
 export async function searchItemByBarcode(
-  barcode: string
+  barcode: string,
 ): Promise<{ name: string; contents_size_weight?: string } | null> {
   const cached = BARCODE_CACHE.get(barcode);
   if (cached) return cached;
@@ -494,7 +494,7 @@ export async function searchItemByBarcode(
 export async function fetchSdsByName(
   name: string,
   size?: string,
-  isManualEntry: boolean = false
+  isManualEntry: boolean = false,
 ): Promise<{ sdsUrl: string; topLinks: string[] }> {
   const cacheKey = size ? `${name}|${size}` : name;
   const cached = SDS_CACHE.get(cacheKey);
@@ -509,7 +509,7 @@ export async function fetchSdsByName(
   // Filter out irrelevant results and prioritize Australian content
   const relevantHits = hits.filter(h => isRelevantForAustralia(h.url, h.title));
   console.log(
-    `[SCRAPER] Filtered ${hits.length} results to ${relevantHits.length} relevant results`
+    `[SCRAPER] Filtered ${hits.length} results to ${relevantHits.length} relevant results`,
   );
 
   // Use relevant hits if we have them, otherwise fall back to all hits
@@ -637,7 +637,7 @@ export async function fetchBingLinks(query: string): Promise<string[]> {
 export async function searchWithManualData(
   name: string,
   size: string,
-  barcode?: string
+  barcode?: string,
 ): Promise<{ name: string; contents_size_weight: string; sdsUrl: string }> {
   console.log(`[SCRAPER] Manual search for: ${name} ${size} ${barcode || ''}`);
 
@@ -668,7 +668,7 @@ export async function searchWithManualData(
 // -----------------------------------------------------------------------------
 export async function scrapeProductInfo(
   url: string,
-  identifier?: string
+  identifier?: string,
 ): Promise<{ name?: string; contents_size_weight?: string; url: string; sdsUrl?: string }> {
   // Check if the URL points directly to a PDF (likely an SDS)
   const { isPdf, finalUrl } = await isPdfByHeaders(url);
@@ -712,7 +712,7 @@ export async function scrapeProductInfo(
             part !== 'system' &&
             part !== 'files' &&
             part !== 'download' &&
-            !part.match(/^\d+$/) // Skip pure numbers
+            !part.match(/^\d+$/), // Skip pure numbers
         );
 
         for (const part of pathParts.reverse()) {
@@ -767,7 +767,7 @@ export async function scrapeProductInfo(
   ];
 
   const hasAntiBotDetection = antiBotPhrases.some(
-    phrase => pageText.includes(phrase) || title.includes(phrase)
+    phrase => pageText.includes(phrase) || title.includes(phrase),
   );
 
   if (hasAntiBotDetection) {

@@ -32,7 +32,7 @@ router.use(
         'content-type:',
         proxyReq.getHeader('content-type'),
         'content-length:',
-        proxyReq.getHeader('content-length')
+        proxyReq.getHeader('content-length'),
       );
     },
 
@@ -43,14 +43,14 @@ router.use(
         'status:',
         proxyRes.statusCode,
         'headers:',
-        proxyRes.headers
+        proxyRes.headers,
       );
     },
 
     headers: {
       'X-Forwarded-By': 'chemfetch-backend',
     },
-  } as any)
+  } as any),
 );
 
 export default router;

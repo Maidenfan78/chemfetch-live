@@ -47,7 +47,7 @@ test('POST /confirm returns 403 without code', async () => {
 test('POST /confirm upserts product when details change', async () => {
   setupSupabase(
     { barcode: '123', name: 'Old', contents_size_weight: '5ml' },
-    { barcode: '123', name: 'New', contents_size_weight: '10ml' }
+    { barcode: '123', name: 'New', contents_size_weight: '10ml' },
   );
   const { fetchSdsByName } = require('../server/utils/scraper');
   (fetchSdsByName as jest.Mock).mockResolvedValue({ sdsUrl: '', topLinks: [] });
@@ -81,7 +81,7 @@ test('POST /confirm stores SDS URL when lookup succeeds', async () => {
       name: 'New',
       contents_size_weight: '10ml',
       sds_url: 'http://sds.com/test.pdf',
-    }
+    },
   );
   const { fetchSdsByName } = require('../server/utils/scraper');
   (fetchSdsByName as jest.Mock).mockResolvedValue({

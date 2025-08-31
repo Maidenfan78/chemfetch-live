@@ -7,7 +7,12 @@ import re
 import logging
 import json
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import fitz
+    import pdfplumber
+    from pdfminer.high_level import extract_text as pdfminer_extract
 import sys
 
 # Ensure local modules are importable when run as script
@@ -27,18 +32,21 @@ try:
     import fitz  # PyMuPDF
     PYMUPDF_AVAILABLE = True
 except ImportError:
+    fitz = None
     PYMUPDF_AVAILABLE = False
 
 try:
     import pdfplumber
     PDFPLUMBER_AVAILABLE = True
 except ImportError:
+    pdfplumber = None
     PDFPLUMBER_AVAILABLE = False
 
 try:
     from pdfminer.high_level import extract_text as pdfminer_extract
     PDFMINER_AVAILABLE = True
 except ImportError:
+    pdfminer_extract = None
     PDFMINER_AVAILABLE = False
 
 
@@ -116,7 +124,7 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
 
     text = ""
 
-    if PDFPLUMBER_AVAILABLE:
+    if PDFPLUMBER_AVAILABLE and pdfplumber:
         try:
             with pdfplumber.open(pdf_path) as pdf:
                 for page in pdf.pages:
@@ -127,11 +135,12 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
         except Exception as e:
             logger.warning(f"pdfplumber failed: {e}")
 
-    if PYMUPDF_AVAILABLE:
+    if PYMUPDF_AVAILABLE and fitz:
         try:
             doc = fitz.open(str(pdf_path))
             for page in doc:
-                text += page.get_text()
+                # PyMuPDF Page.get_text() method
+                text += page.get_text()  # type: ignore
             doc.close()
             if text.strip():
                 logger.info(f"Extracted {len(text)} chars using PyMuPDF")
@@ -139,11 +148,11 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
         except Exception as e:
             logger.warning(f"PyMuPDF failed: {e}")
 
-    if PDFMINER_AVAILABLE:
+    if PDFMINER_AVAILABLE and pdfminer_extract:
         try:
             with open(pdf_path, 'rb') as f:
-                text = pdfminer_extract(f)
-            if text.strip():
+                text = pdfminer_extract(f)  # type: ignore
+            if text and text.strip():
                 logger.info(f"Extracted {len(text)} chars using pdfminer")
                 return text
         except Exception as e:
@@ -344,7 +353,7 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     logger.info("Extraction complete:")
     for field in ['product_name', 'manufacturer', 'dangerous_goods_class', 'issue_date']:
         value = result[field].get('value')
-        logger.info(f"  {field}: '{value}'")
+        logger.info(f"  {field}: '{value if value is not None else 'None'}'")
     
     return result
 
@@ -365,5 +374,6 @@ if __name__ == '__main__':
         result = parse_pdf(pdf_path)
         print(json.dumps(result, indent=2, ensure_ascii=False))
     except Exception as e:
-        print(f"Error: {e}")
+        error_msg = str(e) if e is not None else 'Unknown error'
+        print(f"Error: {error_msg}")
         logger.exception("Parsing failed")

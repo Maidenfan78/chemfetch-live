@@ -41,7 +41,7 @@ async function forceReprocessAllProducts() {
 
       try {
         console.log(
-          `📋 [${i + 1}/${products.length}] Force processing: ${product.name || product.barcode} (ID: ${product.id})`
+          `📋 [${i + 1}/${products.length}] Force processing: ${product.name || product.barcode} (ID: ${product.id})`,
         );
 
         const triggered = await triggerAutoSdsParsing(product.id, {

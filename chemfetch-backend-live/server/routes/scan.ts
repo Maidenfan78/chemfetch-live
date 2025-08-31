@@ -106,7 +106,7 @@ router.post('/', async (req, res) => {
 
   logger.info(
     { code, userId, name, size, isManualEntry, timestamp: Date.now() },
-    '[SCAN] Processing scan request'
+    '[SCAN] Processing scan request',
   );
 
   try {
@@ -131,7 +131,7 @@ router.post('/', async (req, res) => {
         if (!watchlistError && watchlistItem) {
           logger.info(
             { code, productId: product.id, userId },
-            '[SCAN] Item already in user watchlist'
+            '[SCAN] Item already in user watchlist',
           );
           return res.json({
             code,
@@ -157,7 +157,7 @@ router.post('/', async (req, res) => {
 
     logger.info(
       { code, dbLookupTime: Date.now() - dbLookupStart },
-      '[SCAN] Database lookup completed'
+      '[SCAN] Database lookup completed',
     );
 
     if (fetchErr) return res.status(500).json({ error: fetchErr.message });
@@ -170,11 +170,11 @@ router.post('/', async (req, res) => {
         try {
           logger.info(
             { name: existing.name },
-            '[SCAN] Fetching missing SDS URL for existing product'
+            '[SCAN] Fetching missing SDS URL for existing product',
           );
           const { sdsUrl: foundSds } = await fetchSdsByName(
             existing.name,
-            existing.contents_size_weight || undefined
+            existing.contents_size_weight || undefined,
           );
           logger.info({ name: existing.name, foundSds }, '[SCAN] Fallback SDS result');
           if (foundSds) {
@@ -190,7 +190,7 @@ router.post('/', async (req, res) => {
             if (updated.id) {
               logger.info(
                 { productId: updated.id },
-                '[SCAN] Triggering auto-SDS parsing for updated product'
+                '[SCAN] Triggering auto-SDS parsing for updated product',
               );
               triggerAutoSdsParsing(updated.id, { delay: 1000 });
             }
@@ -202,7 +202,7 @@ router.post('/', async (req, res) => {
 
       logger.info(
         { code, updated },
-        '[SCAN] Returning existing product from database (no scraping)'
+        '[SCAN] Returning existing product from database (no scraping)',
       );
       return res.json({
         code,
@@ -245,7 +245,7 @@ router.post('/', async (req, res) => {
       const urls = await fetchBingLinks(code);
       logger.info(
         { code, rawUrls: urls, searchTime: Date.now() - searchStart },
-        '[SCAN] Raw URLs from search'
+        '[SCAN] Raw URLs from search',
       );
 
       const cleaned = [...new Set((urls || []).map(normaliseUrl).filter(Boolean))] as string[];
@@ -298,12 +298,12 @@ router.post('/', async (req, res) => {
         logger.info({ name: top.name }, '[SCAN] Fetching SDS URL via fallback');
         const { sdsUrl: fallbackSds, topLinks } = await fetchSdsByName(
           top.name,
-          top.size ?? top.contents_size_weight
+          top.size ?? top.contents_size_weight,
         );
         const sdsSearchTime = Date.now() - sdsSearchStart;
         logger.info(
           { name: top.name, fallbackSds, topLinks, sdsSearchTime },
-          '[SCAN] Fallback SDS result'
+          '[SCAN] Fallback SDS result',
         );
         if (fallbackSds) top.sdsUrl = fallbackSds;
       } catch (err: any) {

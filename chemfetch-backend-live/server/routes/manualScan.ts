@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
         if (!watchlistError && watchlistItem) {
           logger.info(
             { code, productId: product.id, userId },
-            '[MANUAL_SCAN] Item already in user watchlist'
+            '[MANUAL_SCAN] Item already in user watchlist',
           );
           return res.json({
             code,
@@ -107,7 +107,7 @@ router.post('/', async (req, res) => {
         if (updates.sds_url && updated?.id) {
           logger.info(
             { productId: updated.id },
-            '[MANUAL_SCAN] Triggering auto-SDS parsing for updated product'
+            '[MANUAL_SCAN] Triggering auto-SDS parsing for updated product',
           );
           triggerAutoSdsParsing(updated.id, { delay: 1000 });
         }
@@ -155,7 +155,7 @@ router.post('/', async (req, res) => {
     if (data?.sds_url && data?.id) {
       logger.info(
         { productId: data.id },
-        '[MANUAL_SCAN] Triggering auto-SDS parsing for new product'
+        '[MANUAL_SCAN] Triggering auto-SDS parsing for new product',
       );
       triggerAutoSdsParsing(data.id, { delay: 2000 });
     }

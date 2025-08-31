@@ -66,7 +66,7 @@ async function processExistingProducts(force: boolean = false) {
 
       try {
         console.log(
-          `📋 [${i + 1}/${pendingProducts.length}] Processing: ${product.name || product.barcode}`
+          `📋 [${i + 1}/${pendingProducts.length}] Processing: ${product.name || product.barcode}`,
         );
 
         const triggered = await triggerAutoSdsParsing(product.id, { delay, force });
@@ -76,7 +76,7 @@ async function processExistingProducts(force: boolean = false) {
           console.log(`✅ Triggered parsing for product ${product.id}`);
         } else {
           console.log(
-            `⚠️  Skipped product ${product.id} (may already have metadata and force=false)`
+            `⚠️  Skipped product ${product.id} (may already have metadata and force=false)`,
           );
         }
 

@@ -41,7 +41,7 @@ const convertToISODate = (dateString: string | null | undefined): string | null 
         const [, day, month, year] = match;
         const fullYear = year.length === 2 ? `20${year}` : year;
         const parsedDate = new Date(
-          `${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+          `${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,
         );
         if (!isNaN(parsedDate.getTime())) {
           return parsedDate.toISOString().split('T')[0]; // Return YYYY-MM-DD format
@@ -125,7 +125,7 @@ router.post('/', async (req, res) => {
     // 4. Execute Python parsing script
     const scriptPath = path.join(moduleDirname, '../../ocr_service/parse_sds.py');
     logger.info(
-      `Starting Python script: python ${scriptPath} --product-id ${product_id} --url ${targetSdsUrl}`
+      `Starting Python script: python ${scriptPath} --product-id ${product_id} --url ${targetSdsUrl}`,
     );
     const pythonProcess = spawn('python', [
       scriptPath,
@@ -146,7 +146,7 @@ router.post('/', async (req, res) => {
         return res.status(statusCode).json(data);
       } else {
         logger.warn(
-          `Attempted to send response after headers sent or response handled for product ${product_id}`
+          `Attempted to send response after headers sent or response handled for product ${product_id}`,
         );
       }
     };
@@ -162,7 +162,7 @@ router.post('/', async (req, res) => {
     pythonProcess.on('close', async code => {
       if (responseHandled) {
         logger.info(
-          `Python script finished but response already handled for product ${product_id}`
+          `Python script finished but response already handled for product ${product_id}`,
         );
         return;
       }
@@ -212,7 +212,7 @@ router.post('/', async (req, res) => {
         // 6. Store metadata in database
         logger.info(
           { parsedMetadata, product_id },
-          `Storing SDS metadata for product ${product_id}`
+          `Storing SDS metadata for product ${product_id}`,
         );
 
         // Use the shared convertToISODate function
@@ -302,7 +302,7 @@ router.post('/', async (req, res) => {
           });
         }
       },
-      5 * 60 * 1000
+      5 * 60 * 1000,
     );
 
     // Clear timeout if process completes normally
@@ -490,7 +490,7 @@ router.post('/batch', async (req, res) => {
                 });
               }
             },
-            5 * 60 * 1000
+            5 * 60 * 1000,
           );
         });
 

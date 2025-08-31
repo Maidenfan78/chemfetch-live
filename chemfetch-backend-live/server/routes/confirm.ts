@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
     if (existing.sds_url && existing.id) {
       logger.info(
         { productId: existing.id },
-        '[CONFIRM] Triggering auto-SDS parsing for duplicate product'
+        '[CONFIRM] Triggering auto-SDS parsing for duplicate product',
       );
       triggerAutoSdsParsing(existing.id, { delay: 1000 });
     }
@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
     try {
       const { sdsUrl } = await fetchSdsByName(
         product.name,
-        product.contents_size_weight || undefined
+        product.contents_size_weight || undefined,
       );
       if (sdsUrl) {
         const update = await supabase
@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
           sdsUrlAdded = true;
           logger.info(
             { productId: product.id, sdsUrl },
-            '[CONFIRM] Added SDS URL to confirmed product'
+            '[CONFIRM] Added SDS URL to confirmed product',
           );
         }
       }
@@ -80,7 +80,7 @@ router.post('/', async (req, res) => {
     const delay = sdsUrlAdded ? 2000 : 1000; // Longer delay if we just found the SDS
     logger.info(
       { productId: product.id },
-      '[CONFIRM] Triggering auto-SDS parsing for confirmed product'
+      '[CONFIRM] Triggering auto-SDS parsing for confirmed product',
     );
     triggerAutoSdsParsing(product.id, { delay });
   }
