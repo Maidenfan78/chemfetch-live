@@ -1,5 +1,5 @@
 {
-  "test_timestamp": "2025-09-01T07:53:49.666053",
+  "test_timestamp": "2025-09-01T08:10:03.626132",
   "total_files": 16,
   "successful": 16,
   "failed": 0,
@@ -81,7 +81,7 @@
     },
     "sds_2.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -93,8 +93,8 @@
           "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Antibacterial rub preparation for topical human use.",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2022-03-29",
@@ -128,8 +128,8 @@
           "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Antibacterial rub preparation for topical human use.",
+          "confidence": 1.0
         },
         "product_use": {
           "value": null,
@@ -875,7 +875,7 @@
     },
     "sds_13.pdf": {
       "success": true,
-      "fields_extracted": 3,
+      "fields_extracted": 4,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -887,8 +887,8 @@
           "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "of the Substance/Mixture : Washing and cleaning products (including solvent based products)",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2020-10-14",
@@ -922,8 +922,8 @@
           "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "of the Substance/Mixture : Washing and cleaning products (including solvent based products)",
+          "confidence": 1.0
         },
         "product_use": {
           "value": "/Mixture : Washing and cleaning products (including solvent based products)",

@@ -38,6 +38,8 @@ FIELD_LABELS = {
         r'Recommended\s+use',
         r'Intended\s+use',
         r'Use\s+of\s+the\s+substance',
+        r'Use\s*\(s\)',
+        r'Use\b',
         r'Product\s+use',
         r'Relevant\s+identified\s+uses',
         r'Identified\s+uses',

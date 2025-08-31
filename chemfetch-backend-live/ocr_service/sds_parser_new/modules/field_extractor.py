@@ -66,9 +66,14 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
                 logger.debug(f"[SDS_EXTRACTOR] Found same-line match: '{value}'")
 
                 # Clean up the value - remove trailing noise
-                # Split on common separators that indicate end of value
-                for separator in [r'\s+Tel:', r'\s+Phone:', r'\s+Fax:', r'\s+Email:', r'\s+Website:',
-                                r'\s+Emergency:', r'\s+Address:', r'\s+Contact:', r'\s+Product\s+code:']:
+                # Split on common separators that indicate end of value or start of another label on same line
+                for separator in [
+                    r'\s+Tel:', r'\s+Phone:', r'\s+Fax:', r'\s+Email:', r'\s+Website:',
+                    r'\s+Emergency:', r'\s+Address:', r'\s+Contact:', r'\s+Product\s+code:',
+                    # Guard: if another label starts on same line, trim at that point
+                    r'\s+Intended\s+use\b', r'\s+Identified\s+uses\b', r'\s+Uses\s+advised\s+against\b',
+                    r'\s+Use\s+of\s+the\s+substance\b', r'\s+Restrictions\s+on\s+use\b'
+                ]:
                     split_match = re.split(separator, value, flags=re.IGNORECASE)
                     if len(split_match) > 1:
                         value = split_match[0].strip()
@@ -383,6 +388,8 @@ def extract_description(section_text: str) -> Optional[str]:
         r'Product\s+description',
         r'Description',
         r'Use\s+of\s+the\s+substance',
+        r'Use\s*\(s\)',
+        r'Use\b',
         r'Recommended\s+use',
         r'Intended\s+use',
         r'Product\s+use',

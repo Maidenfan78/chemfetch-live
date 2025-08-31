@@ -1,6 +1,6 @@
 🧪 ChemFetch SDS Parser Test Results
 ==================================================
-Generated: 2025-09-01 07:53:49
+Generated: 2025-09-01 08:10:03
 Total Files Tested: 16
 [1/16] sds_1.PDF
 ----------------------------------------
@@ -17,11 +17,11 @@ Total Files Tested: 16
 ----------------------------------------
 ✅ product_name: ISOCOL Rubbing Alcohol
 ✅ manufacturer: Nicepak Products
-⚠️ description: None
+✅ description: Antibacterial rub preparation for topical human use.
 ✅ issue_date: 2022-03-29
 ✅ dangerous_goods_class: 3
 ⚠️ packing_group: None
-📊 Extracted 4/6 key fields
+📊 Extracted 5/6 key fields
 📁 File size: 0.31 MB
 
 [3/16] sds_3.pdf
@@ -138,11 +138,11 @@ Total Files Tested: 16
 ----------------------------------------
 ✅ product_name: SC Johnson Professional Mr. Muscle® Floor Cleaner
 ✅ manufacturer: SC Johnson Professional Ltd.
-⚠️ description: None
+✅ description: of the Substance/Mixture : Washing and cleaning products (including solvent based products)
 ✅ issue_date: 2020-10-14
 ⚠️ dangerous_goods_class: None
 ⚠️ packing_group: None
-📊 Extracted 3/6 key fields
+📊 Extracted 4/6 key fields
 📁 File size: 0.36 MB
 
 [14/16] sds_14.pdf
@@ -182,6 +182,6 @@ Total Files Tested: 16
 ✅ Successful: 16
 ❌ Failed: 0
 📄 Total: 16
-📈 Avg fields: 4.3/6
+📈 Avg fields: 4.4/6
 
 🎉 Testing complete!
