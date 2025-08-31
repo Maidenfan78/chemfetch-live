@@ -23,8 +23,10 @@ FIELD_LABELS = {
     ],
     'manufacturer': [
         r'Manufacturer',
+        r'Supplier\s+Name',
         r'Supplier',
         r'Company\s+name\s+of\s+supplier',
+        r'Details\s+of\s+the\s+supplier',
         r'Producer',
         r'Company\s+name',
         r'Registered\s+company\s+name',
