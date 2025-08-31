@@ -27,6 +27,7 @@ FIELD_LABELS = {
         r'Company\s+name\s+of\s+supplier',
         r'Producer',
         r'Company\s+name',
+        r'Registered\s+company\s+name',
         r'Distributor',
         r'Manufacturer\s*/\s*Supplier'
     ],
