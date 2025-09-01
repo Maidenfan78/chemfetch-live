@@ -60,6 +60,7 @@ try:
         extract_section14_field as fe_extract_section14_field,
         extract_date_from_header as fe_extract_date_from_header,
     )
+    from .modules.utils import clean_company_candidate as fe_clean_company
 except ImportError:  # pragma: no cover - fallback when run as script
     from modules.section_1 import (
         description as fe_extract_description,
@@ -70,6 +71,7 @@ except ImportError:  # pragma: no cover - fallback when run as script
         extract_section14_field as fe_extract_section14_field,
         extract_date_from_header as fe_extract_date_from_header,
     )
+    from modules.utils import clean_company_candidate as fe_clean_company
 
 # Common field labels used to trim values when multiple labels appear on one line
 COMMON_FIELD_LABELS = [
@@ -288,14 +290,15 @@ def get_section(text: str, section_num: int) -> str:
     """
     # Build start pattern
     if section_num == 1:
-        start_pat = rf'^\s*(?:section\s*)?1\s*[:\.]?\s.*identification.*$'
+        # Identification word can be OCR-mangled; rely on the section number and common separators
+        start_pat = rf'^\s*(?:section\s*)?1\s*[:\.-]?\s.*$'
     elif section_num == 14:
-        start_pat = rf'^\s*(?:section\s*)?14\s*[:\.]?\s.*transport.*$'
+        start_pat = rf'^\s*(?:section\s*)?14\s*[:\.-]?\s.*transport.*$'
     else:
         # Require punctuation after number to avoid addresses like "2 Fred ..."
-        start_pat = rf'^\s*(?:section\s*)?{section_num}\s*[:\.]\s.*$'
+        start_pat = rf'^\s*(?:section\s*)?{section_num}\s*[:\.-]\s.*$'
 
-    next_pat = r'^\s*(?:section\s*)?\d{1,2}\s*[:\.]\s'
+    next_pat = r'^\s*(?:section\s*)?\d{1,2}\s*[:\.-]\s'
 
     start_m = re.search(start_pat, text, re.IGNORECASE | re.MULTILINE)
     if start_m:
@@ -306,8 +309,8 @@ def get_section(text: str, section_num: int) -> str:
         return text[start:end]
 
     # Fallback (looser) single pass, keeps prior behavior if strict fails
-    loose = rf'(?:^|\n)\s*(?:section\s*)?{section_num}(?!\s*/)(?:\s|:|\.).*?' \
-            rf'(?=\n\s*(?:section\s*)?\d{{1,2}}(?!\.\d)(?!\s*/)(?:\s|:|\.)|$)'
+    loose = rf'(?:^|\n)\s*(?:section\s*)?{section_num}(?!\s*/)(?:\s|:|\.|-).*?' \
+            rf'(?=\n\s*(?:section\s*)?\d{{1,2}}(?!\.\d)(?!\s*/)(?:\s|:|\.|-)|$)'
     m2 = re.search(loose, text, re.IGNORECASE | re.DOTALL)
     return m2.group(0) if m2 else ""
 
@@ -391,23 +394,38 @@ def extract_dg_class_from_table(section_text: str) -> Optional[str]:
         return None
 
     lines = [line.strip() for line in section_text.splitlines() if line.strip()]
-    header_index = None
+
+    # Detect presence of modal headers (ADG IMDG IATA)
+    has_modal_headers = any(re.search(r'\bADG\b.*\bIMDG\b.*\bIATA\b', l, re.IGNORECASE) for l in lines)
+
+    # Prefer explicit 'Transport hazard class(es)' rows and choose ADG if multiple present
+    for i, line in enumerate(lines):
+        if re.search(r'Transport\s+hazard', line, re.IGNORECASE):
+            # Combine with next line to catch split 'class(es)'
+            combined = line
+            if i + 1 < len(lines):
+                combined += ' ' + lines[i + 1]
+            # Remove the label portion
+            combined_tail = re.sub(r'^.*?Transport\s+hazard\s*(?:class(?:\(es\))?)?\s*', '', combined, flags=re.IGNORECASE)
+            # Extract tokens and validate
+            tokens = [t.strip(',;') for t in re.split(r'\s+|\|', combined_tail) if t.strip()]
+            classes = [t for t in tokens if validate_dangerous_goods_class(t)]
+            if classes:
+                # If table with ADG/IMDG/IATA present, the first class corresponds to ADG
+                chosen = classes[0] if has_modal_headers else classes[0]
+                logger.info(f"[SDS_EXTRACTOR] DG class from transport hazard row: '{chosen}'")
+                return chosen
+
+    # Fallback: look for generic 'DG Class' or 'Class:' in a nearby segment
     for idx, line in enumerate(lines):
-        if re.search(r'DG\s+Class|Class\s*:', line, re.IGNORECASE):
-            header_index = idx
-            break
-
-    if header_index is None:
-        return None
-
-    # Look in the header line and next few lines for DG class value
-    for line in lines[header_index: header_index + 6]:
-        tokens = re.split(r'\s+', line.replace('|', ' '))
-        for token in tokens:
-            token = token.strip(',;')
-            if validate_dangerous_goods_class(token):
-                logger.info(f"[SDS_EXTRACTOR] Found DG class in table: '{token}'")
-                return token
+        if re.search(r'DG\s*Class|Class\s*:', line, re.IGNORECASE):
+            for line2 in lines[idx: idx + 6]:
+                tokens = re.split(r'\s+|\|', line2)
+                for token in tokens:
+                    token = token.strip(',;')
+                    if validate_dangerous_goods_class(token):
+                        logger.info(f"[SDS_EXTRACTOR] Found DG class in table: '{token}'")
+                        return token
 
     return None
 
@@ -422,27 +440,24 @@ def extract_packing_group_from_table(section_text: str) -> Optional[str]:
     # Look for packing group in table format
     for i, line in enumerate(lines):
         if re.search(r'packing\s+group', line, re.IGNORECASE):
-            # Check same line for value after the header
-            parts = re.split(r'\s{2,}|\t|\|', line)  # Split on multiple spaces, tabs, or pipes
-            if len(parts) > 1:
-                for part in parts[1:]:  # Skip the header part
-                    part = part.strip(',;')
-                    if part and re.match(r'^(I{1,3}|IV?|N\.?/?A\.?|None|Not\s+(?:applicable|required|assigned)|Not\s+subject)$', part, re.IGNORECASE):
-                        logger.info(f"[SDS_EXTRACTOR] Found packing group in table: '{part}'")
-                        return part
+            # Prefer values on the same line after the label; pick ADG (first) if multiple present
+            tail = re.sub(r'^.*?packing\s+group\s*', '', line, flags=re.IGNORECASE)
+            tokens = [t.strip(',;') for t in re.split(r'\s+|\|', tail) if t.strip()]
+            vals = [t for t in tokens if re.match(r'^(I{1,3}|IV?|N\.?/?A\.?|None|Not\s+(?:applicable|required|assigned)|Not\s+subject)$', t, re.IGNORECASE)]
+            if vals:
+                chosen = vals[0]
+                logger.info(f"[SDS_EXTRACTOR] Packing group from header line: '{chosen}'")
+                return chosen
             
-            # Check next few lines for table data
+            # Otherwise, look into next few lines and return the first valid (ADG column)
             for j in range(i + 1, min(i + 4, len(lines))):
                 table_line = lines[j].strip()
                 if not table_line:
                     continue
-                
-                # Split table row into cells
-                cells = re.split(r'\s{2,}|\t|\|', table_line)
+                cells = [c.strip(',;') for c in re.split(r'\s{2,}|\t|\|', table_line) if c.strip()]
                 for cell in cells:
-                    cell = cell.strip(',;')
-                    if cell and re.match(r'^(I{1,3}|IV?|N\.?/?A\.?|None|Not\s+(?:applicable|required|assigned)|Not\s+subject)$', cell, re.IGNORECASE):
-                        logger.info(f"[SDS_EXTRACTOR] Found packing group in table row: '{cell}'")
+                    if re.match(r'^(I{1,3}|IV?|N\.?/?A\.?|None|Not\s+(?:applicable|required|assigned)|Not\s+subject)$', cell, re.IGNORECASE):
+                        logger.info(f"[SDS_EXTRACTOR] Packing group from table row: '{cell}'")
                         return cell
     
     return None
@@ -652,8 +667,8 @@ def extract_date(text: str) -> Optional[str]:
     # 2) Fallback to explicit labeled regexes (legacy)
     date_patterns = [
         # Labeled + various formats, including dd-MMM-YYYY
-        r'(?:Issue\s*Date|Revision(?:\s*Date)?|Date\s*of\s*issue|Version\s*date|Date\s*Prepared|Prepared\s*on|Issued|MSDS\s*Date)[^\n]{0,30}?[:\-]?\s*' \
-        r'(\d{1,2}[\-\/\.]+\d{1,2}[\-\/\.]+\d{2,4}|\d{4}-\d{2}-\d{2}|[A-Za-z]+\.?\s+\d{1,2},?\s*\d{4}|\d{1,2}\s+[A-Za-z]+\.?\s+\d{4}|\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4})',
+        r'(?:Issue\s*Date|Revision(?:\s*Date)?|Date\s*of\s*issue|Version\s*date|Date\s*Prepared|Prepared\s*on|Issued|MSDS\s*Date|Last\s*Updated|Last\s*Revision|Last\s*Revised|Updated\s*on|Last\s*Modified|Effective\s*Date)[^\n]{0,40}?[:\-]?\s*' \
+        r'(\d{1,2}[\-\/\.]+\d{1,2}[\-\/\.]+\d{2,4}|\d{4}-\d{2}-\d{2}|[A-Za-z]+\.?\s+\d{1,2},?\s*\d{4}|\d{1,2}\s+[A-Za-z]+\.?\s+\d{4}|\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4}|[A-Za-z]+\.?\s+\d{4})',
         r'Revision[:\s]*(\d{4}-\d{2}-\d{2})',
         r'Revision[:\s]*(\d{1,2}[\-\/]\d{1,2}[\-\/]\d{4})',
         r'Revision[:\s]*(\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4})',
@@ -676,6 +691,17 @@ def extract_date(text: str) -> Optional[str]:
                                 return parsed_date.strftime('%Y-%m-%d')
                         except ValueError:
                             continue
+                    # Fallback: Month Year (no day) -> set day=01
+                    m = re.fullmatch(r'([A-Za-z]+)\s+(\d{4})', cleaned)
+                    if m:
+                        for fmt in ['%b %Y', '%B %Y']:
+                            try:
+                                dt = datetime.strptime(cleaned, fmt)
+                                parsed_date = date(dt.year, dt.month, 1)
+                                if parsed_date <= date.today():
+                                    return parsed_date.strftime('%Y-%m-%d')
+                            except ValueError:
+                                continue
             except ImportError:
                 return matches[0]
 
@@ -734,12 +760,22 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
     product_name = extract_product_name(section1)
     prefix = '\n'.join(text.splitlines()[:15])
     if not product_name:
+        # Try prefix
         product_name = extract_product_name(prefix)
-    # If the found name looks like a date label (e.g., "MSDS Date ..."), prefer header/prefix-derived name
-    if product_name and re.match(r'^(msds\s+date|date\s+of\s+issue|revision\s+date|version\s+date)\b', str(product_name), re.IGNORECASE):
-        alt = extract_product_name(prefix)
-        if alt and not re.match(r'^(msds\s+date|date\s+of\s+issue|revision\s+date|version\s+date)\b', alt, re.IGNORECASE):
-            product_name = alt
+    # If still missing or looks like an SDS header/date, try global label-based extractor
+    sds_header_like = False
+    if product_name:
+        lowered = str(product_name).lower().strip()
+        # Treat lines mentioning SDS or Safety Data Sheet as header-like, regardless of date format
+        if re.search(r'\b(?:sds|safety\s+data\s+sheet)\b', lowered):
+            sds_header_like = True
+    if not product_name or sds_header_like:
+        try:
+            alt_global = fe_extract_product_name(text)
+        except Exception:
+            alt_global = None
+        if alt_global:
+            product_name = alt_global
     result['product_name'] = {'value': product_name, 'confidence': 1.0 if product_name else 0.0}
     
     # Manufacturer
@@ -752,6 +788,11 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
         # Trim anything after Product Name/Trade name label fragments
         manufacturer = re.split(r'\b(Product\s+Name|Trade\s+name)\b', manufacturer, flags=re.IGNORECASE)[0].strip()
         manufacturer = strip_leading_label_prefix(dedup_repeated_phrase(manufacturer))
+        # Final pass through company cleaner to trim ABN/FORMERLY parentheses and clip at suffixes
+        try:
+            manufacturer = fe_clean_company(manufacturer)
+        except Exception:
+            pass
     result['manufacturer'] = {'value': manufacturer, 'confidence': 1.0 if manufacturer else 0.0}
     
     # Product description (NEW FIELD - from Section 1 only)
@@ -817,6 +858,11 @@ def parse_pdf(path: Path) -> Dict[str, Any]:
         packing_group = extract_field_value(text, pg_labels, section14)
     if not packing_group:
         packing_group = extract_packing_group_from_table(section14)
+    # Normalize duplicated values like "II II" -> "II"
+    if packing_group:
+        toks = [t for t in re.split(r'\s+', packing_group) if t]
+        if toks and all(t.upper() == toks[0].upper() for t in toks):
+            packing_group = toks[0]
     
     result['packing_group'] = {'value': packing_group, 'confidence': 1.0 if packing_group else 0.0}
     

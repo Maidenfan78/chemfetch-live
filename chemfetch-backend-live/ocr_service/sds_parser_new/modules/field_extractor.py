@@ -6,7 +6,14 @@ import logging
 from typing import List, Optional
 
 from .config import FIELD_LABELS
-from .utils import is_noise_text, validate_dangerous_goods_class
+from .utils import (
+    is_noise_text,
+    validate_dangerous_goods_class,
+    clean_company_candidate,
+    strip_doubled_label_prefix,
+    looks_like_numeric_code,
+    compress_duplicates_with_map,
+)
 from .config import VALID_PACKING_GROUPS
 
 logger = logging.getLogger(__name__)
@@ -57,6 +64,24 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
                 mid = re.search(mid_line_pattern, clean, re.IGNORECASE)
                 if mid:
                     same = mid
+
+            # Final fallback: duplicate-letter tolerant label match (no delimiter required)
+            if not same and field_name in ('description', 'product_use'):
+                try:
+                    norm_line, idx_map = compress_duplicates_with_map(clean)
+                    tolerant = re.compile(rf"({label})\s*[:\-\s]*?(.*)$", re.IGNORECASE)
+                    # Prefer start-of-line, then fallback to anywhere on the line
+                    m = re.match(tolerant, norm_line)
+                    if not m:
+                        m = tolerant.search(norm_line)
+                    if m and m.group(2) is not None:
+                        end_norm = m.end(1)
+                        start_orig = idx_map[end_norm - 1] + 1 if 0 < end_norm <= len(idx_map) else 0
+                        tail_orig = clean[start_orig:].lstrip(" :\t-.")
+                        if tail_orig:
+                            same = re.match(r"^(.+)$", tail_orig)
+                except re.error:
+                    pass
             search_next = False
             if same:
                 value = same.group(1).strip()
@@ -203,28 +228,27 @@ def extract_from_table_structure(text: str, field_name: str) -> Optional[str]:
     # Strategy for dangerous goods class in tables  
     elif field_name == 'dangerous_goods_class':
         for i, line in enumerate(lines):
-            if re.search(r'(?:DG\s+Class|Transport\s+hazard\s+class|Hazard\s+Class)', line, re.IGNORECASE):
-                # Check same line for value
-                parts = re.split(r'\s{2,}|\t|\|', line)
-                if len(parts) > 1:
-                    for part in parts[1:]:
-                        part = part.strip()
-                        if part and validate_dangerous_goods_class(part):
-                            logger.info(f"[SDS_EXTRACTOR] Found DG class in table: '{part}'")
-                            return part
-                
-                # Check next few lines
+            # Allow header to be split across lines (e.g., 'Transport hazard' then 'class(es)')
+            header_hit = re.search(r'(?:DG\s*Class|Hazard\s*Class|Transport\s+hazard(?:\s+class(?:\(es\))?)?)', line, re.IGNORECASE)
+            if not header_hit:
+                # If current line is just 'class(es)', also accept when previous had 'Transport hazard'
+                if i > 0 and re.search(r'^\s*class(?:\(es\))?\s*$', line, re.IGNORECASE) and re.search(r'Transport\s+hazard', lines[i-1], re.IGNORECASE):
+                    header_hit = True
+            if header_hit:
+                # Gather this line and the next couple lines to scan for class tokens
+                segment = [line]
                 for j in range(i + 1, min(i + 4, len(lines))):
-                    table_line = lines[j].strip()
-                    if not table_line:
-                        continue
-                    
-                    cells = re.split(r'\s{2,}|\t|\|', table_line)
-                    for cell in cells:
-                        cell = cell.strip()
-                        if cell and validate_dangerous_goods_class(cell):
-                            logger.info(f"[SDS_EXTRACTOR] Found DG class in table row: '{cell}'")
-                            return cell
+                    nxt = lines[j].strip()
+                    if nxt:
+                        segment.append(nxt)
+                # Check tokens across the segment
+                for seg_line in segment:
+                    tokens = re.split(r'\s+|\|', seg_line)
+                    for tok in tokens:
+                        tok = tok.strip(',;')
+                        if validate_dangerous_goods_class(tok):
+                            logger.info(f"[SDS_EXTRACTOR] Found DG class in table segment: '{tok}'")
+                            return tok
     
     return None
 
@@ -236,7 +260,9 @@ def extract_product_name(section_text: str) -> Optional[str]:
     
     # Strategy 1: Look for explicit product name labels
     product_name = extract_after_label(section_text, FIELD_LABELS['product_name'], 'product_name')
-    if product_name and not is_noise_text(product_name):
+    if product_name:
+        product_name = strip_doubled_label_prefix(product_name)
+    if product_name and not is_noise_text(product_name) and not looks_like_numeric_code(product_name):
         # Additional validation - reject if it looks like a company suffix
         if not re.match(r'^(Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company)$', product_name, re.IGNORECASE):
             logger.info(f"[SDS_EXTRACTOR] Product name from label: '{product_name}'")
@@ -250,7 +276,8 @@ def extract_product_name(section_text: str) -> Optional[str]:
         candidate = product_name_match.group(1).strip()
         # Clean up noise like trailing company info
         candidate = re.sub(r'\s+(?:Pty\s+Ltd|Ltd|Inc\.?|Corp\.?).*$', '', candidate, re.IGNORECASE)
-        if candidate and not is_noise_text(candidate) and len(candidate) > 2:
+        candidate = strip_doubled_label_prefix(candidate)
+        if candidate and not is_noise_text(candidate) and len(candidate) > 2 and not looks_like_numeric_code(candidate):
             logger.info(f"[SDS_EXTRACTOR] Product name from split table: '{candidate}'")
             return candidate
     
@@ -264,7 +291,8 @@ def extract_product_name(section_text: str) -> Optional[str]:
                 if prev:
                     # Avoid section headers and boilerplate
                     if not re.match(r'^\d+\.', prev) and not re.search(r'safety\s+data\s+sheet|version|msds\s+date|page\s+\d+', prev, re.IGNORECASE):
-                        if not is_noise_text(prev):
+                        prev = strip_doubled_label_prefix(prev)
+                        if not is_noise_text(prev) and not looks_like_numeric_code(prev):
                             logger.info(f"[SDS_EXTRACTOR] Product name from line above label: '{prev}'")
                             return prev
                     break
@@ -319,7 +347,9 @@ def extract_product_name(section_text: str) -> Optional[str]:
         if re.match(r'^\d+\s*[\-–]', candidate):
             continue
 
-        if re.search(r'[A-Za-z0-9]', candidate) and len(candidate) > 3:
+        # Remove any doubled-letter label prefix that leaked into the line
+        candidate = strip_doubled_label_prefix(candidate)
+        if re.search(r'[A-Za-z0-9]', candidate) and len(candidate) > 3 and not looks_like_numeric_code(candidate):
             if not re.search(r'\b\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}\b', candidate):
                 if not re.search(r'@|www\.|\.com|\.org', candidate, re.IGNORECASE):
                     # Additional check to reject company suffixes
@@ -338,6 +368,8 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
     
     # Strategy 1: Look for explicit manufacturer labels
     manufacturer = extract_after_label(section_text, FIELD_LABELS['manufacturer'], 'manufacturer')
+    if manufacturer:
+        manufacturer = clean_company_candidate(manufacturer)
     if manufacturer and not is_noise_text(manufacturer):
         # Additional validation for manufacturer - reject obvious noise fragments
         if not re.match(r'^of\s+the\s+safety\s+data\s+sheet', manufacturer, re.IGNORECASE) and not re.match(r"^or\s+supplier'?s\s+details$", manufacturer, re.IGNORECASE):
@@ -349,6 +381,7 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
     details_match = re.search(r'Details\s+of\s+the\s+supplier[^\n]*?:\s*(.+)', section_text, re.IGNORECASE)
     if details_match:
         candidate = details_match.group(1).splitlines()[0].strip()
+        candidate = clean_company_candidate(candidate)
         if candidate and not is_noise_text(candidate):
             logger.info(f"[SDS_EXTRACTOR] Manufacturer from inline supplier details: '{candidate}'")
             return candidate
@@ -363,8 +396,10 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
             clean = line.strip()
             if clean and not is_noise_text(clean) and len(clean) > 3:
                 if not re.search(r'\b\d{2,4}[-\s]\d{2,4}[-\s]\d{2,4}\b', clean):  # Not phone
-                    logger.info(f"[SDS_EXTRACTOR] Manufacturer from supplier details: '{clean}'")
-                    return clean
+                    cleaned = clean_company_candidate(clean)
+                    if cleaned and not is_noise_text(cleaned):
+                        logger.info(f"[SDS_EXTRACTOR] Manufacturer from supplier details: '{cleaned}'")
+                        return cleaned
     
     # Strategy 3: Look for company names that appear before product names
     # This helps with cases where layout is: "Company Name" followed by "Product Name: actual product"
@@ -382,13 +417,15 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
                 company_name = re.sub(r'^.*?([A-Z][^:\n]*(?:Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Corporation)[^:\n]*).*$', 
                                     r'\1', clean, re.IGNORECASE)
                 if company_name != clean and company_name:  # If regex matched and extracted something
-                    company_name = company_name.strip()
-                    if not is_noise_text(company_name):
+                    company_name = clean_company_candidate(company_name.strip())
+                    if company_name and not is_noise_text(company_name):
                         logger.info(f"[SDS_EXTRACTOR] Manufacturer from company pattern: '{company_name}'")
                         return company_name
-                elif not is_noise_text(clean):
-                    logger.info(f"[SDS_EXTRACTOR] Manufacturer from company line: '{clean}'")
-                    return clean
+                else:
+                    fallback = clean_company_candidate(clean)
+                    if fallback and not is_noise_text(fallback):
+                        logger.info(f"[SDS_EXTRACTOR] Manufacturer from company line: '{fallback}'")
+                        return fallback
     
     logger.warning("[SDS_EXTRACTOR] Could not extract manufacturer")
     return None

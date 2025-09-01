@@ -41,6 +41,67 @@ def is_noise_text(text: str) -> bool:
     return False
 
 
+def clean_company_candidate(value: str) -> str:
+    """Clean up a manufacturer/supplier candidate string.
+
+    - Remove leading bullets/arrows and stray symbols (e.g., '▼', '•', '-', '—')
+    - Strip redundant inline label prefixes like 'Company and address:'
+    - Trim at noisy tokens like 'Association / Organisation', 'Poisons Information', 'Emergency'
+    - Drop obvious section headers like 'Section 1 - Identification ...'
+    """
+    if not value:
+        return ''
+
+    s = value.strip()
+
+    # 1) Remove leading bullets/arrows and punctuation noise
+    s = re.sub(r"^[\s\-–—:*•■●►➤▼◆▪]+", "", s)
+
+    # 2) Remove inline label prefixes that sometimes bleed into the value
+    s = re.sub(r"^(?:Company\s+and\s+address|Company|Manufacturer|Supplier(?:\s+Name)?|Distributor|Producer)\s*[:\-]\s*",
+               "", s, flags=re.IGNORECASE)
+
+    # 3) If string is a section header, reject
+    if re.match(r"^(Section\s*\d+\b|\d+\.?\s*(Identification|Hazard)\b)", s, re.IGNORECASE):
+        return ''
+
+    # 4) Remove parentheses containing registry/formerly info
+    s = re.sub(r"\s*\([^)]*(?:ABN|ACN|Formerly)\s*[^)]*\)", "", s, flags=re.IGNORECASE)
+
+    # 5) Trim after known noise tokens
+    noise_tokens = [
+        r"Association\s*/?\s*Organisation",
+        r"Poisons?\s+Information",
+        r"Poison\s+Information",
+        r"Emergency(?:\s+telephone|\s+phone)?",
+        r"ABN\b",
+        r"ACN\b",
+        r"Address",
+        r"Contact",
+        r"Website",
+        r"Email",
+        r"Tel\.?",
+        r"Phone",
+        r"Fax",
+    ]
+    pattern = re.compile(r"\b(?:" + "|".join(noise_tokens) + r")\b", re.IGNORECASE)
+    m = pattern.search(s)
+    if m:
+        s = s[:m.start()].strip()
+
+    # 6) If a corporate suffix is present, clip anything after it
+    suffix_clip = re.compile(r"^(.*?\b(?:PTY\s+LTD|P/L|LTD|LIMITED|INC\.?|CORP\.?|CORPORATION|GMBH|PLC|BV|S\.?A\.?|S\.P\.A\.|LLC))\b.*$",
+                             re.IGNORECASE)
+    sm = suffix_clip.match(s)
+    if sm:
+        s = sm.group(1).strip()
+
+    # 7) Remove trailing commas/periods and stray punctuation
+    s = re.sub(r"[\s,.;:]+$", "", s)
+
+    return s.strip()
+
+
 def validate_dangerous_goods_class(value: str) -> bool:
     """Validate if a dangerous goods class is valid (1-9 with optional subdivision)."""
     if not value:
@@ -90,3 +151,93 @@ def get_section(text: str, number: int) -> str:
             break
     
     return text[start:end]
+
+
+def _compress_consecutive_duplicates(token: str) -> str:
+    """Compress consecutive duplicate characters (e.g., 'PPRROODDUUCCTT' -> 'PRODUCT').
+
+    This is used for recognizing corrupted labels. Do not apply blindly to product names
+    because it would incorrectly change legitimate double letters (e.g., 'Bitter').
+    """
+    if not token:
+        return token
+    return __import__('re').sub(r"(.)\1+", r"\1", token)
+
+
+def strip_doubled_label_prefix(text: str) -> str:
+    """Strip a leading label prefix even if rendered with doubled letters.
+
+    Example:
+      'PPRROODDUUCCTT NNAAMMEE Whiteboard cleaner' -> 'Whiteboard cleaner'
+
+    Recognizes common label heads: 'PRODUCT NAME', 'PRODUCT IDENTIFIER', 'TRADE NAME',
+    'GHS PRODUCT IDENTIFIER'.
+    """
+    if not text:
+        return text
+
+    raw = text.strip()
+    if not raw:
+        return raw
+
+    labels = [
+        ["PRODUCT", "NAME"],
+        ["PRODUCT", "IDENTIFIER"],
+        ["TRADE", "NAME"],
+        ["GHS", "PRODUCT", "IDENTIFIER"],
+    ]
+
+    parts = raw.split()
+    # Try to match any label at the beginning (2-3 tokens)
+    for tokens in labels:
+        n = len(tokens)
+        if len(parts) >= n:
+            head = parts[:n]
+            # Normalize and compress duplicates for comparison
+            norm_head = [
+                _compress_consecutive_duplicates(p).upper().strip(" :\t-._") for p in head
+            ]
+            if norm_head == tokens:
+                remainder = " ".join(parts[n:]).lstrip(" :\t-._").strip()
+                return remainder or raw
+
+    return raw
+
+
+def looks_like_numeric_code(value: str) -> bool:
+    """Heuristic: true if the candidate is primarily a numeric code (e.g., '0000003477')."""
+    if not value:
+        return False
+    s = value.strip()
+    # Consider codes with >= 6 digits and no letters as numeric codes
+    if len(s) >= 6 and not __import__('re').search(r"[A-Za-z]", s) and __import__('re').search(r"\d", s):
+        return True
+    return False
+
+def compress_duplicates_with_map(s: str):
+    """Compress consecutive duplicate alphabetic characters while keeping an index map.
+
+    Returns a tuple of (normalized_string, index_map) where index_map[i] gives the
+    index in the original string that produced normalized_string[i]. Only alphabetic
+    characters are de-duplicated; digits, whitespace and punctuation are preserved
+    to avoid corrupting values.
+    """
+    if not s:
+        return "", []
+    out_chars = []
+    index_map = []
+    prev_alpha_lower = None
+    for idx, ch in enumerate(s):
+        if ch.isalpha():
+            low = ch.lower()
+            if low == prev_alpha_lower:
+                # Update mapping to point to the last index of this duplicate run
+                if index_map:
+                    index_map[-1] = idx
+                continue
+            prev_alpha_lower = low
+        else:
+            prev_alpha_lower = None if ch.strip() else prev_alpha_lower
+        out_chars.append(ch)
+        index_map.append(idx)
+    return "".join(out_chars), index_map

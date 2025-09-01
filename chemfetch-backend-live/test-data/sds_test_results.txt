@@ -1,6 +1,6 @@
 🧪 ChemFetch SDS Parser Test Results
 ==================================================
-Generated: 2025-09-01 21:05:08
+Generated: 2025-09-01 22:17:11
 Total Files Tested: 19
 [1/19] sds_17.pdf
 ----------------------------------------
@@ -17,7 +17,7 @@ Total Files Tested: 19
 ----------------------------------------
 ✅ product_name: FAST ACTION RATSAK DISPOSABLE MOUSE
 ✅ manufacturer: Yates, a division of DuluxGroup (Australia) Pty Ltd
-✅ description: Wax blocks in a ready to use disposable bait station. For the control of mice in domestic
+✅ description: Bait Station with Wax 54625 9310428546259
 ✅ issue_date: 2023-09-01
 ⚠️ dangerous_goods_class: None
 ⚠️ packing_group: None
@@ -27,8 +27,8 @@ Total Files Tested: 19
 [3/19] sds_19.pdf
 ----------------------------------------
 ✅ product_name: CLAG PASTE
-✅ manufacturer: 
-✅ description: Adhesive
+✅ manufacturer: Bostik Australia Pty Ltd
+✅ description: and
 ✅ issue_date: 2022-09-08
 ⚠️ dangerous_goods_class: None
 ⚠️ packing_group: None
@@ -60,7 +60,7 @@ Total Files Tested: 19
 [6/19] sds_22.pdf
 ----------------------------------------
 ✅ product_name: 30 Seconds Outdoor Window & Screen
-✅ manufacturer: â–¼Company and address: 30 Seconds
+✅ manufacturer: 30 Seconds
 ✅ description: Cleaning product
 ⚠️ issue_date: None
 ⚠️ dangerous_goods_class: None
@@ -71,8 +71,8 @@ Total Files Tested: 19
 [7/19] sds_23.pdf
 ----------------------------------------
 ✅ product_name: Diggers All Purpose Thinner
-✅ manufacturer: Recochem Inc. Association / Organisation Poisons Information
-✅ description: of first aid measures
+✅ manufacturer: Recochem Inc
+✅ description: drowsiness or dizziness.
 ✅ issue_date: 2023-05-30
 ⚠️ dangerous_goods_class: None
 ✅ packing_group: II
@@ -82,8 +82,8 @@ Total Files Tested: 19
 [8/19] sds_24.pdf
 ----------------------------------------
 ✅ product_name: Diggers Graffiti Remover
-✅ manufacturer: Recochem Inc. Association / Organisation Poisons Information
-✅ description: of first aid measures
+✅ manufacturer: Recochem Inc
+✅ description: an allergic skin reaction.
 ✅ issue_date: 2024-03-03
 ⚠️ dangerous_goods_class: None
 ✅ packing_group: Not Applicable
@@ -93,7 +93,7 @@ Total Files Tested: 19
 [9/19] sds_25.pdf
 ----------------------------------------
 ✅ product_name: METHYLATED SPIRITS
-✅ manufacturer: Recochem Inc. ABN
+✅ manufacturer: Recochem Inc
 ✅ description: Solvent, Cleaning Solvent
 ✅ issue_date: 2022-01-01
 ✅ dangerous_goods_class: 3
@@ -118,9 +118,9 @@ Total Files Tested: 19
 ✅ manufacturer: RB (Hygiene Home) Australia Pty Ltd
 ✅ description: Consumer use
 ✅ issue_date: 2020-05-01
-⚠️ dangerous_goods_class: None
+✅ dangerous_goods_class: 2.1
 ⚠️ packing_group: None
-📊 Extracted 4/6 key fields
+📊 Extracted 5/6 key fields
 📁 File size: 0.19 MB
 
 [12/19] sds_28.pdf
@@ -136,30 +136,30 @@ Total Files Tested: 19
 
 [13/19] sds_29.pdf
 ----------------------------------------
-✅ product_name: 0000003477
+✅ product_name: BP Kerosine
 ✅ manufacturer: BP Australia Pty Ltd
 ✅ description: / Fuel for domestic burners.
 ✅ issue_date: 2021-09-04
-⚠️ dangerous_goods_class: None
-✅ packing_group: III III
-📊 Extracted 5/6 key fields
+✅ dangerous_goods_class: 3
+✅ packing_group: III
+📊 Extracted 6/6 key fields
 📁 File size: 0.14 MB
 
 [14/19] sds_30.pdf
 ----------------------------------------
-✅ product_name: PPRROODDUUCCTT NNAAMMEE Whiteboard cleaner
-✅ manufacturer: Pelikan Artline Pty. Ltd.
-⚠️ description: None
-⚠️ issue_date: None
+✅ product_name: Whiteboard cleaner
+✅ manufacturer: Pelikan Artline Pty. Ltd
+✅ description: Used to clean whiteboards.
+✅ issue_date: 2015-08-01
 ⚠️ dangerous_goods_class: None
 ✅ packing_group: Not Regulated
-📊 Extracted 3/6 key fields
+📊 Extracted 5/6 key fields
 📁 File size: 0.21 MB
 
 [15/19] sds_31.pdf
 ----------------------------------------
-✅ product_name: /02/2023, 19:27 SDS
-✅ manufacturer: VIVA ENERGY AUSTRALIA PTY LTD (FORMERLY: SHELL COMPANY OF AUSTRALIA LTD) (ABN 46 004 610 459)
+✅ product_name: SHELL DIESEL
+✅ manufacturer: VIVA ENERGY AUSTRALIA PTY LTD
 ⚠️ description: None
 ✅ issue_date: 2022-09-02
 ⚠️ dangerous_goods_class: None
@@ -173,9 +173,9 @@ Total Files Tested: 19
 ✅ manufacturer: MOBIL OIL AUSTRALIA PTY LTD
 ✅ description: Hydrocarbons and Additives
 ✅ issue_date: 2023-11-06
-⚠️ dangerous_goods_class: None
-✅ packing_group: II II
-📊 Extracted 5/6 key fields
+✅ dangerous_goods_class: 3
+✅ packing_group: II
+📊 Extracted 6/6 key fields
 📁 File size: 0.18 MB
 
 [17/19] sds_33.pdf
@@ -203,18 +203,18 @@ Total Files Tested: 19
 [19/19] sds_35.pdf
 ----------------------------------------
 ✅ product_name: V3R Mould Gone Gel
-✅ manufacturer: Section 1 - Identification of Chemical Product and Company
+✅ manufacturer: SAN-AIR Australia Pty Ltd
 ✅ description: Room air treatment and freshener. Controls airborne germs and mould
-⚠️ issue_date: None
+✅ issue_date: 2023-08-01
 ⚠️ dangerous_goods_class: None
 ⚠️ packing_group: None
-📊 Extracted 3/6 key fields
+📊 Extracted 4/6 key fields
 📁 File size: 0.14 MB
 
 📊 **SUMMARY**
 ✅ Successful: 19
 ❌ Failed: 0
 📄 Total: 19
-📈 Avg fields: 4.0/6
+📈 Avg fields: 4.3/6
 
 🎉 Testing complete!

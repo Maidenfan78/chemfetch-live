@@ -24,7 +24,7 @@ sds_parser_new/
     ├── field_extractor.py# Field-level parsing (CAS, DG class, etc.)
     ├── date_parser.py   # Date normalization helpers
     ├── dependencies.py  # Optional deps and guards
-    └── utils.py         # Utilities and confidence helpers
+    └── utils.py         # Utilities and confidence helpers (incl. doubled-label cleanup)
 
 Root-level (in ocr_service/):
 ├── parse_sds.py         # CLI/unified parser wrapper
@@ -196,6 +196,13 @@ test_files = [
 ## Improvement Strategies
 
 ### Accuracy Enhancement
+
+- Normalize corrupted label text: Some PDFs render label headers with doubled letters (e.g., `PPRROODDUUCCTT NNAAMMEE`). The parser strips such doubled-letter label prefixes before evaluating candidates, ensuring clean product names like `Whiteboard cleaner`.
+- Duplicate-letter tolerant label matching for Section 1 use/description: When labels like `RReeccoommmmeennddeedd UUssee` occur, the extractor compresses duplicate letters on-the-fly and matches the intended label, correctly capturing values such as `Used to clean whiteboards.` without hardcoding product names.
+- Issue date fallback: If standard Issue/Revision/Prepared date patterns aren’t found, the parser scans for trailing labels like `Last Updated`, `Last Revision`, `Updated on`, etc., and accepts month–year forms (e.g., `August 2015`) by normalizing to the first of the month (`2015-08-01`). This is applied only as a fallback to avoid altering correct earlier matches.
+- Avoid mislabeling product codes: `Product code` is no longer used as a product-name label. This prevents numeric codes (e.g., `0000003477`) from being captured as the product name, favoring `GHS product identifier` / `Product Identifier` instead.
+- Manufacturer cleanup: Manufacturer strings are trimmed to the legal entity suffix (e.g., `PTY LTD`, `LTD`, `INC`, etc.) and parentheses that contain registry numbers or historical names (e.g., `ABN`, `ACN`, `Formerly`) are removed.
+- Section header robustness: Section detection tolerates hyphens after section numbers (e.g., `Section 1 - ...`) and falls back to global label extraction when Section 1 headers are OCR-mangled.
 
 1. **Train on More Samples**: Test with diverse SDS document types
 2. **Pattern Refinement**: Improve regex patterns based on extraction failures

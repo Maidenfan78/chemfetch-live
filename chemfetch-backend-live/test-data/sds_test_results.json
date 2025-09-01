@@ -1,5 +1,5 @@
 {
-  "test_timestamp": "2025-09-01T21:05:08.354723",
+  "test_timestamp": "2025-09-01T22:17:11.918465",
   "total_files": 19,
   "successful": 19,
   "failed": 0,
@@ -93,7 +93,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "Wax blocks in a ready to use disposable bait station. For the control of mice in domestic",
+          "value": "Bait Station with Wax 54625 9310428546259",
           "confidence": 1.0
         },
         "issue_date": {
@@ -128,7 +128,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "Wax blocks in a ready to use disposable bait station. For the control of mice in domestic",
+          "value": "Bait Station with Wax 54625 9310428546259",
           "confidence": 1.0
         },
         "product_use": {
@@ -164,11 +164,11 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "",
-          "confidence": 0.0
+          "value": "Bostik Australia Pty Ltd",
+          "confidence": 1.0
         },
         "description": {
-          "value": "Adhesive",
+          "value": "and",
           "confidence": 1.0
         },
         "issue_date": {
@@ -199,11 +199,11 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "",
-          "confidence": 0.0
+          "value": "Bostik Australia Pty Ltd",
+          "confidence": 1.0
         },
         "description": {
-          "value": "Adhesive",
+          "value": "and",
           "confidence": 1.0
         },
         "product_use": {
@@ -389,7 +389,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "â–¼Company and address: 30 Seconds",
+          "value": "30 Seconds",
           "confidence": 1.0
         },
         "description": {
@@ -424,7 +424,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "â–¼Company and address: 30 Seconds",
+          "value": "30 Seconds",
           "confidence": 1.0
         },
         "description": {
@@ -464,11 +464,11 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Recochem Inc. Association / Organisation Poisons Information",
+          "value": "Recochem Inc",
           "confidence": 1.0
         },
         "description": {
-          "value": "of first aid measures",
+          "value": "drowsiness or dizziness.",
           "confidence": 1.0
         },
         "issue_date": {
@@ -499,11 +499,11 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Recochem Inc. Association / Organisation Poisons Information",
+          "value": "Recochem Inc",
           "confidence": 1.0
         },
         "description": {
-          "value": "of first aid measures",
+          "value": "drowsiness or dizziness.",
           "confidence": 1.0
         },
         "product_use": {
@@ -539,11 +539,11 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Recochem Inc. Association / Organisation Poisons Information",
+          "value": "Recochem Inc",
           "confidence": 1.0
         },
         "description": {
-          "value": "of first aid measures",
+          "value": "an allergic skin reaction.",
           "confidence": 1.0
         },
         "issue_date": {
@@ -574,11 +574,11 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Recochem Inc. Association / Organisation Poisons Information",
+          "value": "Recochem Inc",
           "confidence": 1.0
         },
         "description": {
-          "value": "of first aid measures",
+          "value": "an allergic skin reaction.",
           "confidence": 1.0
         },
         "product_use": {
@@ -614,7 +614,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Recochem Inc. ABN",
+          "value": "Recochem Inc",
           "confidence": 1.0
         },
         "description": {
@@ -649,7 +649,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Recochem Inc. ABN",
+          "value": "Recochem Inc",
           "confidence": 1.0
         },
         "description": {
@@ -756,7 +756,7 @@
     },
     "sds_27.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -776,8 +776,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": null,
@@ -811,8 +811,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
@@ -906,11 +906,11 @@
     },
     "sds_29.pdf": {
       "success": true,
-      "fields_extracted": 5,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "0000003477",
+          "value": "BP Kerosine",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -926,11 +926,11 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "3",
+          "confidence": 1.0
         },
         "packing_group": {
-          "value": "III III",
+          "value": "III",
           "confidence": 1.0
         }
       },
@@ -945,7 +945,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "0000003477",
+          "value": "BP Kerosine",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -961,15 +961,15 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "3",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "III III",
+          "value": "III",
           "confidence": 1.0
         },
         "issue_date": {
@@ -981,24 +981,24 @@
     },
     "sds_30.pdf": {
       "success": true,
-      "fields_extracted": 3,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "PPRROODDUUCCTT NNAAMMEE Whiteboard cleaner",
+          "value": "Whiteboard cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Pelikan Artline Pty. Ltd.",
+          "value": "Pelikan Artline Pty. Ltd",
           "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Used to clean whiteboards.",
+          "confidence": 1.0
         },
         "issue_date": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2015-08-01",
+          "confidence": 1.0
         },
         "dangerous_goods_class": {
           "value": null,
@@ -1020,16 +1020,16 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "PPRROODDUUCCTT NNAAMMEE Whiteboard cleaner",
+          "value": "Whiteboard cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Pelikan Artline Pty. Ltd.",
+          "value": "Pelikan Artline Pty. Ltd",
           "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Used to clean whiteboards.",
+          "confidence": 1.0
         },
         "product_use": {
           "value": null,
@@ -1048,8 +1048,8 @@
           "confidence": 1.0
         },
         "issue_date": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2015-08-01",
+          "confidence": 1.0
         }
       },
       "file_size_mb": 0.21
@@ -1060,11 +1060,11 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "/02/2023, 19:27 SDS",
+          "value": "SHELL DIESEL",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "VIVA ENERGY AUSTRALIA PTY LTD (FORMERLY: SHELL COMPANY OF AUSTRALIA LTD) (ABN 46 004 610 459)",
+          "value": "VIVA ENERGY AUSTRALIA PTY LTD",
           "confidence": 1.0
         },
         "description": {
@@ -1095,11 +1095,11 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "/02/2023, 19:27 SDS",
+          "value": "SHELL DIESEL",
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "VIVA ENERGY AUSTRALIA PTY LTD (FORMERLY: SHELL COMPANY OF AUSTRALIA LTD) (ABN 46 004 610 459)",
+          "value": "VIVA ENERGY AUSTRALIA PTY LTD",
           "confidence": 1.0
         },
         "description": {
@@ -1131,7 +1131,7 @@
     },
     "sds_32.pdf": {
       "success": true,
-      "fields_extracted": 5,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -1151,11 +1151,11 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "3",
+          "confidence": 1.0
         },
         "packing_group": {
-          "value": "II II",
+          "value": "II",
           "confidence": 1.0
         }
       },
@@ -1186,15 +1186,15 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "3",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "II II",
+          "value": "II",
           "confidence": 1.0
         },
         "issue_date": {
@@ -1356,7 +1356,7 @@
     },
     "sds_35.pdf": {
       "success": true,
-      "fields_extracted": 3,
+      "fields_extracted": 4,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -1364,7 +1364,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Section 1 - Identification of Chemical Product and Company",
+          "value": "SAN-AIR Australia Pty Ltd",
           "confidence": 1.0
         },
         "description": {
@@ -1372,8 +1372,8 @@
           "confidence": 1.0
         },
         "issue_date": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2023-08-01",
+          "confidence": 1.0
         },
         "dangerous_goods_class": {
           "value": null,
@@ -1399,7 +1399,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Section 1 - Identification of Chemical Product and Company",
+          "value": "SAN-AIR Australia Pty Ltd",
           "confidence": 1.0
         },
         "description": {
@@ -1423,8 +1423,8 @@
           "confidence": 0.0
         },
         "issue_date": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2023-08-01",
+          "confidence": 1.0
         }
       },
       "file_size_mb": 0.14

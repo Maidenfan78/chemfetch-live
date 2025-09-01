@@ -23,10 +23,14 @@ FIELD_LABELS = {
         # Prefer explicit trade/product name labels over generic identifier
         r'Trade\s+name',
         r'Product\s+Name',
+        r'Product\s+Identifier',
+        r'Product\s+Ident\W*fier',
+        r'GHS\s+product\s+identifier',
+        r'GHS\s+product\s+ident\W*fier',
         r'Product\s+identifier',
         r'Commercial\s+product\s+name',
         r'Product\s+designation',
-        r'Product\s+code',
+        # NOTE: Do NOT include product code here to avoid mis-capturing numeric codes as names
     ],
     'manufacturer': [
         r'Manufacturer',
@@ -84,6 +88,17 @@ NOISE_LABELS = [
     r'Safety\s+data\s+sheet', r'Document\s+number', r'\d{2,4}\s+\d{2,4}\s+\d{2,4}',
     r'Document\s+type', r'Country', r'Language', r'Format'
 ]
+
+# Treat raw label words as noise values to avoid capturing labels as field values
+# This helps when PDFs render labels twice or on separate columns, e.g., "Manufacturer: Manufacturer"
+NOISE_LABELS.extend([
+    r'Manufacturer',
+    r'Supplier',
+    r'Supplier\s+Name',
+    r'Company\s+name(?:\s+of\s+supplier)?',
+    r'Producer',
+    r'Distributor',
+])
 
 # Valid dangerous goods classes (1-9 with possible subdivisions)
 VALID_DG_CLASSES = re.compile(r'^[1-9](?:\.[1-9])?$')
