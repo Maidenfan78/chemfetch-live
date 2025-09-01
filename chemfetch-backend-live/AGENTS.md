@@ -138,6 +138,7 @@ ocr_service/              # Python microservice
 - **Log Management**: Structured logging for production monitoring
 
 Key env vars (backend):
+
 - `PORT` (default 3001)
 - `OCR_SERVICE_URL` (default `http://localhost:5001`)
 - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
@@ -163,6 +164,7 @@ Key env vars (backend):
 When code changes, update the accompanying docs/readme/instructions in the same PR to keep behavior in sync.
 
 Primary documentation locations for this service:
+
 - Backend overview: `chemfetch-backend-live/README.md`
 - Backend agent guide (this file): `chemfetch-backend-live/AGENTS.md`
 - Server specifics: `chemfetch-backend-live/server/AGENTS.md`
@@ -175,6 +177,7 @@ Primary documentation locations for this service:
 - Test data/results: `chemfetch-backend-live/test-data/`, `chemfetch-backend-live/test-data/sds_test_results.txt`
 
 Cross‑service references you may also need to update:
+
 - Root overview: `README.md`
 - Database: `chemfetch-supabase-live/` (schema/migrations and docs within)
 - Web client: `chemfetch-client-hub-live/README.md`

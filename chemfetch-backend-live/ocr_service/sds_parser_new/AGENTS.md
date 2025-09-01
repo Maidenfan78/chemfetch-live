@@ -209,7 +209,7 @@ test_files = [
 
 ## Recent Updates
 
-- Section detection: tolerates leading bullets/symbols before headers (e.g., "* SECTION 1").
+- Section detection: tolerates leading bullets/symbols before headers (e.g., "\* SECTION 1").
 - Manufacturer/Description: added German labels (Hersteller, Lieferant, Verwendung, Anwendung, Verpackungsgruppe, Gefahrklasse) and improved near-label scanning that avoids codes (SU/PROC) and prefers lines with nearby contact info.
 - Description prioritization: prefer Application/Use lines over filler like "No further relevant information available.".
 - Dangerous goods class: extended windowed scanning and context-based upgrade to prefer subclasses (e.g., 2.1) when a bare class was initially found.
@@ -252,6 +252,7 @@ test_files = [
 When code changes in this module, update the related docs/readmes in the same PR to keep behavior aligned.
 
 Relevant documentation locations:
+
 - Parser guide (this file): `chemfetch-backend-live/ocr_service/sds_parser_new/AGENTS.md`
 - OCR service agent guide: `chemfetch-backend-live/ocr_service/AGENTS.md`
 - OCR service overview: `chemfetch-backend-live/ocr_service/README.md`
@@ -259,6 +260,7 @@ Relevant documentation locations:
 - Test data/results: `chemfetch-backend-live/test-data/`
 
 If changes affect API shapes or behavior, also review:
+
 - Backend routes: `chemfetch-backend-live/server/routes/`
 - Root overview: `README.md`
 

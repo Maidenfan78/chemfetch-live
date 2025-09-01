@@ -165,6 +165,7 @@ Note: The PyMuPDF OCR fallback renders at ~200 DPI for accuracy while keeping pe
 When code changes in this service, update the related docs/readmes in the same PR so instructions and behavior stay aligned.
 
 Relevant documentation locations:
+
 - OCR agent guide (this file): `chemfetch-backend-live/ocr_service/AGENTS.md`
 - OCR service overview: `chemfetch-backend-live/ocr_service/README.md`
 - SDS parser guide: `chemfetch-backend-live/ocr_service/sds_parser_new/AGENTS.md`
