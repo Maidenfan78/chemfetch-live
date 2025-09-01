@@ -32,8 +32,10 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
             same = re.search(same_line_pattern, clean, re.IGNORECASE)
             if not same:
                 # Handle case with whitespace but no colon/hyphen, but avoid matching section headers like
-                # "Manufacturer or supplier's details" or "Recommended use of the chemical and restrictions on use"
-                tmp = re.search(rf"^{label}\b\s+(.+)$", clean, re.IGNORECASE)
+                # "Manufacturer or supplier's details" or "Recommended use of the chemical and restrictions on use".
+                # Use a generic whitespace matcher after the label (no word-boundary), so labels ending with
+                # non-word characters (e.g., "Use(s)") are supported.
+                tmp = re.search(rf"^{label}\s+(.+)$", clean, re.IGNORECASE)
                 if tmp:
                     tail = tmp.group(1).strip()
                     # Common continuation phrases that indicate this is still part of the label header, not a value
@@ -61,6 +63,12 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
 
                 # Remove leading possessive artifacts like "'s" or "'s"
                 value = re.sub(r"^[\"''`]+s\b\s*", "", value)
+
+                # Normalize common label continuation fragments that trail after generic labels like 'Use'
+                # Example: "Use : of the Substance/Mixture : Washing and cleaning products ..."
+                value = re.sub(
+                    r'^(?:of\s+the\s+(?:substance|chemical)(?:\s*/\s*mixture|\s+or\s+mixture)?)(?:\s+and\s+uses\s+advised\s+against)?\s*[:\-]*\s*',
+                    '', value, flags=re.IGNORECASE)
                 
                 # Special cleaning for common noise patterns that were causing issues
                 value = re.sub(r"^of\s+the\s+safety\s+data\s+sheet\s*", "", value, re.IGNORECASE)
@@ -409,8 +417,16 @@ def extract_description(section_text: str) -> Optional[str]:
     description = extract_after_label(section_text, description_labels, 'description')
     if description and not is_noise_text(description):
         # Clean up common noise in descriptions
+        # 1) Remove leading continuation fragments like "of the Substance/Mixture :"
+        description = re.sub(
+            r'^(?:of\s+the\s+(?:substance|chemical)(?:\s*/\s*mixture|\s+or\s+mixture)?)(?:\s+and\s+uses\s+advised\s+against)?\s*[:\-]*\s*',
+            '', description, re.IGNORECASE)
+        # 2) Remove specific verbose header phrase
         description = re.sub(r'^of\s+the\s+substance\s+or\s+mixture\s+and\s+uses\s+advised\s+against\s*', '', description, re.IGNORECASE)
+        # 3) Tidy odd prefix variants like "/Mixture :"
         description = re.sub(r'^/Mixture\s*:\s*', '', description, re.IGNORECASE)
+        # 4) Normalize stray leading punctuation
+        description = re.sub(r'^[\s:;\-]+', '', description)
         if description.strip():
             logger.info(f"[SDS_EXTRACTOR] Description from label: '{description}'")
             return description.strip()
@@ -426,7 +442,7 @@ def extract_date_from_header(text: str) -> Optional[str]:
     # Split text into lines and look for header patterns
     lines = text.splitlines()
     
-    # Look for date patterns in the first few lines of each page
+    # Look for date patterns in the first few lines where headers typically appear
     for line in lines[:20]:  # Check first 20 lines where headers typically appear
         line = line.strip()
         if not line:
@@ -434,22 +450,31 @@ def extract_date_from_header(text: str) -> Optional[str]:
         
         # Look for revision date patterns in headers
         revision_patterns = [
-            r'Revision[:\s]+(\d{4}-\d{2}-\d{2})',
-            r'Revision[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{4})',
+            # Generic Revision / Rev / Date labels
+            r'Revision(?:\s*Date)?[:\s]+(\d{4}-\d{2}-\d{2})',
+            r'Revision(?:\s*Date)?[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})',
+            r'Revision(?:\s*Date)?[:\s]+(\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4})',
             r'Rev[:\s]+(\d{4}-\d{2}-\d{2})',
-            r'Rev[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{4})',
+            r'Rev[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})',
+            r'Rev[:\s]+(\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4})',
             r'Date[:\s]+(\d{4}-\d{2}-\d{2})',
-            r'Date[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{4})',
+            r'Date[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})',
+            r'Date[:\s]+(\d{1,2}\s+[A-Za-z]{3,}\.?\s+\d{2,4})',
+            # Header/footer variants
+            r'Printing\s+date[:\s]+(\d{1,2}\s+[A-Za-z]{3,}\.?\s+\d{4})',
+            r'Printed\s+on[:\s]+(\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4})',
         ]
         
         for pattern in revision_patterns:
             match = re.search(pattern, line, re.IGNORECASE)
             if match:
                 date_str = match.group(1)
+                # Normalize month abbreviations with trailing period (e.g., "Jan.")
+                date_str = re.sub(r'\b([A-Za-z]{3,})\.', r'\1', date_str)
                 try:
                     from datetime import datetime, date
                     # Try to parse and validate
-                    for fmt in ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y', '%d-%m-%Y']:
+                    for fmt in ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y', '%d-%m-%Y', '%d %b %Y', '%d %B %Y', '%d-%b-%Y', '%d-%b-%y', '%d.%b.%Y', '%d.%b.%y']:
                         try:
                             parsed_date = datetime.strptime(date_str, fmt).date()
                             if parsed_date <= date.today():  # Must be in the past

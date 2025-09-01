@@ -276,11 +276,40 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
 
 
 def get_section(text: str, section_num: int) -> str:
-    """Extract a specific section from SDS text."""
-    # Look for section headers
-    pattern = rf'(?:^|\n)\s*(?:section\s*)?{section_num}(?!\s*/)(?:\s|:|\.).*?(?=\n\s*(?:section\s*)?\d{{1,2}}(?!\.\d)(?!\s*/)(?:\s|:|\.)|$)'
-    match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
-    return match.group(0) if match else ""
+    """Extract a specific section from SDS text with robust boundaries.
+
+    Strategy:
+    - Prefer clear section headers that start a line and are either "Section N"
+      or "N." / "N:" followed by a plausible title.
+    - For Section 1 and 14, further require common title keywords to avoid
+      matching numbered list items (e.g., "1. Classified by Chemwatch").
+    - If strict matching fails (rare layouts), fall back to a looser regex similar
+      to previous logic.
+    """
+    # Build start pattern
+    if section_num == 1:
+        start_pat = rf'^\s*(?:section\s*)?1\s*[:\.]?\s.*identification.*$'
+    elif section_num == 14:
+        start_pat = rf'^\s*(?:section\s*)?14\s*[:\.]?\s.*transport.*$'
+    else:
+        # Require punctuation after number to avoid addresses like "2 Fred ..."
+        start_pat = rf'^\s*(?:section\s*)?{section_num}\s*[:\.]\s.*$'
+
+    next_pat = r'^\s*(?:section\s*)?\d{1,2}\s*[:\.]\s'
+
+    start_m = re.search(start_pat, text, re.IGNORECASE | re.MULTILINE)
+    if start_m:
+        start = start_m.start()
+        # Find the next header after start
+        next_m = re.search(next_pat, text[start+1:], re.IGNORECASE | re.MULTILINE)
+        end = (start + 1 + next_m.start()) if next_m else len(text)
+        return text[start:end]
+
+    # Fallback (looser) single pass, keeps prior behavior if strict fails
+    loose = rf'(?:^|\n)\s*(?:section\s*)?{section_num}(?!\s*/)(?:\s|:|\.).*?' \
+            rf'(?=\n\s*(?:section\s*)?\d{{1,2}}(?!\.\d)(?!\s*/)(?:\s|:|\.)|$)'
+    m2 = re.search(loose, text, re.IGNORECASE | re.DOTALL)
+    return m2.group(0) if m2 else ""
 
 
 def extract_field_value(text: str, field_labels: list, section_text: str = None) -> Optional[str]:
@@ -603,21 +632,54 @@ def extract_manufacturer_global(full_text: str) -> Optional[str]:
 
 
 def extract_date(text: str) -> Optional[str]:
-    """Extract issue/revision date with enhanced patterns."""
-    
-    # Look for date patterns with labels - IMPROVED PATTERNS
+    """Extract issue/revision date with enhanced patterns and prioritization.
+
+    Priority: Issue/Revision/Prepared (and similar) over Print/Printed.
+    """
+
+    # 1) Prefer modular labeled extraction (captures and prioritizes by label)
+    try:
+        try:
+            from .modules.date_parser import extract_issue_date as mod_extract_issue_date
+        except ImportError:  # pragma: no cover
+            from modules.date_parser import extract_issue_date as mod_extract_issue_date
+        labeled = mod_extract_issue_date(text)
+        if labeled:
+            return labeled
+    except Exception:
+        pass
+
+    # 2) Fallback to explicit labeled regexes (legacy)
     date_patterns = [
-        # Standard patterns
-        r'(?:Issue\s+Date|Revision\s+Date|Date\s+of\s+issue|Version\s+date|Date\s+Prepared|Issued|MSDS\s+Date)[^\n]{0,30}?[:\-]?\s*(\d{1,2}[\-\/\.]+\d{1,2}[\-\/\.]+\d{2,4}|\d{4}-\d{2}-\d{2}|[A-Za-z]+\s+\d{1,2},?\s*\d{4}|\d{1,2}\s+[A-Za-z]+\s+\d{4})',
-        # Header patterns for sds_3.pdf type issues  
+        # Labeled + various formats, including dd-MMM-YYYY
+        r'(?:Issue\s*Date|Revision(?:\s*Date)?|Date\s*of\s*issue|Version\s*date|Date\s*Prepared|Prepared\s*on|Issued|MSDS\s*Date)[^\n]{0,30}?[:\-]?\s*' \
+        r'(\d{1,2}[\-\/\.]+\d{1,2}[\-\/\.]+\d{2,4}|\d{4}-\d{2}-\d{2}|[A-Za-z]+\.?\s+\d{1,2},?\s*\d{4}|\d{1,2}\s+[A-Za-z]+\.?\s+\d{4}|\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4})',
         r'Revision[:\s]*(\d{4}-\d{2}-\d{2})',
         r'Revision[:\s]*(\d{1,2}[\-\/]\d{1,2}[\-\/]\d{4})',
-        # REVISION DATE patterns for sds_5.pdf
-        r'REVISION\s+DATE[:\s]*(\d{1,2}\s+\w+\s+\d{4})',
+        r'Revision[:\s]*(\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4})',
+        r'REVISION\s+DATE[:\s]*(\d{1,2}\s+\w+\.?\s+\d{4})',
         r'REVISION\s+DATE[:\s]*(\d{1,2}[\-\/]\d{1,2}[\-\/]\d{4})',
+        r'REVISION\s+DATE[:\s]*(\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4})',
     ]
-    
-    # Try modular header-based extraction first (handles some header-only formats)
+    for pattern in date_patterns:
+        matches = re.findall(pattern, text, re.IGNORECASE)
+        if matches:
+            try:
+                from datetime import datetime, date
+                for date_str in matches:
+                    # Normalize month abbreviations with trailing dot
+                    cleaned = re.sub(r'\b([A-Za-z]{3,})\.', r'\1', date_str)
+                    for fmt in ['%d/%m/%Y', '%m/%d/%Y', '%Y-%m-%d', '%d-%m-%Y', '%d.%m.%Y', '%d %b %Y', '%d %B %Y', '%b %d %Y', '%B %d %Y', '%d-%b-%Y', '%d-%b-%y', '%d.%b.%Y', '%d.%b.%y']:
+                        try:
+                            parsed_date = datetime.strptime(cleaned, fmt).date()
+                            if parsed_date <= date.today():
+                                return parsed_date.strftime('%Y-%m-%d')
+                        except ValueError:
+                            continue
+            except ImportError:
+                return matches[0]
+
+    # 3) Finally, header-based extraction (includes print/printing date variants)
     try:
         hdr = fe_extract_date_from_header(text)
         if hdr:
@@ -625,33 +687,6 @@ def extract_date(text: str) -> Optional[str]:
     except Exception:
         pass
 
-    for pattern in date_patterns:
-        matches = re.findall(pattern, text, re.IGNORECASE)
-        if matches:
-            # Try to parse and validate date
-            try:
-                from datetime import datetime, date
-                
-                for date_str in matches:
-                    try:
-                        # Try different formats
-                        formats = ['%d/%m/%Y', '%m/%d/%Y', '%Y-%m-%d', '%d-%m-%Y', '%d.%m.%Y', 
-                                 '%d %b %Y', '%d %B %Y', '%b %d %Y', '%B %d %Y']
-                        for fmt in formats:
-                            try:
-                                parsed_date = datetime.strptime(date_str, fmt).date()
-                                if parsed_date <= date.today():  # Must be in the past
-                                    formatted_date = parsed_date.strftime('%Y-%m-%d')
-                                    logger.info(f"[SDS_EXTRACTOR] Parsed date '{date_str}' as '{formatted_date}'")
-                                    return formatted_date
-                            except ValueError:
-                                continue
-                    except Exception:
-                        continue
-            except ImportError:
-                # If datetime not available, return first match
-                return matches[0]
-    
     return None
 
 

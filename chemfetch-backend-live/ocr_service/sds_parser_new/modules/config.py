@@ -7,8 +7,14 @@ import re
 SECTION_PATTERN = re.compile(r'^\s*(?:section\s*)?(\d{1,2})(?:\s|:|\.)(?=\s)', re.IGNORECASE | re.MULTILINE)
 
 DATE_PATTERN = re.compile(
-    r'(\b(?:Revision(?: Date)?|Issue Date|Date of issue|Version date|SDS creation date|Date Prepared|Issued)[^\n]{0,40})\s*[:]?\s*(?:\nPage[^\n]*\n)?\s*'
-    r'((?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4})|(?:[A-Za-z]+\s+\d{1,2},?\s*\d{4})|(?:\d{4}-\d{2}-\d{2}))',
+    r'(\b(?:Revision(?:\s*Date)?|Issue\s*Date|Date\s*of\s*issue|Version\s*date|SDS\s*creation\s*date|Date\s*Prepared|Prepared\s*on|Prepared|Issued|Printed\s*on|Print\s*date|Printing\s*date)[^\n]{0,40})\s*[:]?\s*(?:\nPage[^\n]*\n)?\s*'
+    r'('
+    r'(?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})'                         # 01/09/2022 or 09-01-22
+    r'|(?:\d{4}-\d{2}-\d{2})'                                          # 2022-09-01
+    r'|(?:[A-Za-z]+\.?\s+\d{1,2},?\s*\d{4})'                          # Sep 1, 2022 / September 1 2022
+    r'|(?:\d{1,2}\s+[A-Za-z]+\.?\s+\d{4})'                            # 1 Sep 2022
+    r'|(?:\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4})'             # 08-Sep-2022 or 08.Sep.22
+    r')',
     re.IGNORECASE)
 
 # Improved field label patterns - more specific and comprehensive
