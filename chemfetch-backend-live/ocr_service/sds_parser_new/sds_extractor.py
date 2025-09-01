@@ -667,7 +667,7 @@ def extract_date(text: str) -> Optional[str]:
     # 2) Fallback to explicit labeled regexes (legacy)
     date_patterns = [
         # Labeled + various formats, including dd-MMM-YYYY
-        r'(?:Issue\s*Date|Revision(?:\s*Date)?|Date\s*of\s*issue|Version\s*date|Date\s*Prepared|Prepared\s*on|Issued|MSDS\s*Date|Last\s*Updated|Last\s*Revision|Last\s*Revised|Updated\s*on|Last\s*Modified|Effective\s*Date)[^\n]{0,40}?[:\-]?\s*' \
+        r'(?:Issue\s*Date|Revision(?:\s*Date)?|Date\s*of\s*issue|Version\s*date|Date\s*Prepared|Prepared\s*on|Issued|MSDS\s*Date|SDS\s*Date|Last\s*Updated|Last\s*Revision|Last\s*Revised|Updated\s*on|Last\s*Modified|Effective\s*Date)[^\n]{0,40}?[:\-]?\s*' \
         r'(\d{1,2}[\-\/\.]+\d{1,2}[\-\/\.]+\d{2,4}|\d{4}-\d{2}-\d{2}|[A-Za-z]+\.?\s+\d{1,2},?\s*\d{4}|\d{1,2}\s+[A-Za-z]+\.?\s+\d{4}|\d{1,2}[\-\/.][A-Za-z]{3,}\.?[\-\/.]\d{2,4}|[A-Za-z]+\.?\s+\d{4})',
         r'Revision[:\s]*(\d{4}-\d{2}-\d{2})',
         r'Revision[:\s]*(\d{1,2}[\-\/]\d{1,2}[\-\/]\d{4})',

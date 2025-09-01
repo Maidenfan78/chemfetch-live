@@ -35,8 +35,8 @@ def extract_issue_date(text: str) -> Optional[str]:
                     chosen_iso = d.strftime('%Y-%m-%d')
                     logger.info(f"[SDS_EXTRACTOR] Parsed date '{candidate}' as {d} -> ISO: {chosen_iso}")
                     
-                    # Prefer issue/revision/prepared/issued/creation/version over print
-                    if any(key in label for key in ['issue', 'prepared', 'issued', 'creation', 'revision', 'version']):
+                    # Prefer issue/revision/prepared/issued/creation/version/sds over print
+                    if any(key in label for key in ['issue', 'prepared', 'issued', 'creation', 'revision', 'version', 'sds']):
                         chosen = chosen_iso
                         break
                     if not chosen:

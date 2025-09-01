@@ -7,7 +7,7 @@ import re
 SECTION_PATTERN = re.compile(r'^\s*(?:section\s*)?(\d{1,2})(?:\s|:|\.)(?=\s)', re.IGNORECASE | re.MULTILINE)
 
 DATE_PATTERN = re.compile(
-    r'(\b(?:Revision(?:\s*Date)?|Issue\s*Date|Date\s*of\s*issue|Version\s*date|SDS\s*creation\s*date|Date\s*Prepared|Prepared\s*on|Prepared|Issued|Printed\s*on|Print\s*date|Printing\s*date)[^\n]{0,40})\s*[:]?\s*(?:\nPage[^\n]*\n)?\s*'
+    r'(\b(?:Revision(?:\s*Date)?|Issue\s*Date|Date\s*of\s*issue|Version\s*date|SDS\s*creation\s*date|SDS\s*date|Date\s*Prepared|Prepared\s*on|Prepared|Issued|Printed\s*on|Print\s*date|Printing\s*date)[^\n]{0,40})\s*[:]?\s*(?:\nPage[^\n]*\n)?\s*'
     r'('
     r'(?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})'                         # 01/09/2022 or 09-01-22
     r'|(?:\d{4}-\d{2}-\d{2})'                                          # 2022-09-01
