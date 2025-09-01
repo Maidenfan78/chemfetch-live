@@ -49,6 +49,14 @@ except Exception:
     pytesseract = None
     OCR_AVAILABLE = False
 
+# Optional PIL import for PyMuPDF raster OCR fallback (avoids Poppler dependency)
+try:
+    from PIL import Image
+    PIL_AVAILABLE = True
+except Exception:
+    Image = None  # type: ignore
+    PIL_AVAILABLE = False
+
 try:
     # Prefer modular extractors for better maintainability
     from .modules.section_1 import (
@@ -273,6 +281,33 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
         except Exception as e:
             logger.warning(f"OCR failed: {e}")
 
+    # Fallback OCR without Poppler using PyMuPDF rasterization
+    # Useful on systems where pdf2image/poppler is unavailable
+    if PYMUPDF_AVAILABLE and OCR_AVAILABLE and pytesseract and PIL_AVAILABLE and fitz and Image:
+        try:
+            doc = fitz.open(str(pdf_path))  # type: ignore
+            ocr_text_parts = []
+            # Render each page to a high-resolution image for better OCR accuracy
+            # Use a zoom matrix (~200 DPI equivalent)
+            zoom = 2.0
+            mat = fitz.Matrix(zoom, zoom)  # type: ignore
+            for page in doc:  # type: ignore
+                pix = page.get_pixmap(matrix=mat, alpha=False)
+                # Convert pixmap to PIL Image
+                mode = "RGB" if pix.n >= 3 else "L"
+                img = Image.frombytes(mode, [pix.width, pix.height], pix.samples)
+                # Optional light preprocessing: ensure grayscale to reduce noise
+                if mode != "L":
+                    img = img.convert("L")
+                ocr_text_parts.append(pytesseract.image_to_string(img))
+            doc.close()
+            ocr_text = "\n".join(ocr_text_parts).strip()
+            if ocr_text:
+                logger.info(f"Extracted {len(ocr_text)} chars using PyMuPDF OCR fallback")
+                return ocr_text
+        except Exception as e:
+            logger.warning(f"PyMuPDF OCR fallback failed: {e}")
+
     logger.error("All text extraction methods failed")
     return ""
 
@@ -290,23 +325,29 @@ def get_section(text: str, section_num: int) -> str:
     """
     # Build start pattern
     if section_num == 1:
-        # Identification word can be OCR-mangled; rely on the section number and common separators
+        # Identification can be OCR-mangled; rely on section number and separators
         start_pat = rf'^\s*(?:section\s*)?1\s*[:\.-]?\s.*$'
     elif section_num == 14:
-        start_pat = rf'^\s*(?:section\s*)?14\s*[:\.-]?\s.*transport.*$'
+        # Relaxed: do not require the word 'transport' to handle OCR/title variance
+        start_pat = rf'^\s*(?:section\s*)?14\s*[:\.-]?\s.*$'
     else:
         # Require punctuation after number to avoid addresses like "2 Fred ..."
         start_pat = rf'^\s*(?:section\s*)?{section_num}\s*[:\.-]\s.*$'
 
+    # A header for any subsequent section
     next_pat = r'^\s*(?:section\s*)?\d{1,2}\s*[:\.-]\s'
 
     start_m = re.search(start_pat, text, re.IGNORECASE | re.MULTILINE)
     if start_m:
+        # Begin right after the matched header line to avoid re-matching the same header
         start = start_m.start()
-        # Find the next header after start
-        next_m = re.search(next_pat, text[start+1:], re.IGNORECASE | re.MULTILINE)
-        end = (start + 1 + next_m.start()) if next_m else len(text)
-        return text[start:end]
+        search_from = start_m.end()
+        next_m = re.search(next_pat, text[search_from:], re.IGNORECASE | re.MULTILINE)
+        end = (search_from + next_m.start()) if next_m else len(text)
+        section = text[start:end]
+        # Guard against pathological tiny matches from OCR noise
+        if len(section.strip()) >= 30:
+            return section
 
     # Fallback (looser) single pass, keeps prior behavior if strict fails
     loose = rf'(?:^|\n)\s*(?:section\s*)?{section_num}(?!\s*/)(?:\s|:|\.|-).*?' \
@@ -652,6 +693,15 @@ def extract_date(text: str) -> Optional[str]:
     Priority: Issue/Revision/Prepared (and similar) over Print/Printed.
     """
 
+    # 0) Fast path: explicitly look for labeled ISO-like dates first (robust for OCR)
+    iso_label = re.search(
+        r'(Issue\s*Date|Revision(?:\s*Date)?|Date\s*of\s*issue|Version\s*date|Date\s*Prepared|Prepared\s*on|Issued)[^\n]{0,60}?(\d{4}-\d{2}-\d{2})',
+        text,
+        re.IGNORECASE,
+    )
+    if iso_label:
+        return iso_label.group(2)
+
     # 1) Prefer modular labeled extraction (captures and prioritizes by label)
     try:
         try:
@@ -681,7 +731,23 @@ def extract_date(text: str) -> Optional[str]:
         if matches:
             try:
                 from datetime import datetime, date
-                for date_str in matches:
+                # Prefer candidates containing a 4-digit year when available
+                def has_four_digit_year(s: str) -> bool:
+                    return bool(re.search(r"\b\d{4}\b", s))
+                # Normalize to list (re.findall may return tuples when groups present)
+                norm = []
+                for m in matches:
+                    if isinstance(m, tuple):
+                        # pick the last non-empty group (typical date capture)
+                        for part in m[::-1]:
+                            if part:
+                                norm.append(part)
+                                break
+                    else:
+                        norm.append(m)
+                # Stable sort: 4-digit year first
+                ordered = sorted(norm, key=lambda s: (0 if has_four_digit_year(str(s)) else 1))
+                for date_str in ordered:
                     # Normalize month abbreviations with trailing dot
                     cleaned = re.sub(r'\b([A-Za-z]{3,})\.', r'\1', date_str)
                     for fmt in ['%d/%m/%Y', '%m/%d/%Y', '%Y-%m-%d', '%d-%m-%Y', '%d.%m.%Y', '%d %b %Y', '%d %B %Y', '%b %d %Y', '%B %d %Y', '%d-%b-%Y', '%d-%b-%y', '%d.%b.%Y', '%d.%b.%y']:
@@ -703,7 +769,7 @@ def extract_date(text: str) -> Optional[str]:
                             except ValueError:
                                 continue
             except ImportError:
-                return matches[0]
+                return norm[0] if norm else None
 
     # 3) Finally, header-based extraction (includes print/printing date variants)
     try:

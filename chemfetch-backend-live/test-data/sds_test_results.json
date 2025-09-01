@@ -1,5 +1,5 @@
 {
-  "test_timestamp": "2025-09-01T22:26:29.242882",
+  "test_timestamp": "2025-09-01T22:37:36.194504",
   "total_files": 35,
   "successful": 35,
   "failed": 0,
@@ -14,7 +14,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Würth Chile Ltda",
+          "value": "WÃ¼rth Chile Ltda",
           "confidence": 1.0
         },
         "description": {
@@ -49,7 +49,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "Würth Chile Ltda",
+          "value": "WÃ¼rth Chile Ltda",
           "confidence": 1.0
         },
         "description": {
@@ -172,7 +172,7 @@
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2019-01-04",
+          "value": "2024-01-19",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
@@ -223,7 +223,7 @@
           "confidence": 0.0
         },
         "issue_date": {
-          "value": "2019-01-04",
+          "value": "2024-01-19",
           "confidence": 1.0
         }
       },
@@ -231,44 +231,75 @@
     },
     "sds_4.pdf": {
       "success": true,
-      "fields_extracted": 0,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": null,
-          "confidence": 0
+          "value": "Armor All Original Protectant - Spray",
+          "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0
+          "value": "Energizer Manufacturing, Inc",
+          "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0
+          "value": "General use",
+          "confidence": 1.0
         },
         "issue_date": {
-          "value": null,
-          "confidence": 0
+          "value": "2023-09-11",
+          "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0
+          "value": "none",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": null,
-          "confidence": 0
+          "confidence": 0.0
         }
       },
       "full_data": {
-        "error": "Could not extract text from PDF",
         "extraction_info": {
-          "text_length": 0,
+          "text_length": 16453,
           "available_methods": {
             "pymupdf": true,
             "pdfplumber": true,
             "pdfminer": true
           },
           "extraction_mode": "full"
+        },
+        "product_name": {
+          "value": "Armor All Original Protectant - Spray",
+          "confidence": 1.0
+        },
+        "manufacturer": {
+          "value": "Energizer Manufacturing, Inc",
+          "confidence": 1.0
+        },
+        "description": {
+          "value": "General use",
+          "confidence": 1.0
+        },
+        "product_use": {
+          "value": "General use",
+          "confidence": 1.0
+        },
+        "dangerous_goods_class": {
+          "value": "none",
+          "confidence": 1.0
+        },
+        "subsidiary_risk": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "packing_group": {
+          "value": null,
+          "confidence": 0.0
+        },
+        "issue_date": {
+          "value": "2023-09-11",
+          "confidence": 1.0
         }
       },
       "file_size_mb": 1.98
@@ -441,7 +472,7 @@
           "confidence": 1.0
         },
         "issue_date": {
-          "value": "2021-07-01",
+          "value": "2021-07-21",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
@@ -492,7 +523,7 @@
           "confidence": 0.0
         },
         "issue_date": {
-          "value": "2021-07-01",
+          "value": "2021-07-21",
           "confidence": 1.0
         }
       },
@@ -500,7 +531,7 @@
     },
     "sds_8.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -520,8 +551,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": null,
@@ -555,8 +586,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
@@ -650,11 +681,11 @@
     },
     "sds_10.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "JET POWER FUEL – 100GM/230GM/450GM",
+          "value": "JET POWER FUEL â€“ 100GM/230GM/450GM",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -670,12 +701,12 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "N.A.",
+          "confidence": 1.0
         }
       },
       "full_data": {
@@ -689,7 +720,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "JET POWER FUEL – 100GM/230GM/450GM",
+          "value": "JET POWER FUEL â€“ 100GM/230GM/450GM",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -705,16 +736,16 @@
           "confidence": 0.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "N.A.",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2020-01-03",
@@ -729,7 +760,7 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
+          "value": "AutoChemâ„¢ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -764,7 +795,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
+          "value": "AutoChemâ„¢ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -800,7 +831,7 @@
     },
     "sds_12.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -812,7 +843,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "CLEANING AGENT • DISINFECTANT",
+          "value": "CLEANING AGENT â€¢ DISINFECTANT",
           "confidence": 1.0
         },
         "issue_date": {
@@ -820,12 +851,12 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "None",
+          "confidence": 1.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "None Allocated",
+          "confidence": 1.0
         }
       },
       "full_data": {
@@ -847,7 +878,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "CLEANING AGENT • DISINFECTANT",
+          "value": "CLEANING AGENT â€¢ DISINFECTANT",
           "confidence": 1.0
         },
         "product_use": {
@@ -855,16 +886,16 @@
           "confidence": 0.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "None",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "None Allocated",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2007-03-06",
@@ -879,7 +910,7 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "SC Johnson Professional Mr. Muscle® Floor Cleaner",
+          "value": "SC Johnson Professional Mr. MuscleÂ® Floor Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -914,7 +945,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "SC Johnson Professional Mr. Muscle® Floor Cleaner",
+          "value": "SC Johnson Professional Mr. MuscleÂ® Floor Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -950,7 +981,7 @@
     },
     "sds_14.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -970,12 +1001,12 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "None",
+          "confidence": 1.0
         }
       },
       "full_data": {
@@ -1005,16 +1036,16 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "None",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2021-04-05",
@@ -1100,7 +1131,7 @@
     },
     "sds_16.PDF": {
       "success": true,
-      "fields_extracted": 6,
+      "fields_extracted": 4,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -1120,12 +1151,12 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "2.1",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "packing_group": {
-          "value": "Not assigned by regulation",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         }
       },
       "full_data": {
@@ -1155,16 +1186,16 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "2.1",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "subsidiary_risk": {
           "value": null,
           "confidence": 0.0
         },
         "packing_group": {
-          "value": "Not assigned by regulation",
-          "confidence": 1.0
+          "value": null,
+          "confidence": 0.0
         },
         "issue_date": {
           "value": "2024-11-26",
@@ -1850,7 +1881,7 @@
     },
     "sds_26.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -1870,8 +1901,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": null,
@@ -1905,8 +1936,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
@@ -2375,7 +2406,7 @@
     },
     "sds_33.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -2399,8 +2430,8 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "III",
+          "confidence": 1.0
         }
       },
       "full_data": {
@@ -2438,8 +2469,8 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "III",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2021-06-08",

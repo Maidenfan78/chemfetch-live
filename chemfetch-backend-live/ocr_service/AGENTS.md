@@ -89,6 +89,7 @@ regex==2024.5.15       # Advanced regex patterns
 - **pdfplumber**: Primary method for digital PDFs with embedded text
 - **PyMuPDF**: Alternative extraction for complex PDF structures
 - **OCR Pipeline**: Tesseract + pdf2image for scanned documents
+- **OCR Fallback (no Poppler)**: When Poppler is not installed, a PyMuPDF rasterization path renders pages to images (via Pillow) and runs Tesseract OCR. This enables robust scanned-PDF support without system Poppler.
 - **Hybrid Approach**: Combine methods based on PDF characteristics
 
 ## Performance Optimization
@@ -98,6 +99,8 @@ regex==2024.5.15       # Advanced regex patterns
 - **Error Recovery**: Fast fallback between parsing methods
 - **Resource Cleanup**: Properly clean up PDF objects and temp files
 - **Concurrent Handling**: Support multiple simultaneous requests
+
+Note: The PyMuPDF OCR fallback renders at ~200 DPI for accuracy while keeping performance within the <5s target on typical SDS documents.
 
 ## Data Extraction Patterns
 

@@ -109,6 +109,25 @@ for image in images:
     text = pytesseract.image_to_string(image)
 ```
 
+Fallback without Poppler (uses PyMuPDF + Pillow):
+
+```python
+import fitz  # PyMuPDF
+from PIL import Image
+import pytesseract
+
+doc = fitz.open(pdf_path)
+mat = fitz.Matrix(2, 2)  # ~200 DPI
+parts = []
+for page in doc:
+    pix = page.get_pixmap(matrix=mat, alpha=False)
+    mode = 'RGB' if pix.n >= 3 else 'L'
+    img = Image.frombytes(mode, [pix.width, pix.height], pix.samples)
+    img = img.convert('L') if mode != 'L' else img
+    parts.append(pytesseract.image_to_string(img))
+text = '\n'.join(parts)
+```
+
 ## Pattern Matching & Regex
 
 ### Chemical Identification Patterns
@@ -138,7 +157,7 @@ precaution_pattern = r'\bP[1-5]\d{2}\b'
 def extract_sections(text):
     sections = {}
     section_patterns = {
-        'identification': r'section\s+1[:\.\s]*identification',
+        'identification': r'^(?:section\s*)?1\s*[:\.-]?\s',  # relaxed for OCR
         'hazards': r'section\s+2[:\.\s]*hazard',
         'composition': r'section\s+3[:\.\s]*composition',
         # ... additional sections
