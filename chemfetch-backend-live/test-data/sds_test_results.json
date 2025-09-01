@@ -1,5 +1,5 @@
 {
-  "test_timestamp": "2025-09-01T22:37:36.194504",
+  "test_timestamp": "2025-09-01T23:34:26.649860",
   "total_files": 35,
   "successful": 35,
   "failed": 0,
@@ -14,7 +14,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "WÃ¼rth Chile Ltda",
+          "value": "Würth Chile Ltda",
           "confidence": 1.0
         },
         "description": {
@@ -49,7 +49,7 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": "WÃ¼rth Chile Ltda",
+          "value": "Würth Chile Ltda",
           "confidence": 1.0
         },
         "description": {
@@ -176,7 +176,7 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "none",
+          "value": "8",
           "confidence": 1.0
         },
         "packing_group": {
@@ -211,7 +211,7 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "none",
+          "value": "8",
           "confidence": 1.0
         },
         "subsidiary_risk": {
@@ -251,7 +251,7 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "none",
+          "value": "3.1",
           "confidence": 1.0
         },
         "packing_group": {
@@ -286,7 +286,7 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "none",
+          "value": "3.1",
           "confidence": 1.0
         },
         "subsidiary_risk": {
@@ -393,7 +393,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "Solvent",
+          "value": "of necessary first aid measures",
           "confidence": 1.0
         },
         "issue_date": {
@@ -428,7 +428,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "Solvent",
+          "value": "of necessary first aid measures",
           "confidence": 1.0
         },
         "product_use": {
@@ -685,7 +685,7 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "JET POWER FUEL â€“ 100GM/230GM/450GM",
+          "value": "JET POWER FUEL – 100GM/230GM/450GM",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -720,7 +720,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "JET POWER FUEL â€“ 100GM/230GM/450GM",
+          "value": "JET POWER FUEL – 100GM/230GM/450GM",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -760,7 +760,7 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "AutoChemâ„¢ Heavy Duty Brake & Parts Cleaner",
+          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -776,7 +776,7 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "3",
+          "value": "1",
           "confidence": 1.0
         },
         "packing_group": {
@@ -795,7 +795,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "AutoChemâ„¢ Heavy Duty Brake & Parts Cleaner",
+          "value": "AutoChem™ Heavy Duty Brake & Parts Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -811,7 +811,7 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": "3",
+          "value": "1",
           "confidence": 1.0
         },
         "subsidiary_risk": {
@@ -843,7 +843,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "CLEANING AGENT â€¢ DISINFECTANT",
+          "value": "CLEANING AGENT • DISINFECTANT",
           "confidence": 1.0
         },
         "issue_date": {
@@ -878,7 +878,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "CLEANING AGENT â€¢ DISINFECTANT",
+          "value": "CLEANING AGENT • DISINFECTANT",
           "confidence": 1.0
         },
         "product_use": {
@@ -910,7 +910,7 @@
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
-          "value": "SC Johnson Professional Mr. MuscleÂ® Floor Cleaner",
+          "value": "SC Johnson Professional Mr. Muscle® Floor Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -945,7 +945,7 @@
           "extraction_mode": "full"
         },
         "product_name": {
-          "value": "SC Johnson Professional Mr. MuscleÂ® Floor Cleaner",
+          "value": "SC Johnson Professional Mr. Muscle® Floor Cleaner",
           "confidence": 1.0
         },
         "manufacturer": {
@@ -1068,7 +1068,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "Aerosol spray paint.",
+          "value": "is by spray atomisation from a hand held aerosol pack",
           "confidence": 1.0
         },
         "issue_date": {
@@ -1103,7 +1103,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "Aerosol spray paint.",
+          "value": "is by spray atomisation from a hand held aerosol pack",
           "confidence": 1.0
         },
         "product_use": {
@@ -1656,7 +1656,7 @@
     },
     "sds_23.pdf": {
       "success": true,
-      "fields_extracted": 5,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -1668,7 +1668,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "drowsiness or dizziness.",
+          "value": "of first aid measures",
           "confidence": 1.0
         },
         "issue_date": {
@@ -1676,8 +1676,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "1.1",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": "II",
@@ -1703,7 +1703,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "drowsiness or dizziness.",
+          "value": "of first aid measures",
           "confidence": 1.0
         },
         "product_use": {
@@ -1711,8 +1711,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "1.1",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": "Not Applicable Limited Quantities:1 L",
@@ -1743,7 +1743,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "an allergic skin reaction.",
+          "value": "of first aid measures",
           "confidence": 1.0
         },
         "issue_date": {
@@ -1778,7 +1778,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "an allergic skin reaction.",
+          "value": "of first aid measures",
           "confidence": 1.0
         },
         "product_use": {
@@ -1818,7 +1818,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "Solvent, Cleaning Solvent",
+          "value": "of necessary first aid measures",
           "confidence": 1.0
         },
         "issue_date": {
@@ -1853,7 +1853,7 @@
           "confidence": 1.0
         },
         "description": {
-          "value": "Solvent, Cleaning Solvent",
+          "value": "of necessary first aid measures",
           "confidence": 1.0
         },
         "product_use": {
@@ -2031,7 +2031,7 @@
     },
     "sds_28.pdf": {
       "success": true,
-      "fields_extracted": 2,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -2039,20 +2039,20 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "MONTANA CANS",
+          "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Lacquer",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2019-01-02",
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": null,
@@ -2074,20 +2074,20 @@
           "confidence": 1.0
         },
         "manufacturer": {
-          "value": null,
-          "confidence": 0.0
+          "value": "MONTANA CANS",
+          "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Lacquer",
+          "confidence": 1.0
         },
         "product_use": {
           "value": null,
           "confidence": 0.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "2.1",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,
@@ -2181,7 +2181,7 @@
     },
     "sds_30.pdf": {
       "success": true,
-      "fields_extracted": 5,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -2201,8 +2201,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "7",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": "Not Regulated",
@@ -2236,8 +2236,8 @@
           "confidence": 0.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "7",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": "Not Regulated",
@@ -2406,7 +2406,7 @@
     },
     "sds_33.pdf": {
       "success": true,
-      "fields_extracted": 5,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -2426,8 +2426,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "5.2",
+          "confidence": 1.0
         },
         "packing_group": {
           "value": "III",
@@ -2461,8 +2461,8 @@
           "confidence": 1.0
         },
         "dangerous_goods_class": {
-          "value": null,
-          "confidence": 0.0
+          "value": "5.2",
+          "confidence": 1.0
         },
         "subsidiary_risk": {
           "value": null,

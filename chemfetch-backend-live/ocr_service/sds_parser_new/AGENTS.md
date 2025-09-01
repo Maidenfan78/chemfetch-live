@@ -30,6 +30,9 @@ Root-level (in ocr_service/):
 ├── parse_sds.py         # CLI/unified parser wrapper
 ├── quick_parser.py      # Lightweight regex-based fallback
 └── ocr_service.py       # Flask app using this module
+
+Additional developer helpers:
+- `ocr_service/dump_text.py` – small utility to dump PDF text (pdfplumber/pdfminer) for debugging parser behavior.
 ```
 
 ## Parsing Strategy (Layered Approach)
@@ -203,6 +206,13 @@ test_files = [
     'damaged_sds.pdf'          # Corrupted or incomplete PDF
 ]
 ```
+
+## Recent Updates
+
+- Section detection: tolerates leading bullets/symbols before headers (e.g., "* SECTION 1").
+- Manufacturer/Description: added German labels (Hersteller, Lieferant, Verwendung, Anwendung, Verpackungsgruppe, Gefahrklasse) and improved near-label scanning that avoids codes (SU/PROC) and prefers lines with nearby contact info.
+- Description prioritization: prefer Application/Use lines over filler like "No further relevant information available.".
+- Dangerous goods class: extended windowed scanning and context-based upgrade to prefer subclasses (e.g., 2.1) when a bare class was initially found.
 
 ## Common SDS Formats & Variations
 

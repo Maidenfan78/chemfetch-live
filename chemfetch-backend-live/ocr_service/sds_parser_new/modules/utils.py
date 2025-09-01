@@ -30,11 +30,11 @@ def is_noise_text(text: str) -> bool:
         return True
     if re.search(r'\b\d{2,4}\s+\d{2,4}\s+\d{2,4}\b', text_clean):  # Phone numbers
         return True
-    if text_clean.lower() in ['name', 'date', 'address', 'contact', 'details', 'information']:
+    if text_clean.lower() in ['name', 'date', 'address', 'contact', 'details', 'information', 'adresse', 'kontakt', 'informationen']:
         return True
     if text_clean.lower() in {
         'australia', 'new zealand', 'united states', 'united kingdom',
-        'usa', 'uk', 'canada'
+        'usa', 'uk', 'canada', 'deutschland', 'germany'
     }:
         return True
 

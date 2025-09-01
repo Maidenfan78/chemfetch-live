@@ -325,17 +325,17 @@ def get_section(text: str, section_num: int) -> str:
     """
     # Build start pattern
     if section_num == 1:
-        # Identification can be OCR-mangled; rely on section number and separators
-        start_pat = rf'^\s*(?:section\s*)?1\s*[:\.-]?\s.*$'
+        # Identification can be OCR-mangled; allow leading bullets/symbols and rely on section number
+        start_pat = rf'^\W*(?:section\s*)?1\s*[:\.-]?\s.*$'
     elif section_num == 14:
-        # Relaxed: do not require the word 'transport' to handle OCR/title variance
-        start_pat = rf'^\s*(?:section\s*)?14\s*[:\.-]?\s.*$'
+        # Relaxed: allow leading bullets/symbols
+        start_pat = rf'^\W*(?:section\s*)?14\s*[:\.-]?\s.*$'
     else:
         # Require punctuation after number to avoid addresses like "2 Fred ..."
         start_pat = rf'^\s*(?:section\s*)?{section_num}\s*[:\.-]\s.*$'
 
     # A header for any subsequent section
-    next_pat = r'^\s*(?:section\s*)?\d{1,2}\s*[:\.-]\s'
+    next_pat = r'^\W*(?:section\s*)?\d{1,2}\s*[:\.-]\s'
 
     start_m = re.search(start_pat, text, re.IGNORECASE | re.MULTILINE)
     if start_m:

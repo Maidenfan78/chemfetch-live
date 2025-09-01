@@ -35,14 +35,15 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
             logger.debug(f"[SDS_EXTRACTOR] Checking label '{label}' in line: '{clean[:50]}...'")
             
             # Case 1: label and value on same line
-            same_line_pattern = rf"^{label}\s*[:\-]\s*(.+)$"
+            # Allow leading bullets or symbols before the label
+            same_line_pattern = rf"^\W*{label}\s*[:\-]\s*(.+)$"
             same = re.search(same_line_pattern, clean, re.IGNORECASE)
             if not same:
                 # Handle case with whitespace but no colon/hyphen, but avoid matching section headers like
                 # "Manufacturer or supplier's details" or "Recommended use of the chemical and restrictions on use".
                 # Use a generic whitespace matcher after the label (no word-boundary), so labels ending with
                 # non-word characters (e.g., "Use(s)") are supported.
-                tmp = re.search(rf"^{label}\s+(.+)$", clean, re.IGNORECASE)
+                tmp = re.search(rf"^\W*{label}\s+(.+)$", clean, re.IGNORECASE)
                 if tmp:
                     tail = tmp.group(1).strip()
                     # Common continuation phrases that indicate this is still part of the label header, not a value
@@ -229,7 +230,7 @@ def extract_from_table_structure(text: str, field_name: str) -> Optional[str]:
     elif field_name == 'dangerous_goods_class':
         for i, line in enumerate(lines):
             # Allow header to be split across lines (e.g., 'Transport hazard' then 'class(es)')
-            header_hit = re.search(r'(?:DG\s*Class|Hazard\s*Class|Transport\s+hazard(?:\s+class(?:\(es\))?)?)', line, re.IGNORECASE)
+            header_hit = re.search(r'(?:DG\s*Class|Hazard\s*Class|Transport\s+hazard(?:\s+class(?:\(es\))?)?|Gefahrklasse|Transportklasse|Klasse\b)', line, re.IGNORECASE)
             if not header_hit:
                 # If current line is just 'class(es)', also accept when previous had 'Transport hazard'
                 if i > 0 and re.search(r'^\s*class(?:\(es\))?\s*$', line, re.IGNORECASE) and re.search(r'Transport\s+hazard', lines[i-1], re.IGNORECASE):
@@ -237,18 +238,61 @@ def extract_from_table_structure(text: str, field_name: str) -> Optional[str]:
             if header_hit:
                 # Gather this line and the next couple lines to scan for class tokens
                 segment = [line]
-                for j in range(i + 1, min(i + 4, len(lines))):
+                for j in range(i + 1, min(i + 25, len(lines))):
                     nxt = lines[j].strip()
                     if nxt:
                         segment.append(nxt)
                 # Check tokens across the segment
+                # Prefer subclass tokens (e.g., 2.1) over bare classes (e.g., 2)
+                subclass = None
+                bareclass = None
                 for seg_line in segment:
                     tokens = re.split(r'\s+|\|', seg_line)
                     for tok in tokens:
-                        tok = tok.strip(',;')
-                        if validate_dangerous_goods_class(tok):
-                            logger.info(f"[SDS_EXTRACTOR] Found DG class in table segment: '{tok}'")
-                            return tok
+                        t = tok.strip(',;')
+                        if validate_dangerous_goods_class(t):
+                            if re.match(r'^[1-9]\.[1-9]$', t):
+                                subclass = subclass or t
+                            elif re.match(r'^[1-9]$', t):
+                                bareclass = bareclass or t
+                if subclass:
+                    logger.info(f"[SDS_EXTRACTOR] Found DG subclass in table segment: '{subclass}'")
+                    return subclass
+                if bareclass:
+                    logger.info(f"[SDS_EXTRACTOR] Found DG class in table segment: '{bareclass}'")
+                    return bareclass
+        # Final fallback: scan lines that contain Class/Klasse keywords for a valid class token
+        for i, line in enumerate(lines):
+            if re.search(r'\b(Class|Klasse|Gefahrklasse)\b', line, re.IGNORECASE):
+                window = " ".join(lines[i:i+20])
+                toks = [t.strip(',;') for t in re.split(r'\s+|\|', window) if t.strip()]
+                # Prefer subclass tokens
+                for t in toks:
+                    if re.match(r'^[1-9]\.[1-9]$', t):
+                        logger.info(f"[SDS_EXTRACTOR] Found DG subclass near keyword: '{t}'")
+                        return t
+                for t in toks:
+                    if re.match(r'^[1-9]$', t):
+                        logger.info(f"[SDS_EXTRACTOR] Found DG class near keyword: '{t}'")
+                        return t
+        # Global scan across section with context keywords; prefer subclass and most frequent
+        ctx_pat = re.compile(r'(Class|Klasse|Gefahrklasse|Label|UN\b|IMDG|IATA|ADG|Hazchem|AEROSOLS)', re.IGNORECASE)
+        counts = {}
+        for line in lines:
+            if not ctx_pat.search(line):
+                continue
+            for tok in re.findall(r'\b([1-9](?:\.[1-9])?)\b', line):
+                counts[tok] = counts.get(tok, 0) + 1
+        if counts:
+            # Prefer subclass tokens
+            subclass = {k: v for k, v in counts.items() if '.' in k}
+            if subclass:
+                choice = max(subclass.items(), key=lambda kv: kv[1])[0]
+                logger.info(f"[SDS_EXTRACTOR] DG class by global context (subclass): '{choice}'")
+                return choice
+            choice = max(counts.items(), key=lambda kv: kv[1])[0]
+            logger.info(f"[SDS_EXTRACTOR] DG class by global context: '{choice}'")
+            return choice
     
     return None
 
@@ -386,6 +430,35 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
             logger.info(f"[SDS_EXTRACTOR] Manufacturer from inline supplier details: '{candidate}'")
             return candidate
     
+    # Strategy 1c: Nearby lines around manufacturer/supplier labels (handles layouts where value is separated)
+    try:
+        lines = section_text.splitlines()
+        for i, line in enumerate(lines):
+            if re.search(r'(Manufacturer\s*/\s*Supplier|Hersteller\s*/\s*Lieferant|Hersteller|Lieferant)', line, re.IGNORECASE):
+                # Only scan forward lines to avoid picking earlier classification codes (e.g., PROC7)
+                for j in range(i + 1, min(len(lines), i + 8)):
+                    cand = lines[j].strip()
+                    if not cand or is_noise_text(cand):
+                        continue
+                    # Skip pure labels and known code prefixes
+                    if re.fullmatch(r'(?:Manufacturer|Supplier|Hersteller|Lieferant)\s*[:\-]?', cand, re.IGNORECASE):
+                        continue
+                    if re.match(r'^(SU\d+|PC\d+|PROC\d+|ACN\b|ABN\b)', cand, re.IGNORECASE):
+                        continue
+                    cleaned = clean_company_candidate(cand)
+                    if not cleaned or is_noise_text(cleaned):
+                        continue
+                    # Prefer classic corporate suffixes; otherwise, require contact/address clue nearby
+                    has_suffix = re.search(r'\b(Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Corporation|GmbH|S\.L\.|S\.A\.|AG|BV|NV|BVBA|LLC|LLP)\b', cleaned, re.IGNORECASE)
+                    if not has_suffix:
+                        window = "\n".join(lines[j:j+5])
+                        if not re.search(r'(Tel\.?|Phone|Fax|E[-]?mail|E[-]?Mail|@|www\.|http|[A-Z]{1,2}-?\d{4,5}|\b[Dd]-\d{4,5}\b)', window):
+                            continue
+                    logger.info(f"[SDS_EXTRACTOR] Manufacturer near label: '{cleaned}'")
+                    return cleaned
+    except Exception:
+        pass
+    
     # Strategy 2: Look in "Details of the supplier" section
     supplier_section = re.search(r'Details\s+of\s+the\s+supplier[^\n]*\n([^:]+?)(?:\n\s*[A-Z]|\n\s*\d|$)', 
                                 section_text, re.IGNORECASE | re.DOTALL)
@@ -410,11 +483,11 @@ def extract_manufacturer(section_text: str) -> Optional[str]:
             continue
         
         # Look for lines that contain company indicators
-        if re.search(r'\b(?:Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Corporation)\b', clean, re.IGNORECASE):
+        if re.search(r'\b(?:Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Corporation|GmbH|S\.L\.|S\.A\.|AG|BV|NV|BVBA|LLC|LLP)\b', clean, re.IGNORECASE):
             # Check if this looks like a company name (not just "Product Name: Pty Ltd")
             if not re.search(r'Product\s+Name\s*:', clean, re.IGNORECASE):
                 # Clean up the company name
-                company_name = re.sub(r'^.*?([A-Z][^:\n]*(?:Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Corporation)[^:\n]*).*$', 
+                company_name = re.sub(r'^.*?([A-Z][^:\n]*(?:Pty\s+Ltd|Ltd|Inc\.?|Corp\.?|Company|Corporation|GmbH|S\.L\.|S\.A\.|AG|BV|NV|BVBA|LLC|LLP)[^:\n]*).*$', 
                                     r'\1', clean, re.IGNORECASE)
                 if company_name != clean and company_name:  # If regex matched and extracted something
                     company_name = clean_company_candidate(company_name.strip())
@@ -448,10 +521,35 @@ def extract_description(section_text: str) -> Optional[str]:
         r'Product\s+use',
         r'Relevant\s+identified\s+uses',
         r'Identified\s+uses',
-        r'Application'
+        r'Application',
+        # German variants
+        r'Verwendung',
+        r'Verwendungszweck',
+        r'Anwendung',
+        r'Anwendungszweck',
+        r'Empfohlene\s+Verwendung',
+        r'Verwendung\s+des\s+Stoffs(?:\s*/\s*der\s*Mischung)?',
     ]
     
-    description = extract_after_label(section_text, description_labels, 'description')
+    # Phase 1: prioritize informative labels first
+    priority_labels = [
+        r'Application',
+        r'Product\s+description',
+        r'Description',
+        r'Use\s+of\s+the\s+substance',
+        r'Product\s+use',
+        # German
+        r'Anwendung',
+        r'Verwendungszweck',
+        r'Verwendung\s+des\s+Stoffs(?:\s*/\s*der\s*Mischung)?',
+    ]
+    description = extract_after_label(section_text, priority_labels, 'description')
+    # Phase 2: fallback to broader labels if needed
+    if not description:
+        description = extract_after_label(section_text, description_labels, 'description')
+    # Filter out trivial placeholders
+    if description and re.fullmatch(r'No\s+further\s+relevant\s+information\s+available\.?', description, re.IGNORECASE):
+        description = None
     if description and not is_noise_text(description):
         # Clean up common noise in descriptions
         # 1) Remove leading continuation fragments like "of the Substance/Mixture :"
@@ -462,6 +560,8 @@ def extract_description(section_text: str) -> Optional[str]:
         description = re.sub(r'^of\s+the\s+substance\s+or\s+mixture\s+and\s+uses\s+advised\s+against\s*', '', description, re.IGNORECASE)
         # 3) Tidy odd prefix variants like "/Mixture :"
         description = re.sub(r'^/Mixture\s*:\s*', '', description, re.IGNORECASE)
+        # 3b) Handle truncated variants like "/ the mixture"
+        description = re.sub(r'^(?:/\s*)?the\s+mixture\s*[:\-]*\s*', '', description, re.IGNORECASE)
         # 4) Normalize stray leading punctuation
         description = re.sub(r'^[\s:;\-]+', '', description)
         if description.strip():
@@ -550,6 +650,18 @@ def extract_section14_field(sec14: str, labels: List[str], field_name: str) -> O
     # If label extraction failed, try table extraction
     table_result = extract_from_table_structure(sec14, field_name)
     if table_result:
+        if field_name == 'dangerous_goods_class' and re.fullmatch(r'[1-9]', table_result):
+            # Try to find a more specific subclass (e.g., 2.1) in context
+            lines = sec14.splitlines()
+            toks = []
+            for i, line in enumerate(lines):
+                if re.search(r'\b(Class|Klasse|Gefahrklasse|Label|UN\b|IMDG|IATA|ADG|Hazchem|AEROSOLS)\b', line, re.IGNORECASE):
+                    window = ' '.join(lines[i:i+20])
+                    toks += re.findall(r'\b([1-9]\.[1-9])\b', window)
+            if toks:
+                choice = max(((toks.count(t), t) for t in set(toks)), key=lambda x: x[0])[1]
+                logger.info(f"[SDS_EXTRACTOR] Upgrading DG class from '{table_result}' to subclass '{choice}' via context")
+                return choice
         return table_result
     
     return None

@@ -22,6 +22,7 @@ FIELD_LABELS = {
     'product_name': [
         # Prefer explicit trade/product name labels over generic identifier
         r'Trade\s+name',
+        r'Handelsname',
         r'Product\s+Name',
         r'Product\s+Identifier',
         r'Product\s+Ident\W*fier',
@@ -42,7 +43,12 @@ FIELD_LABELS = {
         r'Company\s+name',
         r'Registered\s+company\s+name',
         r'Distributor',
-        r'Manufacturer\s*/\s*Supplier'
+        r'Manufacturer\s*/\s*Supplier',
+        # German variants
+        r'Hersteller',
+        r'Lieferant',
+        r'Hersteller\s*/\s*Lieferant',
+        r'Inverkehrbringer',
     ],
     'product_use': [
         r'Recommended\s+use',
@@ -53,7 +59,14 @@ FIELD_LABELS = {
         r'Product\s+use',
         r'Relevant\s+identified\s+uses',
         r'Identified\s+uses',
-        r'Uses\s+advised\s+against'
+        r'Uses\s+advised\s+against',
+        # German variants
+        r'Verwendung',
+        r'Verwendungszweck',
+        r'Anwendung',
+        r'Anwendungszweck',
+        r'Empfohlene\s+Verwendung',
+        r'Verwendung\s+des\s+Stoffs(?:\s*/\s*der\s*Mischung)?',
     ],
     'dangerous_goods_class': [
         r'DG\s+Class',
@@ -62,7 +75,11 @@ FIELD_LABELS = {
         r'(?:IMDG|IATA|ADG)?\s*Hazard\s+Class',
         r'Australian\s+Dangerous\s+Goods\s+class',
         r'Dangerous\s+goods\s+class',
-        r'UN\s+Class'
+        r'UN\s+Class',
+        # German variants
+        r'Gefahrklasse',
+        r'Transportklasse',
+        r'Klasse',
     ],
     'subsidiary_risk': [
         r'Subsidiary\s+risk',
@@ -73,7 +90,10 @@ FIELD_LABELS = {
         r'Packing\s+group',
         r'PG',
         r'.*packing\s+group',
-        r'Australian\s+Dangerous\s+Goods\s+packing\s+group'
+        r'Australian\s+Dangerous\s+Goods\s+packing\s+group',
+        # German variants
+        r'Verpackungsgruppe',
+        r'Verpackungsgruppe\s*\(falls\s*zutreffend\)'
     ],
 }
 
@@ -98,6 +118,21 @@ NOISE_LABELS.extend([
     r'Company\s+name(?:\s+of\s+supplier)?',
     r'Producer',
     r'Distributor',
+    # German label words as noise values
+    r'Hersteller',
+    r'Lieferant',
+    r'Hersteller\s*/\s*Lieferant',
+    r'Verwendung',
+    r'Verwendungszweck',
+    r'Anwendung',
+    r'Empfohlene\s+Verwendung',
+    r'Gefahrklasse',
+    r'Verpackungsgruppe',
+    r'Notrufnummer',
+    r'E[-]?Mail',
+    r'Telefon',
+    r'Telefax',
+    r'Adresse',
 ])
 
 # Valid dangerous goods classes (1-9 with possible subdivisions)

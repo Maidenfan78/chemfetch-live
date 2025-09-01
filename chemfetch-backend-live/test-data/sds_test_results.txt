@@ -1,11 +1,11 @@
 🧪 ChemFetch SDS Parser Test Results
 ==================================================
-Generated: 2025-09-01 22:37:36
+Generated: 2025-09-01 23:34:26
 Total Files Tested: 35
 [1/35] sds_1.PDF
 ----------------------------------------
 ✅ product_name: SUPER GLUE FAST 20G
-✅ manufacturer: WÃ¼rth Chile Ltda
+✅ manufacturer: Würth Chile Ltda
 ✅ description: Adhesives
 ✅ issue_date: 2024-01-25
 ✅ dangerous_goods_class: 9
@@ -30,7 +30,7 @@ Total Files Tested: 35
 ✅ manufacturer: Energizer Manufacturing, Inc
 ✅ description: General use
 ✅ issue_date: 2024-01-19
-✅ dangerous_goods_class: none
+✅ dangerous_goods_class: 8
 ⚠️ packing_group: None
 📊 Extracted 5/6 key fields
 📁 File size: 0.09 MB
@@ -41,7 +41,7 @@ Total Files Tested: 35
 ✅ manufacturer: Energizer Manufacturing, Inc
 ✅ description: General use
 ✅ issue_date: 2023-09-11
-✅ dangerous_goods_class: none
+✅ dangerous_goods_class: 3.1
 ⚠️ packing_group: None
 📊 Extracted 5/6 key fields
 📁 File size: 1.98 MB
@@ -61,7 +61,7 @@ Total Files Tested: 35
 ----------------------------------------
 ✅ product_name: ACETONE
 ✅ manufacturer: Recochem Inc
-✅ description: Solvent
+✅ description: of necessary first aid measures
 ✅ issue_date: 2022-02-08
 ✅ dangerous_goods_class: 3
 ✅ packing_group: II
@@ -103,7 +103,7 @@ Total Files Tested: 35
 
 [10/35] sds_10.pdf
 ----------------------------------------
-✅ product_name: JET POWER FUEL â€“ 100GM/230GM/450GM
+✅ product_name: JET POWER FUEL – 100GM/230GM/450GM
 ✅ manufacturer: Company TAEYANG CORPORATION
 ✅ description: of substance or mixture and
 ✅ issue_date: 2020-01-03
@@ -114,11 +114,11 @@ Total Files Tested: 35
 
 [11/35] sds_11.pdf
 ----------------------------------------
-✅ product_name: AutoChemâ„¢ Heavy Duty Brake & Parts Cleaner
+✅ product_name: AutoChem™ Heavy Duty Brake & Parts Cleaner
 ✅ manufacturer: Chemtools Pty Ltd
 ✅ description: industrial solvent: Cleaning and degreasing.
 ✅ issue_date: 2023-05-08
-✅ dangerous_goods_class: 3
+✅ dangerous_goods_class: 1
 ✅ packing_group: II
 📊 Extracted 6/6 key fields
 📁 File size: 0.18 MB
@@ -127,7 +127,7 @@ Total Files Tested: 35
 ----------------------------------------
 ✅ product_name: MSDS Date 06 Mar 2007
 ✅ manufacturer: JOHNSONDIVERSEY AUSTRALIA PTY LTD
-✅ description: CLEANING AGENT â€¢ DISINFECTANT
+✅ description: CLEANING AGENT • DISINFECTANT
 ✅ issue_date: 2007-03-06
 ✅ dangerous_goods_class: None
 ✅ packing_group: None Allocated
@@ -136,7 +136,7 @@ Total Files Tested: 35
 
 [13/35] sds_13.pdf
 ----------------------------------------
-✅ product_name: SC Johnson Professional Mr. MuscleÂ® Floor Cleaner
+✅ product_name: SC Johnson Professional Mr. Muscle® Floor Cleaner
 ✅ manufacturer: SC Johnson Professional Ltd
 ✅ description: Washing and cleaning products (including solvent based products)
 ✅ issue_date: 2020-10-14
@@ -160,7 +160,7 @@ Total Files Tested: 35
 ----------------------------------------
 ✅ product_name: Dy-Mark Spray & Mark - All colours (LPG new formula)
 ✅ manufacturer: Dy-Mark
-✅ description: Aerosol spray paint.
+✅ description: is by spray atomisation from a hand held aerosol pack
 ✅ issue_date: 2021-11-03
 ✅ dangerous_goods_class: 2.1
 ✅ packing_group: Not Applicable
@@ -248,18 +248,18 @@ Total Files Tested: 35
 ----------------------------------------
 ✅ product_name: Diggers All Purpose Thinner
 ✅ manufacturer: Recochem Inc
-✅ description: drowsiness or dizziness.
+✅ description: of first aid measures
 ✅ issue_date: 2023-05-30
-⚠️ dangerous_goods_class: None
+✅ dangerous_goods_class: 1.1
 ✅ packing_group: II
-📊 Extracted 5/6 key fields
+📊 Extracted 6/6 key fields
 📁 File size: 0.32 MB
 
 [24/35] sds_24.pdf
 ----------------------------------------
 ✅ product_name: Diggers Graffiti Remover
 ✅ manufacturer: Recochem Inc
-✅ description: an allergic skin reaction.
+✅ description: of first aid measures
 ✅ issue_date: 2024-03-03
 ⚠️ dangerous_goods_class: None
 ✅ packing_group: Not Applicable
@@ -270,7 +270,7 @@ Total Files Tested: 35
 ----------------------------------------
 ✅ product_name: METHYLATED SPIRITS
 ✅ manufacturer: Recochem Inc
-✅ description: Solvent, Cleaning Solvent
+✅ description: of necessary first aid measures
 ✅ issue_date: 2022-01-01
 ✅ dangerous_goods_class: 3
 ✅ packing_group: II
@@ -302,12 +302,12 @@ Total Files Tested: 35
 [28/35] sds_28.pdf
 ----------------------------------------
 ✅ product_name: Montana Black Lackspray 150 / 400 / 600ml all Colors, silver-, gold- und coppercrome
-⚠️ manufacturer: None
-⚠️ description: None
+✅ manufacturer: MONTANA CANS
+✅ description: Lacquer
 ✅ issue_date: 2019-01-02
-⚠️ dangerous_goods_class: None
+✅ dangerous_goods_class: 2.1
 ⚠️ packing_group: None
-📊 Extracted 2/6 key fields
+📊 Extracted 5/6 key fields
 📁 File size: 0.33 MB
 
 [29/35] sds_29.pdf
@@ -327,9 +327,9 @@ Total Files Tested: 35
 ✅ manufacturer: Pelikan Artline Pty. Ltd
 ✅ description: Used to clean whiteboards.
 ✅ issue_date: 2015-08-01
-⚠️ dangerous_goods_class: None
+✅ dangerous_goods_class: 7
 ✅ packing_group: Not Regulated
-📊 Extracted 5/6 key fields
+📊 Extracted 6/6 key fields
 📁 File size: 0.21 MB
 
 [31/35] sds_31.pdf
@@ -360,9 +360,9 @@ Total Files Tested: 35
 ✅ manufacturer: Selleys, a division of DuluxGroup (New Zealand) Pty Ltd
 ✅ description: Construction adhesive
 ✅ issue_date: 2021-06-08
-⚠️ dangerous_goods_class: None
+✅ dangerous_goods_class: 5.2
 ✅ packing_group: III
-📊 Extracted 5/6 key fields
+📊 Extracted 6/6 key fields
 📁 File size: 0.45 MB
 
 [34/35] sds_34.pdf
@@ -391,6 +391,6 @@ Total Files Tested: 35
 ✅ Successful: 35
 ❌ Failed: 0
 📄 Total: 35
-📈 Avg fields: 4.8/6
+📈 Avg fields: 5.0/6
 
 🎉 Testing complete!
