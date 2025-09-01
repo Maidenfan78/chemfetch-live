@@ -1,5 +1,5 @@
 {
-  "test_timestamp": "2025-09-01T08:10:03.626132",
+  "test_timestamp": "2025-09-01T08:16:38.369307",
   "total_files": 16,
   "successful": 16,
   "failed": 0,
@@ -275,7 +275,7 @@
     },
     "sds_5.pdf": {
       "success": true,
-      "fields_extracted": 4,
+      "fields_extracted": 5,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -287,8 +287,8 @@
           "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Lubricant, Penetrant, Drives Out",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2021-08-03",
@@ -322,8 +322,8 @@
           "confidence": 1.0
         },
         "description": {
-          "value": null,
-          "confidence": 0.0
+          "value": "Lubricant, Penetrant, Drives Out",
+          "confidence": 1.0
         },
         "product_use": {
           "value": "Lubricant, Penetrant, Drives Out",
@@ -350,7 +350,7 @@
     },
     "sds_6.pdf": {
       "success": true,
-      "fields_extracted": 5,
+      "fields_extracted": 6,
       "total_fields": 6,
       "extracted_values": {
         "product_name": {
@@ -374,8 +374,8 @@
           "confidence": 1.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "II",
+          "confidence": 1.0
         }
       },
       "full_data": {
@@ -413,8 +413,8 @@
           "confidence": 0.0
         },
         "packing_group": {
-          "value": null,
-          "confidence": 0.0
+          "value": "II",
+          "confidence": 1.0
         },
         "issue_date": {
           "value": "2022-02-28",

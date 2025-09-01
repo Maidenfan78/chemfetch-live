@@ -1,6 +1,6 @@
 🧪 ChemFetch SDS Parser Test Results
 ==================================================
-Generated: 2025-09-01 08:10:03
+Generated: 2025-09-01 08:16:38
 Total Files Tested: 16
 [1/16] sds_1.PDF
 ----------------------------------------
@@ -50,11 +50,11 @@ Total Files Tested: 16
 ----------------------------------------
 ✅ product_name: WD-40 Aerosol
 ✅ manufacturer: WD-40 Company Australia
-⚠️ description: None
+✅ description: Lubricant, Penetrant, Drives Out
 ✅ issue_date: 2021-08-03
 ✅ dangerous_goods_class: 2.1
 ⚠️ packing_group: None
-📊 Extracted 4/6 key fields
+📊 Extracted 5/6 key fields
 📁 File size: 2.08 MB
 
 [6/16] sds_6.pdf
@@ -64,8 +64,8 @@ Total Files Tested: 16
 ✅ description: Solvent
 ✅ issue_date: 2022-02-28
 ✅ dangerous_goods_class: 3
-⚠️ packing_group: None
-📊 Extracted 5/6 key fields
+✅ packing_group: II
+📊 Extracted 6/6 key fields
 📁 File size: 0.19 MB
 
 [7/16] sds_7.pdf
@@ -182,6 +182,6 @@ Total Files Tested: 16
 ✅ Successful: 16
 ❌ Failed: 0
 📄 Total: 16
-📈 Avg fields: 4.4/6
+📈 Avg fields: 4.6/6
 
 🎉 Testing complete!

@@ -47,6 +47,14 @@ def extract_after_label(section_text: str, labels: List[str], field_name: str = 
                         same = None
                     else:
                         same = tmp
+
+            # Fallback: handle labels that appear mid-line (e.g., after another field)
+            # Example: "Address: ... Product Use: Lubricant, ..."
+            if not same:
+                mid_line_pattern = rf"{label}\s*[:\-]\s*(.+)$"
+                mid = re.search(mid_line_pattern, clean, re.IGNORECASE)
+                if mid:
+                    same = mid
             search_next = False
             if same:
                 value = same.group(1).strip()
