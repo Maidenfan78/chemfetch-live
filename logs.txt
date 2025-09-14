@@ -1,0 +1,352 @@
+backend:
+PS C:\Users\Sav\ProgramingProjects\chemfetch-live\chemfetch-backend-live> npm run dev
+
+> chemfetch-backend@1.0.0 dev
+> npx tsx server/index.ts
+
+[OCR_CONFIG] OCR Service URL: http://127.0.0.1:5001
+[OCR_CONFIG] Available env vars: { EXPO_PUBLIC_OCR_API_URL: false, OCR_SERVICE_URL: false }
+[dotenv@17.2.1] injecting env (12) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+[AUTO_SDS_DEBUG] ==============================
+[AUTO_SDS_DEBUG] OCR Service URL: http://127.0.0.1:5001
+[AUTO_SDS_DEBUG] Environment variables: {
+  EXPO_PUBLIC_OCR_API_URL: 'http://127.0.0.1:5001',
+  OCR_SERVICE_URL: 'http://127.0.0.1:5001',
+  NODE_ENV: undefined,
+  PORT: '3001'
+}
+[AUTO_SDS_DEBUG] ==============================
+[dotenv@17.2.1] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.2.1] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+{"level":30,"time":"2025-09-10T21:53:13.133Z","pid":20676,"hostname":"Savs-Desktop","msg":"Backend API listening on port 3001"}
+{"level":30,"time":"2025-09-10T21:53:13.134Z","pid":20676,"hostname":"Savs-Desktop","msg":"Environment: undefined"}
+(node:20676) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{"level":30,"time":"2025-09-10T21:53:19.110Z","pid":20676,"hostname":"Savs-Desktop","code":"0070612102546","userId":"345c9873-9307-4d84-b96d-456599b4ad03","isManualEntry":false,"timestamp":1757541199110,"msg":"[SCAN] Processing scan request"}
+{"level":30,"time":"2025-09-10T21:53:19.643Z","pid":20676,"hostname":"Savs-Desktop","code":"0070612102546","dbLookupTime":80,"msg":"[SCAN] Database lookup completed"}
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=0070612102546&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 2 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=%220070612102546%22&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 2 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=item%200070612102546&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=%22item%200070612102546%22&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=0070612102546%20product%20Australia&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 2 fallback results
+{"level":30,"time":"2025-09-10T21:53:27.683Z","pid":20676,"hostname":"Savs-Desktop","code":"0070612102546","rawUrls":["https://www.mydeal.com.au/armor-all-protectant-250ml-8736241?msockid=390663e3dd33690b31a47580dc5d6897","https://www.mydeal.com.au/armor-all-protectant-250ml-8736241","https://www.inspirationspaint.com.au/120261-dulux-aquanamel-semi-gloss-vivid-white-10l","https://www.hairhouse.com.au/products/olaplex-volumizing-blow-dry-mist-150ml","https://www.shavershop.com.au/olaplex/no.6-bond-smoother---100ml-011815.html","https://www.alivepharmacy.com.au/products/mixa-ceramide-protect-6-lotion-250ml","https://www.repco.com.au/tools-equipment/safety-protection/hi-vis-and-workwear/milwaukee-m12-toughshell-heated-vest-grey-xxl-m12hvgrey10xxl/p/A5688459","https://www.wcosmetics.com.au/products/skin1004-madagascar-centella-ampoule-kit-mini-ampoule-4-types","https://www.mydeal.com.au/armor-all-protectant-250ml-8736241?msockid=16e37d502587685221576b3324e669a1","https://www.buycott.com/upc/070612102546","https://www.barcodelookup.com/","https://go-upc.com/barcode-lookup"],"searchTime":8039,"msg":"[SCAN] Raw URLs from search"}
+{"level":30,"time":"2025-09-10T21:53:27.683Z","pid":20676,"hostname":"Savs-Desktop","code":"0070612102546","cleaned":["https://www.mydeal.com.au/armor-all-protectant-250ml-8736241?msockid=390663e3dd33690b31a47580dc5d6897","https://www.mydeal.com.au/armor-all-protectant-250ml-8736241","https://www.inspirationspaint.com.au/120261-dulux-aquanamel-semi-gloss-vivid-white-10l","https://www.hairhouse.com.au/products/olaplex-volumizing-blow-dry-mist-150ml","https://www.shavershop.com.au/olaplex/no.6-bond-smoother---100ml-011815.html"],"msg":"[SCAN] Normalised URLs for scraping"}
+[SCRAPER] Anti-bot detection detected on https://www.mydeal.com.au/armor-all-protectant-250ml-8736241?msockid=390663e3dd33690b31a47580dc5d6897, skipping
+{"level":30,"time":"2025-09-10T21:53:28.476Z","pid":20676,"hostname":"Savs-Desktop","url":"https://www.mydeal.com.au/armor-all-protectant-250ml-8736241?msockid=390663e3dd33690b31a47580dc5d6897","duration":793,"hasName":false,"msg":"[SCAN] scrape completed"}
+[SCRAPER] Anti-bot detection detected on https://www.mydeal.com.au/armor-all-protectant-250ml-8736241, skipping
+{"level":30,"time":"2025-09-10T21:53:29.058Z","pid":20676,"hostname":"Savs-Desktop","url":"https://www.mydeal.com.au/armor-all-protectant-250ml-8736241","duration":582,"hasName":false,"msg":"[SCAN] scrape completed"}
+{"level":30,"time":"2025-09-10T21:53:29.715Z","pid":20676,"hostname":"Savs-Desktop","url":"https://www.inspirationspaint.com.au/120261-dulux-aquanamel-semi-gloss-vivid-white-10l","duration":657,"hasName":true,"msg":"[SCAN] scrape completed"}
+{"level":30,"time":"2025-09-10T21:53:29.715Z","pid":20676,"hostname":"Savs-Desktop","code":"0070612102546","url":"https://www.inspirationspaint.com.au/120261-dulux-aquanamel-semi-gloss-vivid-white-10l","msg":"[SCAN] Found complete product info, stopping scraping"}
+{"level":30,"time":"2025-09-10T21:53:29.716Z","pid":20676,"hostname":"Savs-Desktop","code":"0070612102546","scraped":[{"name":"","contents_size_weight":"","url":"https://www.mydeal.com.au/armor-all-protectant-250ml-8736241?msockid=390663e3dd33690b31a47580dc5d6897"},{"name":"","contents_size_weight":"","url":"https://www.mydeal.com.au/armor-all-protectant-250ml-8736241"},{"name":"Dulux Aquanamel Semi Gloss Vivid White 10L","contents_size_weight":"10L","url":"https://www.inspirationspaint.com.au/120261-dulux-aquanamel-semi-gloss-vivid-white-10l"}],"totalScrapingTime":2033,"msg":"[SCAN] Scraped results"}
+{"level":30,"time":"2025-09-10T21:53:29.716Z","pid":20676,"hostname":"Savs-Desktop","top":{"name":"Dulux Aquanamel Semi Gloss Vivid White 10L","contents_size_weight":"10L","url":"https://www.inspirationspaint.com.au/120261-dulux-aquanamel-semi-gloss-vivid-white-10l"},"msg":"[SCAN] Top scraped result"}
+{"level":30,"time":"2025-09-10T21:53:29.716Z","pid":20676,"hostname":"Savs-Desktop","name":"Dulux Aquanamel Semi Gloss Vivid White 10L","msg":"[SCAN] Fetching SDS URL via fallback"}
+[SCRAPER-ULTRA-SIMPLE] Ultra-simple SDS search for: Dulux Aquanamel Semi Gloss Vivid White 10L 10L
+[SCRAPER-ULTRA-SIMPLE] Searching: Dulux Aquanamel Semi Gloss Vivid White 10L sds
+[BING_SEARCH] Using Bing (no Google credentials)
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=Dulux%20Aquanamel%20Semi%20Gloss%20Vivid%20White%2010L%20sds&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=%22Dulux%20Aquanamel%20Semi%20Gloss%20Vivid%20White%2010L%20sds%22&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=Dulux%20Aquanamel%20Semi%20Gloss%20Vivid%20White%2010L%20sds%20sds&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=Dulux%20Aquanamel%20Semi%20Gloss%20Vivid%20White%2010L%20sds%20%22safety%20data%20sheet%22&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=Dulux%20Aquanamel%20Semi%20Gloss%20Vivid%20White%2010L%20sds%20msds&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[SCRAPER-ULTRA-SIMPLE] Found 19 results
+[SCRAPER-ULTRA-SIMPLE] ===== ALL SEARCH RESULTS =====
+[SCRAPER-ULTRA-SIMPLE] 1. Safety Data Sheet -> https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF
+[SCRAPER-ULTRA-SIMPLE] 2. Safety data sheets - Dulux -> https://www.duluxtrade.com.au/safety-data-sheets
+[SCRAPER-ULTRA-SIMPLE] 3. Aquanamel® Semi Gloss - Dulux -> https://www.dulux.com.au/paint/aquanamel/aquanamel-semi-gloss/
+[SCRAPER-ULTRA-SIMPLE] 4. DuluxGroup Safety Data Sheets -> https://www.duluxgroup.com.au/duluxgroup-safety-data-sheets/
+[SCRAPER-ULTRA-SIMPLE] 5. Dulux 10L Aquanamel Semi Gloss Vivid White Enamel Paint -> https://www.bunnings.com.au/dulux-10l-aquanamel-semi-gloss-vivid-white-enamel-paint_p1400074?msockid=00b82a652b2b6bd803a73c062a146a64
+[SCRAPER-ULTRA-SIMPLE] 6. Dulux Aquanamel Semi Gloss Vivid White by Dulux at Mitre 10 -> https://www.mitre10.com.au/dulux-aquanamel-semi-gloss-vivid-white
+[SCRAPER-ULTRA-SIMPLE] 7. Dulux Aquanamel Semi Gloss Vivid White 10L - Inspirations Paint -> https://www.inspirationspaint.com.au/120261-dulux-aquanamel-semi-gloss-vivid-white-10l
+[SCRAPER-ULTRA-SIMPLE] 8. Dulux 10L Aquanamel Semi Gloss Vivid White Enamel Paint -> https://www.bunnings.com.au/dulux-10l-aquanamel-semi-gloss-vivid-white-enamel-paint_p1400074?msockid=1f9dc915c3e16e213d7bdf76c2e46f74
+[SCRAPER-ULTRA-SIMPLE] 9. 6%6 %VMVYRVBOBNFM4FNJ(MPTT -> https://files.duspecplus.com.au/public/pdf/datasheet/b8682cfb-f9e9-4534-b825-72ef89570c90
+[SCRAPER-ULTRA-SIMPLE] 10. Dulux 10L Aquanamel Semi Gloss Vivid White Enamel Paint -> https://www.bunnings.com.au/dulux-10l-aquanamel-semi-gloss-vivid-white-enamel-paint_p1400074?msockid=1a74c3f96309629f37c1d59a626263e0
+[SCRAPER-ULTRA-SIMPLE] 11. Safety Data Sheet - media.bunnings.com.au -> https://media.bunnings.com.au/api/public/content/c35a90d2f4c849078fba7841d6f84721?v=6d488846
+[SCRAPER-ULTRA-SIMPLE] 12. Aquanamel® Gloss - Dulux -> https://www.dulux.com.au/paint/aquanamel/aquanamel-gloss/
+[SCRAPER-ULTRA-SIMPLE] 13. Dulux 10L Aquanamel Semi Gloss Vivid White Enamel Paint -> https://www.bunnings.com.au/dulux-10l-aquanamel-semi-gloss-vivid-white-enamel-paint_p1400074?msockid=06d3164d0ff760f51ffe002e0edf6175
+[SCRAPER-ULTRA-SIMPLE] 14. Material Safety Data Sheet - Paint Spot -> https://www.paintspot.com.au/pdf/378-LINE_DULUX_SUPER_ENAMEL_SEMI_GLOSS-AUS_SDS.pdf
+[SCRAPER-ULTRA-SIMPLE] 15. Safety Data Sheets - Dulux NZ -> https://www.duluxtrade.co.nz/safety-data-sheets
+[SCRAPER-ULTRA-SIMPLE] 16. Product name: 535-LINE DULUX AQUANAMEL SEMI-GLOSS -> https://www.dulux.com.fj/wp-content/uploads/2023/09/535-LINE_DULUX_AQUANAMEL_SEMI-GLOSS-AUS_GHS.pdf
+[SCRAPER-ULTRA-SIMPLE] 17. 1. IDENTIFICATION OF THE MATERIAL AND SUPPLIER 535-LINE DULUX AQUANAMEL ... -> https://www.msdsdigital.com/system/files/535-LINE_DULUX_AQUANAMEL_SEMI-GLOSS-AUS_SDS.PDF
+[SCRAPER-ULTRA-SIMPLE] 18. DULUX AQUANAMEL SEMI-GLOSS MSDS - Dulux Paints -> https://www.dulux.com.fj/download/dulux-aquanamel-semi-gloss-msds/
+[SCRAPER-ULTRA-SIMPLE] 19. 535-Line Dulux Aquanamel Semi-Gloss - Free SDS search -> https://www.msds.com/msds/21048720/535-line-dulux-aquanamel-semi-gloss
+[SCRAPER-ULTRA-SIMPLE] ===== END ALL RESULTS =====
+[SCRAPER-ULTRA-SIMPLE] 1. Safety Data Sheet -> https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 0] [Reputable: true]: Safety Data Sheet -> https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF
+[SDS-CHECK] Checking if PDF is SDS with item: Dulux Aquanamel Semi Gloss Vivid White 10L
+[SDS-CHECK] Key words to match: dulux, aquanamel, semi, gloss, vivid, white, 10l
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ✅ Fallback: URL path indicates SDS document
+[SCRAPER-ULTRA-SIMPLE] 🏆 Found reputable domain SDS: https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF
+[SCRAPER-ULTRA-SIMPLE] 2. Safety data sheets - Dulux -> https://www.duluxtrade.com.au/safety-data-sheets
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 3. Aquanamel® Semi Gloss - Dulux -> https://www.dulux.com.au/paint/aquanamel/aquanamel-semi-gloss/
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=false, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 4. DuluxGroup Safety Data Sheets -> https://www.duluxgroup.com.au/duluxgroup-safety-data-sheets/
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 5. Dulux 10L Aquanamel Semi Gloss Vivid White Enamel Paint -> https://www.bunnings.com.au/dulux-10l-aquanamel-semi-gloss-vivid-white-enamel-paint_p1400074?msockid=00b82a652b2b6bd803a73c062a146a64
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=false, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 6. Dulux Aquanamel Semi Gloss Vivid White by Dulux at Mitre 10 -> https://www.mitre10.com.au/dulux-aquanamel-semi-gloss-vivid-white
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=false, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 7. Dulux Aquanamel Semi Gloss Vivid White 10L - Inspirations Paint -> https://www.inspirationspaint.com.au/120261-dulux-aquanamel-semi-gloss-vivid-white-10l
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=false, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 8. Dulux 10L Aquanamel Semi Gloss Vivid White Enamel Paint -> https://www.bunnings.com.au/dulux-10l-aquanamel-semi-gloss-vivid-white-enamel-paint_p1400074?msockid=1f9dc915c3e16e213d7bdf76c2e46f74
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=false, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 9. 6%6 %VMVYRVBOBNFM4FNJ(MPTT -> https://files.duspecplus.com.au/public/pdf/datasheet/b8682cfb-f9e9-4534-b825-72ef89570c90
+[SCRAPER-ULTRA-SIMPLE] No PDF or SDS indicators, skipping...
+[SCRAPER-ULTRA-SIMPLE] 10. Dulux 10L Aquanamel Semi Gloss Vivid White Enamel Paint -> https://www.bunnings.com.au/dulux-10l-aquanamel-semi-gloss-vivid-white-enamel-paint_p1400074?msockid=1a74c3f96309629f37c1d59a626263e0
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=false, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 11. Safety Data Sheet - media.bunnings.com.au -> https://media.bunnings.com.au/api/public/content/c35a90d2f4c849078fba7841d6f84721?v=6d488846
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=true, Official=false
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 12. Aquanamel® Gloss - Dulux -> https://www.dulux.com.au/paint/aquanamel/aquanamel-gloss/
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=false, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 13. Dulux 10L Aquanamel Semi Gloss Vivid White Enamel Paint -> https://www.bunnings.com.au/dulux-10l-aquanamel-semi-gloss-vivid-white-enamel-paint_p1400074?msockid=06d3164d0ff760f51ffe002e0edf6175
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=false, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 14. Material Safety Data Sheet - Paint Spot -> https://www.paintspot.com.au/pdf/378-LINE_DULUX_SUPER_ENAMEL_SEMI_GLOSS-AUS_SDS.pdf
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 100] [Reputable: true]: Material Safety Data Sheet - Paint Spot -> https://www.paintspot.com.au/pdf/378-LINE_DULUX_SUPER_ENAMEL_SEMI_GLOSS-AUS_SDS.pdf
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://www.paintspot.com.au/pdf/378-LINE_DULUX_SUPER_ENAMEL_SEMI_GLOSS-AUS_SDS.pdf
+[SDS-CHECK] Checking if PDF is SDS with item: Dulux Aquanamel Semi Gloss Vivid White 10L
+[SDS-CHECK] Key words to match: dulux, aquanamel, semi, gloss, vivid, white, 10l
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ✅ Fallback: URL contains item words: dulux, semi, gloss
+[SCRAPER-ULTRA-SIMPLE] ⭐ Found brand-specific SDS: https://www.paintspot.com.au/pdf/378-LINE_DULUX_SUPER_ENAMEL_SEMI_GLOSS-AUS_SDS.pdf
+[SCRAPER-ULTRA-SIMPLE] 15. Safety Data Sheets - Dulux NZ -> https://www.duluxtrade.co.nz/safety-data-sheets
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 16. Product name: 535-LINE DULUX AQUANAMEL SEMI-GLOSS -> https://www.dulux.com.fj/wp-content/uploads/2023/09/535-LINE_DULUX_AQUANAMEL_SEMI-GLOSS-AUS_GHS.pdf
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 100] [Reputable: false]: Product name: 535-LINE DULUX AQUANAMEL SEMI-GLOSS -> https://www.dulux.com.fj/wp-content/uploads/2023/09/535-LINE_DULUX_AQUANAMEL_SEMI-GLOSS-AUS_GHS.pdf
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://www.dulux.com.fj/wp-content/uploads/2023/09/535-LINE_DULUX_AQUANAMEL_SEMI-GLOSS-AUS_GHS.pdf
+[SDS-CHECK] Checking if PDF is SDS with item: Dulux Aquanamel Semi Gloss Vivid White 10L
+[SDS-CHECK] Key words to match: dulux, aquanamel, semi, gloss, vivid, white, 10l
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ✅ Fallback: URL contains item words: dulux, aquanamel, semi, gloss
+[SCRAPER-ULTRA-SIMPLE] 🔄 Found generic SDS: https://www.dulux.com.fj/wp-content/uploads/2023/09/535-LINE_DULUX_AQUANAMEL_SEMI-GLOSS-AUS_GHS.pdf
+[SCRAPER-ULTRA-SIMPLE] 17. 1. IDENTIFICATION OF THE MATERIAL AND SUPPLIER 535-LINE DULUX AQUANAMEL ... -> https://www.msdsdigital.com/system/files/535-LINE_DULUX_AQUANAMEL_SEMI-GLOSS-AUS_SDS.PDF
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 100] [Reputable: true]: 1. IDENTIFICATION OF THE MATERIAL AND SUPPLIER 535-LINE DULUX AQUANAMEL ... -> https://www.msdsdigital.com/system/files/535-LINE_DULUX_AQUANAMEL_SEMI-GLOSS-AUS_SDS.PDF
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://www.msdsdigital.com/system/files/535-LINE_DULUX_AQUANAMEL_SEMI-GLOSS-AUS_SDS.PDF
+[SDS-CHECK] Checking if PDF is SDS with item: Dulux Aquanamel Semi Gloss Vivid White 10L
+[SDS-CHECK] Key words to match: dulux, aquanamel, semi, gloss, vivid, white, 10l
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ✅ Fallback: URL contains item words: dulux, aquanamel, semi, gloss
+[SCRAPER-ULTRA-SIMPLE] 18. DULUX AQUANAMEL SEMI-GLOSS MSDS - Dulux Paints -> https://www.dulux.com.fj/download/dulux-aquanamel-semi-gloss-msds/
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 19. 535-Line Dulux Aquanamel Semi-Gloss - Free SDS search -> https://www.msds.com/msds/21048720/535-line-dulux-aquanamel-semi-gloss
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] ✅ Using reputable domain SDS: https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF
+{"level":30,"time":"2025-09-10T21:53:38.821Z","pid":20676,"hostname":"Savs-Desktop","name":"Dulux Aquanamel Semi Gloss Vivid White 10L","fallbackSds":"https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF","topLinks":["https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF","https://www.duluxtrade.com.au/safety-data-sheets","https://www.dulux.com.au/paint/aquanamel/aquanamel-semi-gloss/","https://www.duluxgroup.com.au/duluxgroup-safety-data-sheets/","https://www.bunnings.com.au/dulux-10l-aquanamel-semi-gloss-vivid-white-enamel-paint_p1400074?msockid=00b82a652b2b6bd803a73c062a146a64"],"sdsSearchTime":9105,"msg":"[SCAN] Fallback SDS result"}
+{"level":30,"time":"2025-09-10T21:53:38.995Z","pid":20676,"hostname":"Savs-Desktop","code":"0070612102546","data":{"id":408,"barcode":"0070612102546","name":"Dulux Aquanamel Semi Gloss Vivid White 10L","manufacturer":null,"contents_size_weight":"10L","sds_url":"https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF","created_at":"2025-09-10T21:53:40.747031+00:00"},"error":null,"msg":"[SCAN] Final database write result"}
+{"level":30,"time":"2025-09-10T21:53:38.995Z","pid":20676,"hostname":"Savs-Desktop","productId":408,"msg":"[SCAN] Triggering auto-SDS parsing for new product"}
+{"level":30,"time":"2025-09-10T21:53:38.997Z","pid":20676,"hostname":"Savs-Desktop","code":"0070612102546","totalRequestTime":19887,"isManualEntry":false,"msg":"[SCAN] Request completed"}
+{"level":30,"time":"2025-09-10T21:53:38.999Z","pid":20676,"hostname":"Savs-Desktop","req":{"id":2,"method":"POST","url":"/scan","query":{},"params":{},"headers":{"content-type":"application/json","content-length":"72","host":"192.168.68.52:3001","connection":"Keep-Alive","accept-encoding":"gzip","user-agent":"okhttp/4.12.0"},"remoteAddress":"192.168.68.61","remotePort":44412},"res":{"statusCode":200,"headers":{"x-powered-by":"Express","vary":"Origin","access-control-allow-credentials":"true","x-ratelimit-limit":"60","x-ratelimit-remaining":"58","date":"Wed, 10 Sep 2025 21:53:19 GMT","x-ratelimit-reset":"1757541259","x-content-type-options":"nosniff","x-frame-options":"DENY","x-xss-protection":"1; mode=block","content-type":"application/json; charset=utf-8","content-length":"999","etag":"W/\"3e7-Rx1vKAOspJPflqFmv6c3HjnlnSw\""}},"responseTime":19890,"msg":"request completed"}
+{"level":30,"time":"2025-09-10T21:53:39.177Z","pid":20676,"hostname":"Savs-Desktop","msg":"Auto-SDS: Triggered parsing for product 408"}
+{"level":30,"time":"2025-09-10T21:53:41.182Z","pid":20676,"hostname":"Savs-Desktop","msg":"Auto-SDS: Starting HTTP parsing for product 408"}
+{"level":30,"time":"2025-09-10T21:53:41.183Z","pid":20676,"hostname":"Savs-Desktop","msg":"Auto-SDS: SDS URL: https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF"}
+{"level":30,"time":"2025-09-10T21:53:41.183Z","pid":20676,"hostname":"Savs-Desktop","msg":"Auto-SDS: OCR Service URL: http://127.0.0.1:5001"}
+{"level":30,"time":"2025-09-10T21:53:41.187Z","pid":20676,"hostname":"Savs-Desktop","msg":"Auto-SDS: Testing OCR service at http://127.0.0.1:5001"}
+{"level":30,"time":"2025-09-10T21:53:41.191Z","pid":20676,"hostname":"Savs-Desktop","status":200,"data":{"debug_info":{"environment":{"DEBUG_IMAGES":null,"OCR_MODE":null,"PORT":"3001"},"python_version":"3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]","temp_dir":"C:\\Users\\Sav\\AppData\\Local\\Temp\\debug_images","working_directory":"C:\\Users\\Sav\\ProgramingProjects\\chemfetch-live\\chemfetch-backend-live\\ocr_service"},"endpoints":["/","/health","/verify-sds","/parse-sds","/parse-pdf-direct"],"env_port":3001,"memory_mode":"full","ocr_available":true,"ocr_mode":"auto","pdf_extractor":"pymupdf","server_port":5001,"service":"ChemFetch OCR Service","status":"healthy","timestamp":"2025-09-11T07:53:41.191111"},"productId":408,"msg":"Auto-SDS: OCR health check response:"}
+{"level":30,"time":"2025-09-10T21:53:41.192Z","pid":20676,"hostname":"Savs-Desktop","msg":"Auto-SDS: OCR service healthy, proceeding with parsing"}
+{"level":30,"time":"2025-09-10T21:53:42.383Z","pid":20676,"hostname":"Savs-Desktop","msg":"Auto-SDS: HTTP parsing completed for product 408 in 1196ms"}
+{"level":30,"time":"2025-09-10T21:53:42.622Z","pid":20676,"hostname":"Savs-Desktop","msg":"Auto-SDS: Successfully parsed and stored metadata for product 408"}
+{"level":30,"time":"2025-09-10T21:54:02.536Z","pid":20676,"hostname":"Savs-Desktop","code":"0070612102546","name":"Armor all protectant original","size":"250ml","msg":"[CONFIRM] Upserting product"}
+{"level":30,"time":"2025-09-10T21:54:02.907Z","pid":20676,"hostname":"Savs-Desktop","productId":408,"msg":"[CONFIRM] Triggering auto-SDS parsing for confirmed product"}
+{"level":30,"time":"2025-09-10T21:54:02.908Z","pid":20676,"hostname":"Savs-Desktop","req":{"id":3,"method":"POST","url":"/confirm","query":{},"params":{},"headers":{"content-type":"application/json","content-length":"78","host":"192.168.68.52:3001","connection":"Keep-Alive","accept-encoding":"gzip","user-agent":"okhttp/4.12.0"},"remoteAddress":"192.168.68.61","remotePort":50958},"res":{"statusCode":200,"headers":{"x-powered-by":"Express","vary":"Origin","access-control-allow-credentials":"true","x-ratelimit-limit":"60","x-ratelimit-remaining":"57","date":"Wed, 10 Sep 2025 21:54:02 GMT","x-ratelimit-reset":"1757541259","x-content-type-options":"nosniff","x-frame-options":"DENY","x-xss-protection":"1; mode=block","content-type":"application/json; charset=utf-8","content-length":"337","etag":"W/\"151-mlQgjoyFcXZ0hK1iKWfM1h+yrNU\""}},"responseTime":373,"msg":"request completed"}
+[SCRAPER-ULTRA-SIMPLE] Ultra-simple SDS search for: Armor all protectant original 
+[SCRAPER-ULTRA-SIMPLE] Searching: Armor all protectant original sds
+[BING_SEARCH] Using Bing (no Google credentials)
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=Armor%20all%20protectant%20original%20sds&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=%22Armor%20all%20protectant%20original%20sds%22&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=Armor%20all%20protectant%20original%20sds%20sds&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[BING_SEARCH] Fallback search URL: https://www.bing.com/search?q=Armor%20all%20protectant%20original%20sds%20%22safety%20data%20sheet%22&mkt=en-AU&cc=AU
+[BING_SEARCH] Found 10 fallback results
+[SCRAPER-ULTRA-SIMPLE] Found 21 results
+[SCRAPER-ULTRA-SIMPLE] ===== ALL SEARCH RESULTS =====
+[SCRAPER-ULTRA-SIMPLE] 1. Car Wash Supplies - Auto Wash Supply - Vehicle Wash Equipment - Prowash -> https://www.prowash.com.au/images/prowash/sds/VPAA10040%20AAll%20Protectant%20Bottles%204oz.pdf
+[SCRAPER-ULTRA-SIMPLE] 2. ARMOR ALL PROTECTANT 4oz 125ml BOTTLE (B -> https://www.washtecdirect.com.au/10040.html
+[SCRAPER-ULTRA-SIMPLE] 3. Safety Data Sheet - Grainger -> https://www.grainger.com/sds/pdf/SDS_Armor_All_Original_Protectant_Spray_US_en_2024_07_03__DPA9_v1.pdf?msockid=1f46820a30e562d202b0946931cb6324
+[SCRAPER-ULTRA-SIMPLE] 4. Safety Data Sheet - Grainger -> https://www.grainger.com/sds/pdf/SDS_Armor_All_Original_Protectant_Spray_US_en_2024_07_03__DPA9_v1.pdf?msockid=066bcbb3b0b568be1d3dddd0b14869dd
+[SCRAPER-ULTRA-SIMPLE] 5. Armor All Safety Data Sheets SDS - Dultmeier -> https://www.dultmeier.com/armorall-safety-data-sheets-sds
+[SCRAPER-ULTRA-SIMPLE] 6. Safety Data Sheet: Armor All Original Protectant - Spray -> https://www.regionofqueens.com/~documents/route:/download/4026/
+[SCRAPER-ULTRA-SIMPLE] 7. Armor All Original Protectant - Spray | Automotive Safety Data … -> https://automotivesafetydatasheets.com/armor-all-original-protectant-spray-Safety-Data-Sheet-SDS
+[SCRAPER-ULTRA-SIMPLE] 8. Armor All Original Protectant MSDS - MsdsDigital.com -> https://www.msdsdigital.com/armor-all-original-protectant-msds-0
+[SCRAPER-ULTRA-SIMPLE] 9. Safety Data Sheet: Armor All Original Protectant Wipes -> https://www.princessauto.com/file/general/9325341_sds_en_01_09_11_2023.pdf
+[SCRAPER-ULTRA-SIMPLE] 10. Armor All Original Protectant – Hoffman Car Wash SDS Portal -> https://sds.hoffmancarwash.com/products/armor-all-original-protectant/
+[SCRAPER-ULTRA-SIMPLE] 11. Armor All Original Protectant - Free SDS search -> https://www.msds.com/msds/8747983/armor-all-original-protectant
+[SCRAPER-ULTRA-SIMPLE] 12. Safety Data Sheet: Armor All Original Protectant - Spray -> https://img1.fastenal.com/infp360pmm/medias/docus/2023/$v17/0600454_sds_eng.pdf
+[SCRAPER-ULTRA-SIMPLE] 13. Safety Data Sheet - Grainger -> https://www.grainger.com/sds/pdf/605733.pdf?msockid=378f0239ca52679b0f10145acbf86680
+[SCRAPER-ULTRA-SIMPLE] 14. Armor All Original Protectant - Free SDS search - msds.com -> https://www.msds.com/msds/24804047/armor-all-original-protectant
+[SCRAPER-ULTRA-SIMPLE] 15. Microsoft Word - ARMOR ALL ORIGINAL PROTECTANT _1 … -> https://content.oppictures.com/Master_Images/Master_PDF_Files/ARM10228EA_MSDS.PDF
+[SCRAPER-ULTRA-SIMPLE] 16. Safety Data Sheet: Armor All Original Protectant - Spray -> https://pdf4pro.com/view/safety-data-sheet-armor-all-original-protectant-spray-75ad92.html
+[SCRAPER-ULTRA-SIMPLE] 17. ARMOR ALL® Original Protectant MSDS - msdsdigital.com -> https://www.msdsdigital.com/armor-all%C2%AE-original-protectant-msds
+[SCRAPER-ULTRA-SIMPLE] 18. Safety Data Sheet: Armor All Original Protectant - Spray -> https://media.napaonline.com/is/content/GenuinePartsCompany/205170957pdf
+[SCRAPER-ULTRA-SIMPLE] 19. Armor All Original Protectant (2015-01) SDS English - Scribd -> https://www.scribd.com/document/399083671/Armor-All-Original-Protectant-2015-01-SDS-English
+[SCRAPER-ULTRA-SIMPLE] 20. Microsoft Word - Armor All Protectant original.doc -> https://www.sandiego.gov/sites/default/files/sds-22036250.pdf
+[SCRAPER-ULTRA-SIMPLE] 21. Safety Data Sheet: Armor All Original Protectant - Bottle -> https://cdn-e.soneparcanada.io/PIM_Docs/Docs/STEP_ASSETS_PDF/225148996.pdf
+[SCRAPER-ULTRA-SIMPLE] ===== END ALL RESULTS =====
+[SCRAPER-ULTRA-SIMPLE] 1. Car Wash Supplies - Auto Wash Supply - Vehicle Wash Equipment - Prowash -> https://www.prowash.com.au/images/prowash/sds/VPAA10040%20AAll%20Protectant%20Bottles%204oz.pdf
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 0] [Reputable: true]: Car Wash Supplies - Auto Wash Supply - Vehicle Wash Equipment - Prowash -> https://www.prowash.com.au/images/prowash/sds/VPAA10040%20AAll%20Protectant%20Bottles%204oz.pdf
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://www.prowash.com.au/images/prowash/sds/VPAA10040%20AAll%20Protectant%20Bottles%204oz.pdf
+[SDS-CHECK] Checking if PDF is SDS with item: Armor all protectant original
+[SDS-CHECK] Key words to match: armor, all, protectant, original
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ✅ Fallback: URL contains item words: all, protectant
+[SCRAPER-ULTRA-SIMPLE] 🏆 Found reputable domain SDS: https://www.prowash.com.au/images/prowash/sds/VPAA10040%20AAll%20Protectant%20Bottles%204oz.pdf
+[SCRAPER-ULTRA-SIMPLE] 2. ARMOR ALL PROTECTANT 4oz 125ml BOTTLE (B -> https://www.washtecdirect.com.au/10040.html
+[SCRAPER-ULTRA-SIMPLE] No PDF or SDS indicators, skipping...
+[SCRAPER-ULTRA-SIMPLE] 3. Safety Data Sheet - Grainger -> https://www.grainger.com/sds/pdf/SDS_Armor_All_Original_Protectant_Spray_US_en_2024_07_03__DPA9_v1.pdf?msockid=1f46820a30e562d202b0946931cb6324
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 4. Safety Data Sheet - Grainger -> https://www.grainger.com/sds/pdf/SDS_Armor_All_Original_Protectant_Spray_US_en_2024_07_03__DPA9_v1.pdf?msockid=066bcbb3b0b568be1d3dddd0b14869dd
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 5. Armor All Safety Data Sheets SDS - Dultmeier -> https://www.dultmeier.com/armorall-safety-data-sheets-sds
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 6. Safety Data Sheet: Armor All Original Protectant - Spray -> https://www.regionofqueens.com/~documents/route:/download/4026/
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=true, Official=false
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 7. Armor All Original Protectant - Spray | Automotive Safety Data … -> https://automotivesafetydatasheets.com/armor-all-original-protectant-spray-Safety-Data-Sheet-SDS
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=false, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 8. Armor All Original Protectant MSDS - MsdsDigital.com -> https://www.msdsdigital.com/armor-all-original-protectant-msds-0
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 9. Safety Data Sheet: Armor All Original Protectant Wipes -> https://www.princessauto.com/file/general/9325341_sds_en_01_09_11_2023.pdf
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 50] [Reputable: true]: Safety Data Sheet: Armor All Original Protectant Wipes -> https://www.princessauto.com/file/general/9325341_sds_en_01_09_11_2023.pdf
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://www.princessauto.com/file/general/9325341_sds_en_01_09_11_2023.pdf
+[SDS-CHECK] Checking if PDF is SDS with item: Armor all protectant original
+[SDS-CHECK] Key words to match: armor, all, protectant, original
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ✅ Fallback: URL path indicates SDS document
+[SCRAPER-ULTRA-SIMPLE] ⭐ Found brand-specific SDS: https://www.princessauto.com/file/general/9325341_sds_en_01_09_11_2023.pdf
+[SCRAPER-ULTRA-SIMPLE] 10. Armor All Original Protectant – Hoffman Car Wash SDS Portal -> https://sds.hoffmancarwash.com/products/armor-all-original-protectant/
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 11. Armor All Original Protectant - Free SDS search -> https://www.msds.com/msds/8747983/armor-all-original-protectant
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 12. Safety Data Sheet: Armor All Original Protectant - Spray -> https://img1.fastenal.com/infp360pmm/medias/docus/2023/$v17/0600454_sds_eng.pdf
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 50] [Reputable: true]: Safety Data Sheet: Armor All Original Protectant - Spray -> https://img1.fastenal.com/infp360pmm/medias/docus/2023/$v17/0600454_sds_eng.pdf
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://img1.fastenal.com/infp360pmm/medias/docus/2023/$v17/0600454_sds_eng.pdf
+[SDS-CHECK] Checking if PDF is SDS with item: Armor all protectant original
+[SDS-CHECK] Key words to match: armor, all, protectant, original
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ✅ Fallback: URL path indicates SDS document
+[SCRAPER-ULTRA-SIMPLE] 🔄 Found generic SDS: https://img1.fastenal.com/infp360pmm/medias/docus/2023/$v17/0600454_sds_eng.pdf
+[SCRAPER-ULTRA-SIMPLE] 13. Safety Data Sheet - Grainger -> https://www.grainger.com/sds/pdf/605733.pdf?msockid=378f0239ca52679b0f10145acbf86680
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=false
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 14. Armor All Original Protectant - Free SDS search - msds.com -> https://www.msds.com/msds/24804047/armor-all-original-protectant
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 15. Microsoft Word - ARMOR ALL ORIGINAL PROTECTANT _1 … -> https://content.oppictures.com/Master_Images/Master_PDF_Files/ARM10228EA_MSDS.PDF
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 50] [Reputable: true]: Microsoft Word - ARMOR ALL ORIGINAL PROTECTANT _1 … -> https://content.oppictures.com/Master_Images/Master_PDF_Files/ARM10228EA_MSDS.PDF
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://content.oppictures.com/Master_Images/Master_PDF_Files/ARM10228EA_MSDS.PDF
+[SDS-CHECK] Checking if PDF is SDS with item: Armor all protectant original
+[SDS-CHECK] Key words to match: armor, all, protectant, original
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ✅ Fallback: URL path indicates SDS document
+[SCRAPER-ULTRA-SIMPLE] 16. Safety Data Sheet: Armor All Original Protectant - Spray -> https://pdf4pro.com/view/safety-data-sheet-armor-all-original-protectant-spray-75ad92.html
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 17. ARMOR ALL® Original Protectant MSDS - msdsdigital.com -> https://www.msdsdigital.com/armor-all%C2%AE-original-protectant-msds
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 18. Safety Data Sheet: Armor All Original Protectant - Spray -> https://media.napaonline.com/is/content/GenuinePartsCompany/205170957pdf
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=false, SDS-Title=true, Official=false
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 19. Armor All Original Protectant (2015-01) SDS English - Scribd -> https://www.scribd.com/document/399083671/Armor-All-Original-Protectant-2015-01-SDS-English
+[SCRAPER-ULTRA-SIMPLE] ⭐ CHECKING PAGE: SDS-URL=true, SDS-Title=true, Official=true
+[SCRAPER-ULTRA-SIMPLE] Page scanning temporarily disabled, skipping...
+[SCRAPER-ULTRA-SIMPLE] 20. Microsoft Word - Armor All Protectant original.doc -> https://www.sandiego.gov/sites/default/files/sds-22036250.pdf
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 50] [Reputable: true]: Microsoft Word - Armor All Protectant original.doc -> https://www.sandiego.gov/sites/default/files/sds-22036250.pdf
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://www.sandiego.gov/sites/default/files/sds-22036250.pdf
+[SDS-CHECK] Checking if PDF is SDS with item: Armor all protectant original
+[SDS-CHECK] Key words to match: armor, all, protectant, original
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ✅ Fallback: URL path indicates SDS document
+[SCRAPER-ULTRA-SIMPLE] 21. Safety Data Sheet: Armor All Original Protectant - Bottle -> https://cdn-e.soneparcanada.io/PIM_Docs/Docs/STEP_ASSETS_PDF/225148996.pdf
+[SCRAPER-ULTRA-SIMPLE] ⭐ FOUND PDF [Brand Score: 50] [Reputable: false]: Safety Data Sheet: Armor All Original Protectant - Bottle -> https://cdn-e.soneparcanada.io/PIM_Docs/Docs/STEP_ASSETS_PDF/225148996.pdf
+[SCRAPER-ULTRA-SIMPLE] Checking PDF for SDS content and item name: https://cdn-e.soneparcanada.io/PIM_Docs/Docs/STEP_ASSETS_PDF/225148996.pdf
+[SDS-CHECK] Checking if PDF is SDS with item: Armor all protectant original
+[SDS-CHECK] Key words to match: armor, all, protectant, original
+[SDS-CHECK] OCR failed, using permissive fallback: AxiosError: Request failed with status code 400
+[SDS-CHECK] ❌ Fallback: No item words, not major supplier, no SDS path indicators
+[SCRAPER-ULTRA-SIMPLE] ❌ PDF is not SDS or doesn't contain item name, trying next...
+[SCRAPER-ULTRA-SIMPLE] ✅ Using reputable domain SDS: https://www.prowash.com.au/images/prowash/sds/VPAA10040%20AAll%20Protectant%20Bottles%204oz.pdf
+
+OCR:
+2025-09-11 07:53:37,363 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:53:37] "POST /verify-sds HTTP/1.1" 400 -
+2025-09-11 07:53:37,534 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:53:37] "POST /verify-sds HTTP/1.1" 400 -
+2025-09-11 07:53:38,095 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:53:38] "POST /verify-sds HTTP/1.1" 400 -
+2025-09-11 07:53:38,820 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:53:38] "POST /verify-sds HTTP/1.1" 400 -
+2025-09-11 07:53:41,191 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:53:41] "GET /health HTTP/1.1" 200 -
+2025-09-11 07:53:41,194 - INFO - __main__ - SDS parsing endpoint called (UNIFIED)
+2025-09-11 07:53:41,195 - INFO - __main__ - Product ID: 408, PDF URL: https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B...
+2025-09-11 07:53:41,195 - INFO - __main__ - Attempt 1: parse_sds_pdf
+2025-09-11 07:53:41,196 - INFO - parse_sds - [PARSE_SDS] Starting SDS parsing for product 408
+2025-09-11 07:53:41,196 - INFO - parse_sds - [PARSE_SDS] PDF URL: https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF
+2025-09-11 07:53:41,196 - INFO - parse_sds - [PARSE_SDS] Created temp directory: C:\Users\Sav\AppData\Local\Temp\tmpeyb50my_
+2025-09-11 07:53:41,196 - INFO - parse_sds - [PARSE_SDS] Step 1: Downloading PDF...
+2025-09-11 07:53:41,196 - INFO - parse_sds - [PARSE_SDS] Starting PDF download from: https://public.bowens.com.au/product-info-files/5/535049141L_E3C520E12285AC1C1B82646565D83A33CCA330B5_SAFETY-DATA-SHEET.PDF
+2025-09-11 07:53:41,197 - INFO - parse_sds - [PARSE_SDS] Download timeout: 30 seconds
+2025-09-11 07:53:41,197 - INFO - parse_sds - [PARSE_SDS] Temp directory: C:\Users\Sav\AppData\Local\Temp\tmpeyb50my_
+2025-09-11 07:53:41,545 - INFO - parse_sds - [PARSE_SDS] HTTP response status: 200
+2025-09-11 07:53:41,545 - INFO - parse_sds - [PARSE_SDS] Content type: application/pdf
+2025-09-11 07:53:41,546 - INFO - parse_sds - [PARSE_SDS] Content length: 64879 bytes
+2025-09-11 07:53:41,546 - INFO - parse_sds - [PARSE_SDS] Saving to temp file: C:\Users\Sav\AppData\Local\Temp\tmpeyb50my_\sds_20250911_075341.pdf
+2025-09-11 07:53:41,615 - INFO - parse_sds - [PARSE_SDS] Download complete: C:\Users\Sav\AppData\Local\Temp\tmpeyb50my_\sds_20250911_075341.pdf (114772 bytes)
+2025-09-11 07:53:41,616 - INFO - parse_sds - [PARSE_SDS] Step 2: PDF downloaded successfully: C:\Users\Sav\AppData\Local\Temp\tmpeyb50my_\sds_20250911_075341.pdf
+2025-09-11 07:53:41,616 - INFO - parse_sds - [PARSE_SDS] File size: 114772 bytes
+2025-09-11 07:53:41,616 - INFO - parse_sds - [PARSE_SDS] Step 3: Starting PDF parsing...
+2025-09-11 07:53:41,616 - INFO - sds_parser_new.sds_extractor - Starting to parse: C:\Users\Sav\AppData\Local\Temp\tmpeyb50my_\sds_20250911_075341.pdf
+2025-09-11 07:53:42,356 - INFO - sds_parser_new.sds_extractor - Extracted 15932 chars using pdfplumber
+2025-09-11 07:53:42,356 - INFO - sds_parser_new.sds_extractor - Section 1: 1766 chars, Section 14: 566 chars
+2025-09-11 07:53:42,358 - INFO - sds_parser_new.modules.field_extractor - [SDS_EXTRACTOR] Product name from meaningful line: '-LINE DULUX AQUANAMEL SEMI-GLOSS'
+2025-09-11 07:53:42,360 - INFO - sds_parser_new.modules.field_extractor - [SDS_EXTRACTOR] Manufacturer from company line: '1. MATERIAL AND SUPPLY COMPANY IDENTIFICATION'
+2025-09-11 07:53:42,371 - INFO - sds_parser_new.modules.field_extractor - [SDS_EXTRACTOR] Description from label: 'Interior and exterior doors and trim, paint topcoat. Applied by brush, roller or spray.'
+2025-09-11 07:53:42,380 - INFO - sds_parser_new.modules.date_parser - [SDS_EXTRACTOR] Parsed date '4 August 2023' as 2023-08-04 -> ISO: 2023-08-04
+2025-09-11 07:53:42,380 - INFO - sds_parser_new.sds_extractor - Extraction complete:
+2025-09-11 07:53:42,380 - INFO - sds_parser_new.sds_extractor -   product_name: '-LINE DULUX AQUANAMEL SEMI-GLOSS'
+2025-09-11 07:53:42,380 - INFO - sds_parser_new.sds_extractor -   manufacturer: '1. MATERIAL AND SUPPLY COMPANY IDENTIFICATION'
+2025-09-11 07:53:42,380 - INFO - sds_parser_new.sds_extractor -   description: 'Interior and exterior doors and trim, paint topcoat. Applied by brush, roller or spray.'
+2025-09-11 07:53:42,381 - INFO - sds_parser_new.sds_extractor -   dangerous_goods_class: 'None'
+2025-09-11 07:53:42,381 - INFO - sds_parser_new.sds_extractor -   issue_date: '2023-08-04'
+2025-09-11 07:53:42,381 - INFO - parse_sds - [PARSE_SDS] Step 3 complete: PDF parsing successful
+2025-09-11 07:53:42,381 - INFO - parse_sds - [PARSE_SDS] Parsed data keys: ['extraction_info', 'product_name', 'manufacturer', 'description', 'product_use', 'dangerous_goods_class', 'subsidiary_risk', 'packing_group', 'issue_date']
+2025-09-11 07:53:42,381 - INFO - parse_sds - [PARSE_SDS] Step 4: Transforming to chemfetch format...
+2025-09-11 07:53:42,381 - INFO - parse_sds - [PARSE_SDS] Step 4 complete: Transformation successful
+2025-09-11 07:53:42,381 - INFO - parse_sds - [PARSE_SDS] Result keys: ['product_id', 'product_name', 'vendor', 'issue_date', 'description', 'hazardous_substance', 'dangerous_good', 'dangerous_goods_class', 'packing_group', 'subsidiary_risks', 'hazard_statements', 'raw_json']
+2025-09-11 07:53:42,381 - INFO - parse_sds - [PARSE_SDS] Successfully parsed SDS for product 408
+2025-09-11 07:53:42,382 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:53:42] "POST /parse-sds HTTP/1.1" 200 -
+2025-09-11 07:54:10,369 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:54:10] "POST /verify-sds HTTP/1.1" 400 -
+2025-09-11 07:54:11,110 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:54:11] "POST /verify-sds HTTP/1.1" 400 -
+2025-09-11 07:54:11,313 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:54:11] "POST /verify-sds HTTP/1.1" 400 -
+2025-09-11 07:54:12,050 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:54:12] "POST /verify-sds HTTP/1.1" 400 -
+2025-09-11 07:54:12,684 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:54:12] "POST /verify-sds HTTP/1.1" 400 -
+2025-09-11 07:54:13,804 - INFO - werkzeug - 127.0.0.1 - - [11/Sep/2025 07:54:13] "POST /verify-sds HTTP/1.1" 400 -
