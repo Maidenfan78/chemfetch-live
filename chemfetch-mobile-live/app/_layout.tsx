@@ -1,36 +1,37 @@
 // app/_layout.tsx
 import { BottomBar } from '@/components/BottomBar';
 import { supabase } from '@/lib/supabase';
-import { Stack, useRouter } from 'expo-router';
+import { Slot, usePathname, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { View, StatusBar } from 'react-native';
+import { LogBox, StatusBar, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import './global.css';
 
 export default function RootLayout() {
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
+    LogBox.ignoreLogs(["SafeAreaView has been deprecated"]);
     const checkAuth = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      if (!session) {
+      if (!session && pathname !== '/login') {
         router.replace('/login');
       }
     };
 
     checkAuth();
-  }, [router]);
+  }, [router, pathname]);
 
   return (
-    <View className="flex-1 bg-bg-secondary">
+    <GestureHandlerRootView style={{ flex: 1 }} className="bg-bg-secondary">
       <StatusBar barStyle="dark-content" backgroundColor="#f8fafc" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      />
-      <BottomBar />
-    </View>
+      <View style={{ flex: 1 }}>
+        <Slot />
+      </View>
+      {pathname !== '/login' && <BottomBar />}
+    </GestureHandlerRootView>
   );
 }

@@ -13,7 +13,7 @@ import {
   Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import './global.css';
+// global styles are loaded via Metro NativeWind configuration
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -21,19 +21,21 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
+  // Default to visible so UI doesn't disappear if animations fail
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    // Animate in, but keep sensible defaults if timing fails
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 1000,
+        duration: 300,
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 1000,
+        duration: 300,
         useNativeDriver: true,
       }),
     ]).start();
@@ -75,7 +77,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-bg-secondary">
+    <SafeAreaView className="flex-1 bg-bg-secondary" style={{ flex: 1, backgroundColor: '#f8fafc' }}>
       <StatusBar barStyle="dark-content" backgroundColor="#f8fafc" />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Animated.View

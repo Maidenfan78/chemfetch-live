@@ -3,23 +3,25 @@ import { useRouter } from 'expo-router';
 import { Pressable, Text, View, ScrollView, StatusBar, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useRef } from 'react';
-import './global.css';
+// global styles are loaded via Metro NativeWind configuration
 
 export default function HomeScreen() {
   const router = useRouter();
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(50)).current;
+  // Default to visible so UI doesn't disappear if animations fail
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    // Animate in, but keep sensible defaults if timing fails
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 300,
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 800,
+        duration: 300,
         useNativeDriver: true,
       }),
     ]).start();
@@ -45,7 +47,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-bg-secondary">
+    <SafeAreaView className="flex-1 bg-bg-secondary" style={{ flex: 1, backgroundColor: '#f8fafc' }}>
       <StatusBar barStyle="dark-content" backgroundColor="#f8fafc" />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Animated.View
