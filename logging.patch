@@ -1,0 +1,126 @@
+diff --git a/chemfetch-backend-live/server/utils/scraper.ts b/chemfetch-backend-live/server/utils/scraper.ts
+--- a/chemfetch-backend-live/server/utils/scraper.ts
++++ b/chemfetch-backend-live/server/utils/scraper.ts
+@@
+- const deduped = dedupe(links);
+- logger.info(
+- { query: trimmed, linkCount: deduped.length, links: deduped.slice(0, limit) },
+- ''[SCRAPER] Bing links collected'',
+- );
+- return deduped.slice(0, limit);
+- } catch {
+- logger.warn({ query: trimmed }, ''[SCRAPER] Bing search failed'');
++ const deduped = dedupe(links);
++ const finalLinks = deduped.slice(0, limit);
++ logger.info(
++ { query: trimmed, rawLinks: links, deduped, final: finalLinks },
++ ''[SCRAPER] Bing links collected'',
++ );
++ return finalLinks;
++ } catch (err) {
++ logger.warn({ query: trimmed, err: String(err) }, ''[SCRAPER] Bing search failed'');
+ return [];
+ }
+ }
+@@
+- if (parsed.hostname.includes(''bing.com'') && parsed.searchParams.has(''u'')) {
+- const target = parsed.searchParams.get(''u'');
+- if (target) {
+- try {
+- const decoded = decodeURIComponent(target);
+- if (/^https?:\/\//i.test(decoded)) href = decoded;
+- } catch {
+- /* ignore */
+- }
+- }
+- }
++ if (parsed.hostname.includes(''bing.com'') && parsed.searchParams.has(''u'')) {
++ const target = parsed.searchParams.get(''u'');
++ if (target) {
++ try {
++ const decoded = decodeURIComponent(target);
++ logger.info({ raw: href, decoded }, ''[SCRAPER] Bing redirect decoded'');
++ if (/^https?:\/\//i.test(decoded)) href = decoded;
++ } catch (err) {
++ logger.warn({ raw: href, target, err: String(err) }, ''[SCRAPER] Bing redirect decode failed'');
++ }
++ }
++ }
+@@
+- $(''a[href]'').each((_, el) => {
+- if (candidates.length >= limit) return false;
+- const href = $(el).attr(''href'');
+- const anchor = cleanText($(el).text());
+- const resolved = normaliseLink(href, normalised);
+- if (!resolved) return;
+- if (isLikelySiteSearch(resolved)) return;
+- if (!/^https?:\/\//i.test(resolved)) return;
+- if (anchor.length < 3) return;
+- candidates.push(resolved);
+- });
+- return dedupe(candidates).slice(0, limit);
+- } catch {
+- return [];
+- }
++ $(''a[href]'').each((_, el) => {
++ if (candidates.length >= limit) return false;
++ const href = $(el).attr(''href'');
++ const anchor = cleanText($(el).text());
++ const resolved = normaliseLink(href, normalised);
++ if (!resolved) {
++ logger.info({ baseUrl: normalised, href }, ''[SCRAPER] expand skip invalid'');
++ return;
++ }
++ if (isLikelySiteSearch(resolved)) {
++ logger.info({ baseUrl: normalised, resolved }, ''[SCRAPER] expand skip site-search'');
++ return;
++ }
++ if (!/^https?:\/\//i.test(resolved)) {
++ logger.info({ baseUrl: normalised, resolved }, ''[SCRAPER] expand skip non-http'');
++ return;
++ }
++ if (anchor.length < 3) {
++ logger.info({ baseUrl: normalised, resolved, anchor }, ''[SCRAPER] expand skip short-anchor'');
++ return;
++ }
++ candidates.push(resolved);
++ logger.info({ baseUrl: normalised, resolved, anchor }, ''[SCRAPER] expand candidate added'');
++ });
++ const deduped = dedupe(candidates);
++ const limited = deduped.slice(0, limit);
++ logger.info(
++ { baseUrl: normalised, candidateCount: limited.length, candidates: limited },
++ ''[SCRAPER] expand candidates'',
++ );
++ return limited;
++ } catch (err) {
++ logger.warn({ baseUrl: normalised, err: String(err) }, ''[SCRAPER] expand failed'');
++ return [];
++ }
+ }
+@@
+- try {
+- const { data } = await httpGet(normalised);
+- const $ = cheerio.load(data);
++ try {
++ logger.info({ stage: ''scrape:http'', url: normalised }, ''[SCRAPER] httpGet start'');
++ let data: string;
++ try {
++ const response = await httpGet(normalised);
++ data = response.data;
++ logger.info({ stage: ''scrape:http'', url: normalised, success: true }, ''[SCRAPER] httpGet success'');
++ } catch (err) {
++ logger.error({ url: normalised, err: String(err) }, ''[SCRAPER] httpGet failed'');
++ throw err;
++ }
++ const $ = cheerio.load(data);
+@@
+- result.size = result.contents_size_weight;
+- } catch {
+- return result;
+- }
++ result.size = result.contents_size_weight;
++ } catch (err) {
++ logger.warn({ url: normalised, err: String(err) }, ''[SCRAPER] scrape failed'');
++ return result;
++ }
