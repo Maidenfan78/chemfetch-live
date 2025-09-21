@@ -27,6 +27,22 @@ function dedupeStrings(items: string[]): string[] {
   return ordered;
 }
 
+function summariseLinks(links: string[], limit = 6): string[] {
+  const summary: string[] = [];
+  for (const link of links) {
+    if (!link) continue;
+    if (summary.length >= limit) break;
+    try {
+      const parsed = new URL(link);
+      const trimmedPath = parsed.pathname?.replace(/\/$/, '') || '';
+      summary.push(`${parsed.hostname}${trimmedPath}`);
+    } catch {
+      summary.push(link.slice(0, 120));
+    }
+  }
+  return summary;
+}
+
 function pickBestResult(results: ProductScrapeResult[]): ProductScrapeResult | null {
   if (results.length === 0) return null;
   return (
@@ -102,7 +118,10 @@ router.post('/', async (req, res) => {
       const collected: string[] = [];
       for (const query of queries) {
         const links = await fetchBingLinks(query, 6);
-        logger.info({ code, query, linkCount: links.length }, '[SCAN] Bing links fetched');
+        logger.info(
+          { code, query, linkCount: links.length, topLinks: summariseLinks(links, 6) },
+          '[SCAN] Bing links fetched',
+        );
         collected.push(...links);
       }
 
@@ -113,7 +132,10 @@ router.post('/', async (req, res) => {
       }
 
       const candidates = dedupeStrings([...collected, ...expanded]).slice(0, 12);
-      logger.info({ code, candidateCount: candidates.length }, '[SCAN] Candidate URLs prepared');
+      logger.info(
+        { code, candidateCount: candidates.length, candidates: summariseLinks(candidates, 10) },
+        '[SCAN] Candidate URLs prepared',
+      );
       scraped = [];
 
       for (const candidate of candidates) {
@@ -126,6 +148,22 @@ router.post('/', async (req, res) => {
       }
 
       best = pickBestResult(scraped);
+
+      if (scraped.length > 0) {
+        logger.info(
+          {
+            code,
+            scrapedCount: scraped.length,
+            sampledResults: scraped.slice(0, 3).map(item => ({
+              name: item.name,
+              size: item.contents_size_weight || item.size || '',
+              hasSds: Boolean(item.sdsUrl),
+              source: item.url,
+            })),
+          },
+          '[SCAN] Scraped product results',
+        );
+      }
     }
 
     if (!best) {
