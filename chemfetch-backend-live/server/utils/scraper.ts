@@ -1,4 +1,3 @@
-import axios from 'axios';
 import * as cheerio from 'cheerio';
 import logger from './logger.js';
 
@@ -33,6 +32,57 @@ function dedupe(items: string[]): string[] {
   return ordered;
 }
 
+function decodeBingRedirect(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  let candidate = raw.trim();
+  if (!candidate) return null;
+
+  try {
+    const decoded = decodeURIComponent(candidate);
+    if (decoded) candidate = decoded;
+  } catch {
+    /* ignore malformed URI sequences */
+  }
+
+  if (/^https?:\/\//i.test(candidate)) return candidate;
+
+  const attempts: string[] = [candidate];
+  for (let i = 1; i <= 3 && i < candidate.length; i++) {
+    attempts.push(candidate.slice(i));
+  }
+
+  const base64Pattern = /^[A-Za-z0-9+/=_-]+$/;
+
+  for (const attempt of attempts) {
+    const trimmed = attempt.trim();
+    if (trimmed.length < 8) continue;
+    if (!base64Pattern.test(trimmed)) continue;
+
+    const normalised = trimmed.replace(/-/g, '+').replace(/_/g, '/');
+    const padding = normalised.length % 4;
+    const padded = padding ? normalised + '='.repeat(4 - padding) : normalised;
+
+    try {
+      const decoded = Buffer.from(padded, 'base64').toString('utf8');
+      if (/^https?:\/\//i.test(decoded)) {
+        return decoded;
+      }
+    } catch {
+      /* ignore invalid base64 */
+    }
+  }
+
+  return null;
+}
+
+function getHostname(url: string): string {
+  try {
+    return new URL(url).hostname.toLowerCase();
+  } catch {
+    return '';
+  }
+}
+
 function normaliseLink(raw: string | undefined | null, base?: string): string | null {
   if (!raw) return null;
   let href = raw.trim();
@@ -48,14 +98,16 @@ function normaliseLink(raw: string | undefined | null, base?: string): string | 
   }
   try {
     const parsed = new URL(href);
-    if (parsed.hostname.includes('bing.com') && parsed.searchParams.has('u')) {
-      const target = parsed.searchParams.get('u');
-      if (target) {
-        try {
-          const decoded = decodeURIComponent(target);
-          if (/^https?:\/\//i.test(decoded)) href = decoded;
-        } catch {
-          /* ignore */
+    if (parsed.hostname.includes('bing.com') || parsed.hostname.includes('duckduckgo.com')) {
+      const redirectParams = parsed.hostname.includes('duckduckgo.com')
+        ? ['uddg', 'rut', 'u', 'url']
+        : ['u', 'url', 'r', 'target'];
+      for (const param of redirectParams) {
+        const target = parsed.searchParams.get(param);
+        const decoded = decodeBingRedirect(target);
+        if (decoded) {
+          href = decoded;
+          break;
         }
       }
     }
@@ -127,10 +179,70 @@ function deriveNameFromUrl(url: string): string {
   }
 }
 
+async function fetchDuckDuckGoLinks(query: string, limit = 6): Promise<string[]> {
+  const trimmed = cleanText(query);
+  if (!trimmed) return [];
+  try {
+    const searchUrl = `https://duckduckgo.com/html/?q=${encodeURIComponent(trimmed)}`;
+    const { data } = await httpGet(searchUrl);
+    const $ = cheerio.load(data);
+    const links: string[] = [];
+    $('a.result__a[href]').each((_, el) => {
+      const raw = $(el).attr('href');
+      const normalised = normaliseLink(raw, searchUrl);
+      if (normalised) {
+        links.push(normalised);
+        if (links.length >= limit * 2) return false;
+      }
+      return undefined;
+    });
+    const deduped = dedupe(links);
+    logger.info(
+      { query: trimmed, linkCount: deduped.length, links: deduped.slice(0, limit) },
+      '[SCRAPER] DuckDuckGo links collected',
+    );
+    return deduped.slice(0, limit);
+  } catch (err) {
+    logger.warn({ query: trimmed, err: String(err) }, '[SCRAPER] DuckDuckGo search failed');
+    return [];
+  }
+}
+
 async function httpGet(url: string) {
-  return axios.get<string>(url, {
-    headers: { 'User-Agent': USER_AGENT, 'Accept-Language': 'en-AU,en;q=0.9' },
-    timeout: REQUEST_TIMEOUT,
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': USER_AGENT,
+        'Accept-Language': 'en-AU,en;q=0.9',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      },
+      redirect: 'follow',
+      signal: controller.signal,
+    });
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+    const data = await response.text();
+    return { data };
+  } catch (err: any) {
+    if (err?.name === 'AbortError') {
+      throw new Error('Request timed out');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function hasUsefulHost(links: string[]): boolean {
+  return links.some(link => {
+    const host = getHostname(link);
+    if (!host) return false;
+    if (host.includes('bing.com')) return false;
+    if (host.includes('baidu.com')) return false;
+    return true;
   });
 }
 
@@ -159,6 +271,17 @@ export async function fetchBingLinks(query: string, limit = 6): Promise<string[]
       { query: trimmed, linkCount: deduped.length, links: deduped.slice(0, limit) },
       '[SCRAPER] Bing links collected',
     );
+    if (!hasUsefulHost(deduped.slice(0, limit))) {
+      const duckLinks = await fetchDuckDuckGoLinks(trimmed, limit);
+      if (duckLinks.length > 0) {
+        const merged = dedupe([...duckLinks, ...deduped]);
+        logger.info(
+          { query: trimmed, duckCount: duckLinks.length, mergedPreview: merged.slice(0, limit) },
+          '[SCRAPER] DuckDuckGo fallback applied',
+        );
+        return merged.slice(0, limit);
+      }
+    }
     return deduped.slice(0, limit);
   } catch {
     logger.warn({ query: trimmed }, '[SCRAPER] Bing search failed');
