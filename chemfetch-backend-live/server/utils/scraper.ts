@@ -9,6 +9,7 @@ const SIZE_PATTERN =
 
 const SDS_BANNED_HOSTS = ['sdsmanager.', 'msdsmanager.', 'msds.com', 'hazard.com', 'msdsdigital.com', 'chemtrac.com'];
 const SDS_PREFERRED_HOSTS = ['blob.core.windows.net', 'chemwatch.net', 'chemicalsafety.com', 'productsds', 'azuredge.net'];
+const SDS_VERIFICATION_TIMEOUT = 12000;
 
 function normaliseUrl(url: string | null | undefined): string {
   return cleanText(url || '').toLowerCase();
@@ -22,17 +23,120 @@ function scoreSdsLink(link: string, productName: string): number {
   if (lower.includes('.pdf')) score += 6;
   if (lower.endsWith('.pdf')) score += 2;
   for (const host of SDS_PREFERRED_HOSTS) {
-    if (lower.includes(host)) score += 3;
+    if (lower.includes(host)) score += 6;
   }
   for (const host of SDS_BANNED_HOSTS) {
     if (lower.includes(host)) score -= 6;
   }
-  const tokens = productName.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  const tokens = productName
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter(token => token.length > 2);
   if (tokens.length) {
-    const matches = tokens.filter(token => token.length > 2 && lower.includes(token)).length;
+    const matches = tokens.filter(token => lower.includes(token)).length;
     score += matches;
   }
   return score;
+}
+
+function tokenise(value: string): string[] {
+  return value
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter(token => token.length > 2);
+}
+
+async function verifySdsLink(
+  link: string,
+  productName: string,
+  productSize: string | undefined,
+): Promise<boolean> {
+  const ocrServiceUrl = process.env.OCR_SERVICE_URL || 'http://localhost:5001';
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), SDS_VERIFICATION_TIMEOUT);
+  try {
+    const response = await fetch(`${ocrServiceUrl}/parse-pdf-direct`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pdf_url: link }),
+      signal: controller.signal,
+    });
+    if (!response.ok) {
+      return false;
+    }
+    const payload = await response.json();
+    if (!payload?.success) return false;
+    const parsed = payload.parsed_data || payload.metadata || payload.raw_json || {};
+    const valueFromField = (field: any): string | null => {
+      if (!field) return null;
+      if (typeof field === 'string') return field;
+      if (typeof field === 'object' && typeof field.value === 'string' && (field.confidence ?? 0) > 0) {
+        return field.value;
+      }
+      return null;
+    };
+
+    const productField = valueFromField(parsed.product_name);
+    const descriptionField = valueFromField(parsed.description);
+    const manufacturerField = valueFromField(parsed.manufacturer || parsed.vendor);
+    const issueDateField = valueFromField(parsed.issue_date);
+
+    const descriptionLower = (descriptionField || '').toLowerCase();
+    if (descriptionLower.includes('risk assessment')) {
+      return false;
+    }
+
+    const hasSdsSignals = Boolean(
+      (issueDateField && issueDateField.trim()) ||
+      (manufacturerField && manufacturerField.trim()) ||
+      (descriptionField && /safety\s+data/i.test(descriptionField))
+    );
+    if (!hasSdsSignals) {
+      return false;
+    }
+
+    const candidates = new Set<string>();
+    const pushCandidate = (value?: any) => {
+      const extracted = valueFromField(value);
+      if (extracted && extracted.trim().length > 3) {
+        candidates.add(extracted);
+      } else if (typeof value === 'string' && value.trim().length > 3) {
+        candidates.add(value);
+      }
+    };
+    pushCandidate(productField);
+    pushCandidate(descriptionField);
+    pushCandidate(manufacturerField);
+    if (parsed.raw_json) {
+      pushCandidate(parsed.raw_json.product_name);
+      pushCandidate(parsed.raw_json.description);
+      pushCandidate(parsed.raw_json.manufacturer);
+    }
+    if (candidates.size === 0) return false;
+    const expectedTokens = new Set(tokenise(productName));
+    if (productSize) {
+      for (const token of tokenise(productSize)) expectedTokens.add(token);
+    }
+    if (expectedTokens.size === 0) return false;
+    for (const candidate of candidates) {
+      const candidateTokens = new Set(tokenise(candidate));
+      if (candidateTokens.size === 0) continue;
+      let matches = 0;
+      expectedTokens.forEach(token => {
+        if (candidateTokens.has(token)) matches += 1;
+      });
+      const matchRatio = matches / Math.max(1, expectedTokens.size);
+      if (matches >= Math.min(3, expectedTokens.size) || matchRatio >= 0.6) {
+        return true;
+      }
+    }
+    return false;
+  } catch (err) {
+    logger.warn({ link, err: String(err) }, '[SCRAPER] SDS verification failed');
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export interface ProductScrapeResult {
@@ -501,9 +605,29 @@ export async function fetchSdsByName(
     .filter(item => Number.isFinite(item.score))
     .sort((a, b) => b.score - a.score);
 
-  const preferred = scored.find(item => isLikelySds(item.link));
-  if (preferred) {
-    sdsUrl = preferred.link;
+  const verificationCandidates = scored.filter(item => item.score > 0).slice(0, 4);
+  let bestVerified: { link: string; score: number } | null = null;
+  for (const candidate of verificationCandidates) {
+    try {
+      const verified = await verifySdsLink(candidate.link, cleanedName, cleanedSize);
+      if (verified) {
+        logger.info({ query: cleanedName, verifiedLink: candidate.link }, '[SCRAPER] SDS link verified via OCR');
+        if (!bestVerified || candidate.score > bestVerified.score) {
+          bestVerified = { link: candidate.link, score: candidate.score };
+        }
+      }
+    } catch (err) {
+      logger.warn({ link: candidate.link, err: String(err) }, '[SCRAPER] SDS verification threw');
+    }
+  }
+
+  if (bestVerified) {
+    sdsUrl = bestVerified.link;
+  } else if (!sdsUrl) {
+    const preferred = scored.find(item => isLikelySds(item.link));
+    if (preferred) {
+      sdsUrl = preferred.link;
+    }
   }
 
   const fallbackOrdered = scored.length > 0 ? scored : ordered.map(link => ({ link, score: scoreSdsLink(link, cleanedName) }));
