@@ -139,6 +139,49 @@ function extractSize(text: string): string {
   return match ? cleanText(match[0]).replace(/,/g, '.') : '';
 }
 
+const CTA_PREFIXES = [/^(buy|shop|order|purchase|get|view|discover|compare)\s+/i, /^add to cart:?\s*/i];
+const STORE_KEYWORDS = ['chemist', 'chemist warehouse', 'pharmacy', 'store', 'shop', 'online', 'discount', 'warehouse', 'market', 'supermarket', 'apothecary', 'amazon', 'ebay', 'target', 'walmart'];
+const NAME_SPLIT_REGEX = /\s*(?:\||[\u2013\u2014\u2015]|-|\u2022|\u00b7|:)\s*/;
+
+function looksLikeStoreFragment(fragment: string): boolean {
+  const lower = fragment.toLowerCase();
+  if (!lower) return false;
+  if (lower.includes('http')) return true;
+  if (lower.includes('.com')) return true;
+  return STORE_KEYWORDS.some(keyword => lower.includes(keyword));
+}
+
+function normaliseProductName(raw: string | null | undefined): string {
+  let value = cleanText(raw);
+  if (!value) return '';
+  const original = value;
+
+  for (const pattern of CTA_PREFIXES) {
+    if (pattern.test(value)) {
+      value = value.replace(pattern, '');
+      break;
+    }
+  }
+
+  value = value.replace(/\s+online\s+at\s+.+$/i, '');
+  value = value.replace(/\s+available\s+at\s+.+$/i, '');
+  value = cleanText(value);
+
+  const parts = value.split(NAME_SPLIT_REGEX).map(part => cleanText(part)).filter(Boolean);
+  if (parts.length > 1) {
+    const preferred = parts.find(part => !looksLikeStoreFragment(part));
+    value = preferred || parts[0];
+  }
+
+  const trailingMatch = value.match(/^(.*?)(?:\s+(?:online|chemist|pharmacy|store|shop|discount|warehouse).*)$/i);
+  if (trailingMatch && trailingMatch[1]) {
+    value = cleanText(trailingMatch[1]);
+  }
+
+  value = cleanText(value);
+  return value || original;
+}
+
 function isLikelySds(url: string, anchorText?: string): boolean {
   const lowerUrl = url.toLowerCase();
   const lowerText = anchorText?.toLowerCase() || '';
@@ -332,12 +375,13 @@ export async function scrapeProductInfo(
   try {
     const { data } = await httpGet(normalised);
     const $ = cheerio.load(data);
-    const nameCandidates = [
-      cleanText($("meta[property='og:title']").attr('content')),
-      cleanText($("meta[name='title']").attr('content')),
-      cleanText($('h1').first().text()),
-      cleanText($('title').first().text()),
+    const rawNameCandidates = [
+      $("meta[property='og:title']").attr('content'),
+      $("meta[name='title']").attr('content'),
+      $('h1').first().text(),
+      $('title').first().text(),
     ];
+    const nameCandidates = rawNameCandidates.map(candidate => normaliseProductName(candidate));
     result.name = nameCandidates.find(Boolean) || '';
     const bodyText = cleanText($('body').text());
     const detectedSize = extractSize(bodyText);
@@ -361,9 +405,12 @@ export async function scrapeProductInfo(
       return undefined;
     });
     if (!result.name) {
-      const fallback = deriveNameFromUrl(normalised);
+      const fallback = normaliseProductName(deriveNameFromUrl(normalised));
       if (fallback) result.name = fallback;
     }
+
+    result.name = normaliseProductName(result.name);
+
     if (!result.contents_size_weight) {
       const slugSize = extractSize(result.name) || extractSize(normalised);
       if (slugSize) result.contents_size_weight = slugSize;
@@ -388,7 +435,7 @@ export async function fetchSdsByName(
   name: string,
   size?: string,
 ): Promise<{ sdsUrl: string | null; topLinks: string[] }> {
-  const cleanedName = cleanText(name);
+  const cleanedName = normaliseProductName(name);
   const cleanedSize = cleanText(size);
   if (!cleanedName) return { sdsUrl: null, topLinks: [] };
   const queries = dedupe([
