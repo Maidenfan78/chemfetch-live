@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as IntentLauncher from 'expo-intent-launcher';
 import * as Linking from 'expo-linking';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -53,20 +53,24 @@ export default function SdsViewer() {
 
     try {
       if (Platform.OS === 'android') {
-        // Convert file:/// to content:// and grant read permission
-        const contentUri = await FileSystem.getContentUriAsync(localPdfUri);
-        await IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
-          data: contentUri,
-          flags: 1, // FLAG_GRANT_READ_URI_PERMISSION
-          type: 'application/pdf',
-        });
+        try {
+          const contentUri = await FileSystem.getContentUriAsync(localPdfUri);
+          await IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+            data: contentUri,
+            flags: 1, // FLAG_GRANT_READ_URI_PERMISSION
+            type: 'application/pdf',
+          });
+          return;
+        } catch (androidErr) {
+          console.warn('Intent fallback, opening remote URL instead', androidErr);
+          await Linking.openURL(decodedUrl);
+          return;
+        }
       } else {
-        // iOS: Linking works, or use share sheet/browser as fallback
         try {
           await Linking.openURL(localPdfUri);
         } catch {
-          await FileSystem.getContentUriAsync(localPdfUri); // no-op but keeps parity
-          Alert.alert('Open PDF', 'If this does not open, try the Share button or view in-app.');
+          await Linking.openURL(decodedUrl);
         }
       }
     } catch (e) {

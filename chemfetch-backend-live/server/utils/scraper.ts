@@ -7,6 +7,34 @@ const REQUEST_TIMEOUT = 8000;
 const SIZE_PATTERN =
   /\b\d+(?:[.,]\d+)?\s?(?:ml|mL|l|L|litre|liter|g|kg|oz|fl\s?oz|pack|packs|tablet|tablets)\b/i;
 
+const SDS_BANNED_HOSTS = ['sdsmanager.', 'msdsmanager.', 'msds.com', 'hazard.com', 'msdsdigital.com', 'chemtrac.com'];
+const SDS_PREFERRED_HOSTS = ['blob.core.windows.net', 'chemwatch.net', 'chemicalsafety.com', 'productsds', 'azuredge.net'];
+
+function normaliseUrl(url: string | null | undefined): string {
+  return cleanText(url || '').toLowerCase();
+}
+
+function scoreSdsLink(link: string, productName: string): number {
+  const lower = normaliseUrl(link);
+  if (!lower) return -Infinity;
+  let score = 0;
+  if (lower.startsWith('http')) score += 1;
+  if (lower.includes('.pdf')) score += 6;
+  if (lower.endsWith('.pdf')) score += 2;
+  for (const host of SDS_PREFERRED_HOSTS) {
+    if (lower.includes(host)) score += 3;
+  }
+  for (const host of SDS_BANNED_HOSTS) {
+    if (lower.includes(host)) score -= 6;
+  }
+  const tokens = productName.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  if (tokens.length) {
+    const matches = tokens.filter(token => token.length > 2 && lower.includes(token)).length;
+    score += matches;
+  }
+  return score;
+}
+
 export interface ProductScrapeResult {
   url: string;
   name: string;
@@ -438,10 +466,13 @@ export async function fetchSdsByName(
   const cleanedName = normaliseProductName(name);
   const cleanedSize = cleanText(size);
   if (!cleanedName) return { sdsUrl: null, topLinks: [] };
+  const quotedName = cleanedName.includes(' ') ? `"${cleanedName}"` : cleanedName;
   const queries = dedupe([
     `${cleanedName} ${cleanedSize} safety data sheet`.trim(),
     `${cleanedName} ${cleanedSize} sds pdf`.trim(),
     `${cleanedName} sds pdf`.trim(),
+    `${cleanedName} sds`.trim(),
+    `${quotedName} sds`.trim(),
     `${cleanedName} msds`.trim(),
   ]);
   const collected: string[] = [];
@@ -450,9 +481,35 @@ export async function fetchSdsByName(
     const links = await fetchBingLinks(query, 6);
     collected.push(...links);
   }
-  const ordered = dedupe(collected);
-  const sdsUrl = ordered.find(link => isLikelySds(link)) || null;
-  return { sdsUrl, topLinks: ordered.slice(0, 10) };
+  let ordered = dedupe(collected);
+  let sdsUrl = ordered.find(link => isLikelySds(link)) || null;
+
+  if (!sdsUrl) {
+    for (const query of queries) {
+      if (!query) continue;
+      const duckLinks = await fetchDuckDuckGoLinks(query, 8);
+      if (duckLinks.length > 0) {
+        logger.info({ query, duckCount: duckLinks.length, links: duckLinks.slice(0, 6) }, '[SCRAPER] DuckDuckGo SDS links collected');
+        collected.push(...duckLinks);
+      }
+    }
+    ordered = dedupe(collected);
+  }
+
+  const scored = ordered
+    .map(link => ({ link, score: scoreSdsLink(link, cleanedName) }))
+    .filter(item => Number.isFinite(item.score))
+    .sort((a, b) => b.score - a.score);
+
+  const preferred = scored.find(item => isLikelySds(item.link));
+  if (preferred) {
+    sdsUrl = preferred.link;
+  }
+
+  const fallbackOrdered = scored.length > 0 ? scored : ordered.map(link => ({ link, score: scoreSdsLink(link, cleanedName) }));
+  const topLinks = fallbackOrdered.slice(0, 10).map(item => item.link);
+
+  return { sdsUrl: sdsUrl || null, topLinks };
 }
 
 export async function fetchSdsByNameSimple(
