@@ -43,8 +43,22 @@ function summariseLinks(links: string[], limit = 6): string[] {
   return summary;
 }
 
-const RETAIL_DOMAINS = ['ebay.', 'amazon.', 'aliexpress.', 'gumtree.', 'etsy.', 'facebook.', 'pinterest.'];
-const HIGH_CONFIDENCE_KEYWORDS = ['isocol', 'chemist', 'pharmacy', 'multipurpose', 'rubbing alcohol'];
+const RETAIL_DOMAINS = [
+  'ebay.',
+  'amazon.',
+  'aliexpress.',
+  'gumtree.',
+  'etsy.',
+  'facebook.',
+  'pinterest.',
+];
+const HIGH_CONFIDENCE_KEYWORDS = [
+  'isocol',
+  'chemist',
+  'pharmacy',
+  'multipurpose',
+  'rubbing alcohol',
+];
 
 function scoreResult(result: ProductScrapeResult): number {
   let score = 0;
@@ -211,7 +225,8 @@ router.post('/', async (req, res) => {
     if (!best.sdsUrl) {
       const attempts: Array<{ name: string; size: string }> = [];
       const seen = new Set<string>();
-      const normaliseCandidate = (value?: string | null) => (typeof value === 'string' ? value.trim() : '');
+      const normaliseCandidate = (value?: string | null) =>
+        typeof value === 'string' ? value.trim() : '';
       const registerCandidate = (candidateName?: string | null, candidateSize?: string | null) => {
         const trimmedName = normaliseCandidate(candidateName);
         if (!trimmedName) return;
@@ -234,7 +249,10 @@ router.post('/', async (req, res) => {
       }
 
       if (best.name && /isocol/i.test(best.name)) {
-        registerCandidate('Isocol Rubbing Alcohol Antiseptic', best.contents_size_weight || best.size);
+        registerCandidate(
+          'Isocol Rubbing Alcohol Antiseptic',
+          best.contents_size_weight || best.size,
+        );
         registerCandidate('Isocol Rubbing Alcohol', best.contents_size_weight || best.size);
       }
 
@@ -243,11 +261,17 @@ router.post('/', async (req, res) => {
           const { sdsUrl } = await fetchSdsByNameSimple(attempt.name, attempt.size);
           if (sdsUrl) {
             best.sdsUrl = sdsUrl;
-            logger.info({ code, attemptName: attempt.name, attemptSize: attempt.size || null, sdsUrl }, '[SCAN] SDS URL discovered');
+            logger.info(
+              { code, attemptName: attempt.name, attemptSize: attempt.size || null, sdsUrl },
+              '[SCAN] SDS URL discovered',
+            );
             break;
           }
         } catch (err) {
-          logger.warn({ code, attemptName: attempt.name, err: String(err) }, '[SCAN] SDS lookup attempt failed');
+          logger.warn(
+            { code, attemptName: attempt.name, err: String(err) },
+            '[SCAN] SDS lookup attempt failed',
+          );
         }
       }
     }

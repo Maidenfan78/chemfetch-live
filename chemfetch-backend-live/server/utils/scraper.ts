@@ -7,8 +7,21 @@ const REQUEST_TIMEOUT = 8000;
 const SIZE_PATTERN =
   /\b\d+(?:[.,]\d+)?\s?(?:ml|mL|l|L|litre|liter|g|kg|oz|fl\s?oz|pack|packs|tablet|tablets)\b/i;
 
-const SDS_BANNED_HOSTS = ['sdsmanager.', 'msdsmanager.', 'msds.com', 'hazard.com', 'msdsdigital.com', 'chemtrac.com'];
-const SDS_PREFERRED_HOSTS = ['blob.core.windows.net', 'chemwatch.net', 'chemicalsafety.com', 'productsds', 'azuredge.net'];
+const SDS_BANNED_HOSTS = [
+  'sdsmanager.',
+  'msdsmanager.',
+  'msds.com',
+  'hazard.com',
+  'msdsdigital.com',
+  'chemtrac.com',
+];
+const SDS_PREFERRED_HOSTS = [
+  'blob.core.windows.net',
+  'chemwatch.net',
+  'chemicalsafety.com',
+  'productsds',
+  'azuredge.net',
+];
 const SDS_VERIFICATION_TIMEOUT = 12000;
 
 function normaliseUrl(url: string | null | undefined): string {
@@ -70,7 +83,11 @@ async function verifySdsLink(
     const valueFromField = (field: any): string | null => {
       if (!field) return null;
       if (typeof field === 'string') return field;
-      if (typeof field === 'object' && typeof field.value === 'string' && (field.confidence ?? 0) > 0) {
+      if (
+        typeof field === 'object' &&
+        typeof field.value === 'string' &&
+        (field.confidence ?? 0) > 0
+      ) {
         return field.value;
       }
       return null;
@@ -88,8 +105,8 @@ async function verifySdsLink(
 
     const hasSdsSignals = Boolean(
       (issueDateField && issueDateField.trim()) ||
-      (manufacturerField && manufacturerField.trim()) ||
-      (descriptionField && /safety\s+data/i.test(descriptionField))
+        (manufacturerField && manufacturerField.trim()) ||
+        (descriptionField && /safety\s+data/i.test(descriptionField)),
     );
     if (!hasSdsSignals) {
       return false;
@@ -271,8 +288,27 @@ function extractSize(text: string): string {
   return match ? cleanText(match[0]).replace(/,/g, '.') : '';
 }
 
-const CTA_PREFIXES = [/^(buy|shop|order|purchase|get|view|discover|compare)\s+/i, /^add to cart:?\s*/i];
-const STORE_KEYWORDS = ['chemist', 'chemist warehouse', 'pharmacy', 'store', 'shop', 'online', 'discount', 'warehouse', 'market', 'supermarket', 'apothecary', 'amazon', 'ebay', 'target', 'walmart'];
+const CTA_PREFIXES = [
+  /^(buy|shop|order|purchase|get|view|discover|compare)\s+/i,
+  /^add to cart:?\s*/i,
+];
+const STORE_KEYWORDS = [
+  'chemist',
+  'chemist warehouse',
+  'pharmacy',
+  'store',
+  'shop',
+  'online',
+  'discount',
+  'warehouse',
+  'market',
+  'supermarket',
+  'apothecary',
+  'amazon',
+  'ebay',
+  'target',
+  'walmart',
+];
 const NAME_SPLIT_REGEX = /\s*(?:\||[\u2013\u2014\u2015]|-|\u2022|\u00b7|:)\s*/;
 
 function looksLikeStoreFragment(fragment: string): boolean {
@@ -299,13 +335,18 @@ function normaliseProductName(raw: string | null | undefined): string {
   value = value.replace(/\s+available\s+at\s+.+$/i, '');
   value = cleanText(value);
 
-  const parts = value.split(NAME_SPLIT_REGEX).map(part => cleanText(part)).filter(Boolean);
+  const parts = value
+    .split(NAME_SPLIT_REGEX)
+    .map(part => cleanText(part))
+    .filter(Boolean);
   if (parts.length > 1) {
     const preferred = parts.find(part => !looksLikeStoreFragment(part));
     value = preferred || parts[0];
   }
 
-  const trailingMatch = value.match(/^(.*?)(?:\s+(?:online|chemist|pharmacy|store|shop|discount|warehouse).*)$/i);
+  const trailingMatch = value.match(
+    /^(.*?)(?:\s+(?:online|chemist|pharmacy|store|shop|discount|warehouse).*)$/i,
+  );
   if (trailingMatch && trailingMatch[1]) {
     value = cleanText(trailingMatch[1]);
   }
@@ -593,7 +634,10 @@ export async function fetchSdsByName(
       if (!query) continue;
       const duckLinks = await fetchDuckDuckGoLinks(query, 8);
       if (duckLinks.length > 0) {
-        logger.info({ query, duckCount: duckLinks.length, links: duckLinks.slice(0, 6) }, '[SCRAPER] DuckDuckGo SDS links collected');
+        logger.info(
+          { query, duckCount: duckLinks.length, links: duckLinks.slice(0, 6) },
+          '[SCRAPER] DuckDuckGo SDS links collected',
+        );
         collected.push(...duckLinks);
       }
     }
@@ -611,7 +655,10 @@ export async function fetchSdsByName(
     try {
       const verified = await verifySdsLink(candidate.link, cleanedName, cleanedSize);
       if (verified) {
-        logger.info({ query: cleanedName, verifiedLink: candidate.link }, '[SCRAPER] SDS link verified via OCR');
+        logger.info(
+          { query: cleanedName, verifiedLink: candidate.link },
+          '[SCRAPER] SDS link verified via OCR',
+        );
         if (!bestVerified || candidate.score > bestVerified.score) {
           bestVerified = { link: candidate.link, score: candidate.score };
         }
@@ -630,7 +677,10 @@ export async function fetchSdsByName(
     }
   }
 
-  const fallbackOrdered = scored.length > 0 ? scored : ordered.map(link => ({ link, score: scoreSdsLink(link, cleanedName) }));
+  const fallbackOrdered =
+    scored.length > 0
+      ? scored
+      : ordered.map(link => ({ link, score: scoreSdsLink(link, cleanedName) }));
   const topLinks = fallbackOrdered.slice(0, 10).map(item => item.link);
 
   return { sdsUrl: sdsUrl || null, topLinks };
@@ -660,6 +710,3 @@ export async function searchWithManualData(
     sdsUrl,
   };
 }
-
-
-

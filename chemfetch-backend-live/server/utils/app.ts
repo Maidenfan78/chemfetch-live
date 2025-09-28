@@ -36,7 +36,7 @@ app.use(limiter);
 app.use('/scan', scanRoute);
 app.use('/confirm', confirmRoute);
 app.use('/health', healthRoute);
-app.use('/ocr', ocrProxy); 
-app.use('/verify-sds', verifySdsProxy); 
+app.use('/ocr', ocrProxy);
+app.use('/verify-sds', verifySdsProxy);
 
 export default app;
