@@ -12,7 +12,7 @@ export default function RootLayout() {
   const pathname = usePathname();
 
   useEffect(() => {
-    LogBox.ignoreLogs(["SafeAreaView has been deprecated"]);
+    LogBox.ignoreLogs(['SafeAreaView has been deprecated']);
     const checkAuth = async () => {
       const {
         data: { session },

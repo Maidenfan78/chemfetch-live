@@ -47,7 +47,10 @@ export default function HomeScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-bg-secondary" style={{ flex: 1, backgroundColor: '#f8fafc' }}>
+    <SafeAreaView
+      className="flex-1 bg-bg-secondary"
+      style={{ flex: 1, backgroundColor: '#f8fafc' }}
+    >
       <StatusBar barStyle="dark-content" backgroundColor="#f8fafc" />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Animated.View
